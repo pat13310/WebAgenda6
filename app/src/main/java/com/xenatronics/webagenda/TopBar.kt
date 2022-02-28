@@ -1,0 +1,113 @@
+package com.xenatronics.webagenda
+
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+
+
+@Composable
+fun NewTaskBar(
+    NavigateToListScreen: (Action) -> Unit
+) {
+    TopAppBar(
+        elevation = 12.dp,
+        navigationIcon = {
+            BackAction(onBackClicked = NavigateToListScreen)
+        },
+        title = {
+            Text(
+                text = stringResource(id = R.string.NewTask),
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+        },
+        backgroundColor = MaterialTheme.colors.primary,
+        actions = {
+            ValidateAction(onValidateClicked = NavigateToListScreen)
+        }
+    )
+}
+
+@Composable
+fun ListTaskBar(
+    NavigateToListScreen: (Action) -> Unit
+) {
+    TopAppBar(
+        elevation = 12.dp,
+        navigationIcon = {
+            CloseAction(onCloseClicked = NavigateToListScreen)
+        },
+        title = {
+            Text(
+                text = stringResource(id = R.string.TaskList),
+                color = Color.White
+            )
+        },
+        backgroundColor = MaterialTheme.colors.primary,
+        actions = {
+            ValidateAction(onValidateClicked = NavigateToListScreen)
+            DeleteAction(onDeleteClicked = NavigateToListScreen)
+        }
+    )
+}
+
+
+@Composable
+fun BackAction(
+    onBackClicked: (Action) -> Unit
+) {
+    IconButton(onClick = { onBackClicked(Action.NO_ACTION) }) {
+        Icon(
+            imageVector = Icons.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.back),
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun ValidateAction(
+    onValidateClicked: (Action) -> Unit
+) {
+    IconButton(onClick = { onValidateClicked(Action.ADD) }) {
+        Icon(
+            imageVector = Icons.Filled.Check,
+            contentDescription = stringResource(id = R.string.back),
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun DeleteAction(
+    onDeleteClicked: (Action) -> Unit
+) {
+    IconButton(onClick = { onDeleteClicked(Action.DELETE) }) {
+        Icon(
+            imageVector = Icons.Filled.Delete,
+            contentDescription = stringResource(id = R.string.back),
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun CloseAction(
+    onCloseClicked: (Action) -> Unit
+) {
+    IconButton(onClick = { onCloseClicked(Action.NO_ACTION) }) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(id = R.string.back),
+            tint = Color.White
+        )
+    }
+}
