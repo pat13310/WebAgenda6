@@ -113,12 +113,6 @@ fun ExpandableCard(
 
     Card(
         backgroundColor = cardBgColor,
-//        contentColor = Color(
-//            ContextCompat.getColor(
-//                LocalContext.current,
-//                R.color.purple_200
-//            )
-//        ),
         elevation = cardElevation,
         shape = RoundedCornerShape(cardRoundedCorners),
         modifier = Modifier
@@ -164,8 +158,6 @@ fun ExpandableContent(
 ) {
     val FADE_OUT_ANIMATION_DURATION = 100
     val FADE_IN_ANIMATION_DURATION = 200
-   // val COLLAPSE_ANIMATION_DURATION = 1000
-   // val EXPAND_ANIMATION_DURATION = 1000
 
     val enterFadeIn = remember {
         fadeIn(
@@ -175,9 +167,6 @@ fun ExpandableContent(
             )
         )
     }
-//    val enterExpand = remember {
-//        expandVertically(animationSpec = tween(EXPAND_ANIMATION_DURATION))
-//    }
     val exitFadeOut = remember {
         fadeOut(
             animationSpec = TweenSpec(
@@ -186,9 +175,7 @@ fun ExpandableContent(
             )
         )
     }
-    /* val exitCollapse = remember {
-         shrinkVertically(animationSpec = tween(COLLAPSE_ANIMATION_DURATION))
-     }*/
+
     AnimatedVisibility(
         visible = visible,
         initiallyVisible = initialVisibility,
