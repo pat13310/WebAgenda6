@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.Action
-import com.xenatronics.webagenda.NewTaskBar
+import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.data.PostRequest
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 

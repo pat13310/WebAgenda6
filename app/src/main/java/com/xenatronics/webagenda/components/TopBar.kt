@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda
+package com.xenatronics.webagenda.components
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.xenatronics.webagenda.Action
+import com.xenatronics.webagenda.R
 
 
 @Composable

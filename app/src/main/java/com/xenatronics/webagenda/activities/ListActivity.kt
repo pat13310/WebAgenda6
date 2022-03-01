@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenatronics.webagenda.activities.convertTime
+import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 
 @Composable

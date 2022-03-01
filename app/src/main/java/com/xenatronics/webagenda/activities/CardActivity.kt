@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import com.xenatronics.webagenda.ListTaskBar
+import com.xenatronics.webagenda.components.ListTaskBar
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
