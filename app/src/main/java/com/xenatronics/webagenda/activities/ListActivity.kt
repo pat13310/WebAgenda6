@@ -26,7 +26,8 @@ fun ListMain(viewModel: ViewmodelRdv) {
         topBar = {
             NewTaskBar(NavigateToListScreen = {})
         },
-        content = { ListScreen(viewModel = viewModel) }
+        content = {
+            ListScreen(viewModel = viewModel) }
     )
 }
 

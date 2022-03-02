@@ -26,22 +26,22 @@ import java.util.*
 @Composable
 fun UiDatePicker(activate: Boolean,
                  texte: String,
-                 updateDialogDate:(Long)->Unit
+                 updateDialogDate:(String)->Unit
 ) {
-    TextDateOutField(text = texte,
-        modifier = Modifier.fillMaxWidth(),
-        updatedDate = updateDialogDate
+    TextDateOutField(texte = texte,
+        modifier = Modifier.fillMaxWidth().background(Color.White),
+        onChangedDate = updateDialogDate
     )
 }
 
 @Composable
 fun TextDateOutField(
-    text: String,
+    texte: String,
     modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
-    updatedDate: (Long) -> Unit
+    onChangedDate: (String) -> Unit
 ) {
     val activity = LocalContext.current as AppCompatActivity
     Box(
@@ -54,7 +54,9 @@ fun TextDateOutField(
                 shape = RoundedCornerShape(50),
             )
             .clickable {
-                showDatePicker(activity = activity, updatedDate =updatedDate )
+                showDatePicker(activity = activity){timestamps->
+                    dateFormatter(timestamps)
+                }
             }
     ) {
         Row(
@@ -63,7 +65,7 @@ fun TextDateOutField(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = text,
+                text = texte,
                 color = textColor,
             )
             Icon(
@@ -81,22 +83,23 @@ fun DatePreview() {
     UiDatePicker(true, "Aujourd'hui", updateDialogDate = {})
 }
 
-fun DateFormater(milliseconds : Long?) : String?{
+fun dateFormatter(milliseconds : Long?) : String {
     milliseconds?.let{
         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = it
         return formatter.format(calendar.time)
     }
-    return null
+    return ""
 }
+
 private fun showDatePicker(
     activity : AppCompatActivity,
     updatedDate: (Long) -> Unit)
 {
     val picker = MaterialDatePicker.Builder.datePicker().build()
     picker.show(activity.supportFragmentManager, picker.toString())
-    picker.addOnPositiveButtonClickListener {
-        updatedDate(it)
+    picker.addOnPositiveButtonClickListener {newDate->
+        updatedDate(newDate)
     }
 }
