@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenatronics.webagenda.activities.CardMain
 import com.xenatronics.webagenda.activities.CardsScreen
+import com.xenatronics.webagenda.activities.DateActivity
 import com.xenatronics.webagenda.activities.NewMain
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NewMain(viewModel = viewModel())
+                    //NewMain(viewModel = viewModel())
+                    DateActivity()
                 }
             }
         }

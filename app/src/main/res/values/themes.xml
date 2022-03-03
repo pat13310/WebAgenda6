@@ -3,5 +3,16 @@
 
     <style name="Theme.WebAgenda" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:colorAccent">@color/purple_500</item>
+        <item name="android:colorPrimary">@color/purple_700</item>
+        <item name="android:colorPrimaryDark">@color/purple_700</item>
+        <!-- Add these -->
+        <item name="android:alertDialogTheme">@style/Theme.Dialog</item> <!-- Alert dialog -->
+
     </style>
+
+    <style name="Theme.Dialog" parent="android:Theme.Material.Light.Dialog">
+
+    </style>
+
 </resources>

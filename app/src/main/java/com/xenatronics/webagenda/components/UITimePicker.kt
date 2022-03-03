@@ -1,7 +1,8 @@
 package com.xenatronics.webagenda.components
 
-import androidx.appcompat.app.AppCompatActivity
 
+
+import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +12,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,33 +21,47 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.material.timepicker.MaterialTimePicker
+
 import com.xenatronics.webagenda.R
+import java.util.*
 
 
 @Composable
 fun UiTimePicker(
-    activate: Boolean,
+
     texte: String,
-    updateTime: (Long) -> Unit
+    //updateTime: (Long) -> Unit
 ) {
     TextTimeOutField(
         text = texte,
         modifier = Modifier.fillMaxWidth(),
-        updateTime = updateTime
+        //updateTime = updateTime
     )
 }
 
 @Composable
 fun TextTimeOutField(
-    text: String,
+    text: String="",
     modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
-    updateTime: (Long) -> Unit
+    //updateTime: (Long) -> Unit
 ) {
-    val activity = LocalContext.current as AppCompatActivity
+
+    val calendar = Calendar.getInstance()
+    val hour = calendar[Calendar.HOUR]
+    val minute = calendar[Calendar.MINUTE]
+    val time = remember { mutableStateOf("") }
+
+
+    val timePickerDialog = TimePickerDialog(
+        LocalContext.current, { _, h: Int, m: Int ->
+            time.value = "$h:$m"
+        },
+        hour, minute, true
+    )
+
     Box(
         modifier = modifier
             .background(Color.White)
@@ -55,10 +72,7 @@ fun TextTimeOutField(
                 shape = RoundedCornerShape(50),
             )
             .clickable {
-                showTimePicker(
-                    activity = activity,
-                    updatedTime = updateTime
-                )
+                timePickerDialog.show()
             }
     ) {
         Row(
@@ -67,7 +81,7 @@ fun TextTimeOutField(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = text,
+                text = time.value,
                 color = textColor,
             )
             Icon(
@@ -82,19 +96,6 @@ fun TextTimeOutField(
 @Preview
 @Composable
 fun TimePreview() {
-    UiTimePicker(true, "Aujourd'hui", updateTime = {})
+    UiTimePicker( "Aujourd'hui")
 }
 
-
-private fun showTimePicker(
-    activity: AppCompatActivity,
-    updatedTime: (Long) -> Unit
-) {
-    val picker = MaterialTimePicker.Builder().build()
-    picker.hour = 8
-    picker.show(activity.supportFragmentManager, "")
-
-    picker.addOnPositiveButtonClickListener {
-        updatedTime(picker.inputMode.toLong())
-    }
-}
