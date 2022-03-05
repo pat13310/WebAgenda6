@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.xenatronics.webagenda.activities.CardMain
 import com.xenatronics.webagenda.activities.CardsScreen
 import com.xenatronics.webagenda.activities.DateActivity
@@ -19,26 +22,30 @@ import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             WebAgendaTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "date"
                 ) {
-                    //NewMain(viewModel = viewModel())
-                    DateActivity()
+                    composable("date") {
+                        DateActivity(navController = navController)
+                    }
+                    composable("contact") {
+                    }
                 }
             }
         }
     }
-}
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WebAgendaTheme {
-        CardMain(viewModel = viewModel())
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        WebAgendaTheme {
+            CardMain(viewModel = viewModel())
+        }
     }
 }
