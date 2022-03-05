@@ -10,4 +10,5 @@ object Constants {
     const val EXPAND_ANIMATION_DURATION = 450
     const val FADE_OUT_ANIMATION_DURATION = 100
     const val FADE_IN_ANIMATION_DURATION = 200
+
 }
