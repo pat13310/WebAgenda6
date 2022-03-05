@@ -9,9 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.xenatronics.webagenda.activities.CardActivity
-import com.xenatronics.webagenda.activities.AddActivity
-import com.xenatronics.webagenda.activities.CardContent
+import com.xenatronics.webagenda.activities.*
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
@@ -23,7 +21,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             WebAgendaTheme {
                 val navController = rememberNavController()
-
                 NavHost(
                     navController = navController,
                     startDestination = Screen.CardScreen.route
@@ -33,6 +30,18 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Screen.CardScreen.route) {
                         CardActivity(navController = navController)
+                    }
+                    composable(Screen.ContactScreen.route) {
+                        ContactActivity(navController =  navController)
+                    }
+                    composable(Screen.LoginScreen.route) {
+                        LoginActivity(navController = navController)
+                    }
+                    composable(Screen.RegisterScreen.route) {
+                        RegisterActivity(navController = navController)
+                    }
+                    composable(Screen.SplashScreen.route) {
+                        SplashActivity(navController =  navController)
                     }
                 }
             }
