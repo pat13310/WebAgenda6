@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.ListTaskBar
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Rdv
@@ -31,18 +33,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun CardMain(viewModel: ViewmodelRdv) {
+fun CardActivity(navController: NavController) {
     Scaffold(
         topBar = {
-            ListTaskBar(NavigateToListScreen = {})
+            ListTaskBar(NavigateToListScreen = {navController.popBackStack()})
         },
-        content = { CardsScreen(viewModel = viewModel) }
+        content = {
+            CardContent(navController = navController, viewModel = viewModel() as ViewmodelRdv)
+        }
     )
 }
 
 
 @Composable
-fun CardsScreen(viewModel: ViewmodelRdv) {
+fun CardContent(navController: NavController, viewModel:ViewmodelRdv) {
+
     val cards = viewModel.allRdvFlow.collectAsState()
     val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
     Scaffold(
@@ -57,7 +62,7 @@ fun CardsScreen(viewModel: ViewmodelRdv) {
             items(cards.value) {
                 ExpandableCard(
                     card = it,
-                    onCardArrowClick = { viewModel.onCardArrowClicked(it.id) },
+                    onCardArrowClick = { viewModel?.onCardArrowClicked(it.id) },
                     expanded = expandedCardIds.value.contains(it.id),
                 )
             }

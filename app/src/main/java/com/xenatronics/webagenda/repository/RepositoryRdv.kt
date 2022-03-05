@@ -4,18 +4,17 @@ import com.xenatronics.webagenda.data.CardResponse
 import com.xenatronics.webagenda.data.PostRequest
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.network.KtorClient
+import com.xenatronics.webagenda.util.Constants.ADD_TASK
+import com.xenatronics.webagenda.util.Constants.CLEAR_TASKS
+import com.xenatronics.webagenda.util.Constants.DEL_TASK
+import com.xenatronics.webagenda.util.Constants.GET_TASKS
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.cio.*
 
 object RepositoryRdv {
-    const val IP="192.168.1.68"
-    private const val URL="http://$IP/api/V21/agenda/tasks"
-    private const val GET_TASKS="$URL/all"
-    private const val CLEAR_TASKS="$URL/clear"
-    private const val ADD_TASK="$URL/add"
-    private const val DEL_TASK="$URL/delete"
+
 
     suspend fun getListe():List<Rdv>{
         return try {

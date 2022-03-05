@@ -15,29 +15,28 @@ import com.xenatronics.webagenda.components.UiDatePicker
 import com.xenatronics.webagenda.components.UiTimePicker
 
 @Composable
-fun DateActivity(navController: NavController) {
+fun AddActivity(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-
         Scaffold(
             topBar = {
                 NewTaskBar(NavigateToListScreen = {})
             },
             content = {
-                DateContent()
+                DateContent(modifier = Modifier)
             }
         )
     }
 }
 
 @Composable
-fun DateContent() {
-    Column(modifier = Modifier
+fun DateContent(modifier: Modifier) {
+    Column(modifier = modifier
         .fillMaxSize()
         .background(Color.White)) {
         UiDatePicker(texte ="Aujourd'hui" , updateDialogDate ={} )
-        //UiTimePicker(activate = true, texte ="08:23" , updateTime ={} )
+        UiTimePicker(texte ="08:23"  )
     }
 }
