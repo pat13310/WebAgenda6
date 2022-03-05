@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.CardScreen.route
+                    startDestination = Screen.AddScreen.route
                 ) {
                     composable(Screen.AddScreen.route) {
                         AddActivity(navController = navController)
