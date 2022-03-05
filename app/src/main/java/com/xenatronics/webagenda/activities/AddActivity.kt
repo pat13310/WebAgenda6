@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.components.NewTaskBar
-import com.xenatronics.webagenda.components.UiDatePicker
-import com.xenatronics.webagenda.components.UiTimePicker
+import com.xenatronics.webagenda.components.*
 
 @Composable
 fun AddActivity(navController: NavController) {
@@ -25,17 +24,20 @@ fun AddActivity(navController: NavController) {
                 NewTaskBar(NavigateToListScreen = {})
             },
             content = {
-                DateContent(modifier = Modifier)
+                DateContent(modifier = Modifier, navController)
             }
         )
     }
 }
 
 @Composable
-fun DateContent(modifier: Modifier) {
+fun DateContent(modifier: Modifier, navController: NavController) {
     Column(modifier = modifier
         .fillMaxSize()
         .background(Color.White)) {
+        var selectedOptionText by remember { mutableStateOf("") }
+        val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
+        UI2ComboContact(navController=navController,  options = options, viewModelAdd = viewModel())
         UiDatePicker(texte ="Aujourd'hui" , updateDialogDate ={} )
         UiTimePicker(texte ="08:23"  )
     }
