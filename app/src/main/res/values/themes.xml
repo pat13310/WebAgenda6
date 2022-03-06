@@ -8,6 +8,7 @@
         <item name="android:colorPrimaryDark">@color/purple_700</item>
         <!-- Add these -->
         <item name="android:alertDialogTheme">@style/Theme.Dialog</item> <!-- Alert dialog -->
+        <item name="android:colorSecondary">@color/gray_500</item>
 
     </style>
 
