@@ -20,34 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.activities.TOP_SPACE
 
 
-@Composable
-fun TextMail(
-    textMail: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textMail,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = "emailIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        //label = { Text(text = "Email") },
-        placeholder = { Text(text = "Adresse mail") },
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
-}
-
 
 @Composable
-fun TextStandard(
+fun UITextStandard(
     label: String = "",
     textStandard: String,
     onTextChanged: (String) -> Unit,
@@ -65,7 +40,6 @@ fun TextStandard(
         onValueChange = {
             onTextChanged(it)
         },
-        //label = { Text(text = label) },
         placeholder = { Text(text = label) },
         shape = RoundedCornerShape(12.dp),
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),

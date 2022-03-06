@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.Action
 import com.xenatronics.webagenda.components.NewTaskBar
-import com.xenatronics.webagenda.components.TextStandard
+import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 
 val TOP_SPACE = 6.dp
@@ -58,36 +58,36 @@ fun ContactContent(viewModel: ViewModelContact) {
         var mail by viewModel.mail
         var phone by viewModel.tel
 
-        TextStandard(
+        UITextStandard(
             label = "Rendez-vous",
             textStandard = nom,
             onTextChanged = { nom = it },
             icon = Icons.Default.Person
         )
-        TextStandard(
+        UITextStandard(
             label = "Adresse",
             textStandard = adresse,
             onTextChanged = { adresse = it }
         )
-        TextStandard(
+        UITextStandard(
             label = "Ville",
             textStandard = ville,
             onTextChanged = { ville = it }
         )
-        TextStandard(
+        UITextStandard(
             label = "Code Postal",
             textStandard = cp,
             onTextChanged = { cp = it },
             icon = Icons.Default.Place,
             keyboardType = KeyboardType.Number
         )
-        TextStandard(
+        UITextStandard(
             label = "Adresse Mail",
             textStandard = mail,
             onTextChanged = { mail = it },
             icon = Icons.Default.Email,
         )
-        TextStandard(
+        UITextStandard(
             label = "Téléphone",
             textStandard = phone,
             onTextChanged = { phone = it },
