@@ -16,7 +16,7 @@ import com.xenatronics.webagenda.components.ListTaskBar
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 
 @Composable
-fun CardActivity(navController: NavController) {
+fun ListActivity(navController: NavController) {
     Scaffold(
         topBar = {
             ListTaskBar(NavigateToListScreen = {

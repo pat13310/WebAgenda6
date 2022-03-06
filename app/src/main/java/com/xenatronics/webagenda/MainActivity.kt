@@ -5,14 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xenatronics.webagenda.activities.*
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
-import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +27,7 @@ class MainActivity : ComponentActivity() {
                         AddActivity(navController = navController)
                     }
                     composable(Screen.CardScreen.route) {
-                        CardActivity(navController = navController)
+                        ListActivity(navController = navController)
                     }
                     composable(Screen.ContactScreen.route) {
                         ContactActivity(navController =  navController)

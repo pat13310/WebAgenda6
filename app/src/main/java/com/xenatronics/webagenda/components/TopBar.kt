@@ -17,6 +17,7 @@ import com.xenatronics.webagenda.R
 
 @Composable
 fun NewTaskBar(
+    title:String="",
     NavigateToListScreen: (Action) -> Unit
 ) {
     TopAppBar(
@@ -26,7 +27,7 @@ fun NewTaskBar(
         },
         title = {
             Text(
-                text = stringResource(id = R.string.NewTask),
+                text = title,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )

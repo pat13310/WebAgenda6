@@ -12,9 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.viewmodel.ViewModelAdd
 
 
@@ -108,8 +110,9 @@ fun UI2ComboContact(
     var selectedOptionText by viewModelAdd.textContactName
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
             .fillMaxWidth()
+            .height(HEIGHT_COMPONENT)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colors.primary,
@@ -117,7 +120,10 @@ fun UI2ComboContact(
             )
 
     ) {
-        Row(modifier.padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier.padding(horizontal = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(onClick = {
                 expanded = true
             }) {
@@ -139,13 +145,13 @@ fun UI2ComboContact(
                 expanded = false
             }) {
                 Icon(
-                    Icons.Default.Add,
+                    painter = painterResource(id = R.drawable.ic_person_add),
                     tint = MaterialTheme.colors.primary,
                     contentDescription = ""
                 )
             }
             DropdownMenu(
-                modifier=modifier
+                modifier = modifier
                     .fillMaxWidth(0.80f),
                 expanded = expanded,
                 onDismissRequest = {

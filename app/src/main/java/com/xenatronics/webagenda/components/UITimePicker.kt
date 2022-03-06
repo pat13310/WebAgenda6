@@ -1,8 +1,6 @@
 package com.xenatronics.webagenda.components
 
 
-
-import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,77 +9,67 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+import com.xenatronics.webagenda.viewmodel.ViewModelAdd
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 
 @Composable
 fun UiTimePicker(
-
-    texte: String,
-    //updateTime: (Long) -> Unit
-) {
-    TextTimeOutField(
-        text = texte,
-        modifier = Modifier.fillMaxWidth(),
-        //updateTime = updateTime
-    )
-}
-
-@Composable
-fun TextTimeOutField(
-    text: String="",
-    modifier: Modifier,
+    texte: String = "",
+    modifier: Modifier=Modifier.fillMaxWidth(),
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
-    //updateTime: (Long) -> Unit
-) {
 
-    val calendar = Calendar.getInstance()
+    ) {
+    Locale.setDefault(Locale.FRANCE)
+    val calendar = Calendar.getInstance(Locale.FRANCE)
     val hour = calendar[Calendar.HOUR]
     val minute = calendar[Calendar.MINUTE]
-    val time = remember { mutableStateOf("") }
+    val viewModel = ViewModelAdd()
+    var time by viewModel.time
+    val timeTmp = remember { mutableStateOf(time)}
+    val dlg = showTimeDialog(timeTmp)
 
-
-    val timePickerDialog = TimePickerDialog(
-        LocalContext.current, { _, h: Int, m: Int ->
-            time.value = "$h:$m"
-        },
-        hour, minute, true
-    )
+    time=timeTmp.value
 
     Box(
         modifier = modifier
             .background(Color.White)
             .padding(16.dp)
+            .height(HEIGHT_COMPONENT)
             .border(
                 width = 1.dp,
                 color = borderColor,
                 shape = RoundedCornerShape(50),
             )
             .clickable {
-                timePickerDialog.show()
+                dlg.show()
             }
     ) {
         Row(
-            modifier = modifier.padding(16.dp),
+            modifier = modifier.padding(horizontal = 28.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = time.value,
+                text = timeTmp.value,
                 color = textColor,
             )
             Icon(
@@ -93,9 +81,32 @@ fun TextTimeOutField(
     }
 }
 
+
+@Composable
+fun showTimeDialog(time: MutableState<String>): MaterialDialogState {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRANCE)
+    val dialogState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Annuler")
+        }
+    ) {
+        timepicker(title = "Choisir l'heure",
+            is24HourClock=true,
+            initialTime = LocalTime.parse(time.value)
+        )//, initialTime = LocalTime.parse(time.value, formatter))
+        {
+            time.value = it.format(formatter)
+        }
+    }
+    return dialogState
+}
+
 @Preview
 @Composable
 fun TimePreview() {
-    UiTimePicker( "Aujourd'hui")
+    UiTimePicker("Aujourd'hui")
 }
 

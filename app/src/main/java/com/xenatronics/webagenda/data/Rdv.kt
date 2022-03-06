@@ -12,16 +12,7 @@ data class Rdv(val name: String, val date: Int, val id: Int, val id_infos: Int=-
 @Serializable
 data class PostRequest(val name: String, val date: Long, val id_infos: Int=-1)
 
-@Keep
-@Serializable
-data class Data(
-    val adresse: String,
-    val cp: String,
-    val ville: String,
-    val mail: String,
-    val tel: String,
-    val id_infos: Int
-)
+
 
 enum class Priority {
     HIGH,
