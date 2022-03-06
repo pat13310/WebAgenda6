@@ -18,6 +18,8 @@ class ViewModelContact {
     val cp: MutableState<String> = mutableStateOf("")
     val tel: MutableState<String> = mutableStateOf("")
     val mail: MutableState<String> = mutableStateOf("")
+    private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
+    val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
 
     init {
 
