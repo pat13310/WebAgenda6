@@ -1,15 +1,9 @@
 package com.xenatronics.webagenda.activities
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -21,12 +15,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.Action
 import com.xenatronics.webagenda.components.NewTaskBar
+import com.xenatronics.webagenda.components.TextStandard
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
-import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 
 val TOP_SPACE = 6.dp
 
@@ -34,13 +27,13 @@ val TOP_SPACE = 6.dp
 fun ContactActivity(navController: NavController) {
     Scaffold(
         topBar = {
-            NewTaskBar("Ajouter vos Contacts",NavigateToListScreen = {action->
-                when (action){
+            NewTaskBar("Ajouter vos Contacts", NavigateToListScreen = { action ->
+                when (action) {
 //                    Action.ADD->{
 //                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
 //                        viewModel.AddRdv(post)
 //                    }
-                    Action.NO_ACTION->{
+                    Action.NO_ACTION -> {
                         navController.popBackStack()
                     }
                 }
@@ -50,7 +43,7 @@ fun ContactActivity(navController: NavController) {
     )
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
+
 @Composable
 fun ContactContent(viewModel: ViewModelContact) {
     Column(
@@ -65,162 +58,44 @@ fun ContactContent(viewModel: ViewModelContact) {
         var mail by viewModel.mail
         var phone by viewModel.tel
 
-        TextNom(
-            textNom = nom
-        ) { nom = it }
+
         TextStandard(
-            label="Adresse",
+            label = "Rendez-vous",
+            textStandard = nom,
+            onTextChanged = { nom = it },
+            icon = Icons.Default.Person
+        )
+        TextStandard(
+            label = "Adresse",
             textStandard = adresse,
             onTextChanged = { adresse = it }
         )
         TextStandard(
-            label="Ville",
+            label = "Ville",
             textStandard = ville,
             onTextChanged = { ville = it }
         )
-        TextCP(
-            textCP = cp,
-            onTextChanged = { cp = it }
+        TextStandard(
+            label = "Code Postal",
+            textStandard = cp,
+            onTextChanged = { cp = it },
+            icon = Icons.Default.Place,
+            keyboardType = KeyboardType.Number
         )
-        TextMail(
-            textMail = mail,
-            onTextChanged = { mail = it }
+        TextStandard(
+            label = "Adresse Mail",
+            textStandard = mail,
+            onTextChanged = { mail = it },
+            icon = Icons.Default.Email,
         )
-        TextPhone(
-            textPhone = phone,
-            onTextChanged = { phone = it }
+        TextStandard(
+            label = "Téléphone",
+            textStandard = phone,
+            onTextChanged = { phone = it },
+            icon = Icons.Default.Phone,
+            keyboardType = KeyboardType.Phone
         )
+
     }
-}
-
-
-@Composable
-fun TextMail(
-    textMail: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textMail,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = "emailIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        label = { Text(text = "Email") },
-        placeholder = { Text(text = "Adresse mail") },
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
-}
-
-
-@Composable
-fun TextPhone(
-    textPhone: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textPhone,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Phone,
-                contentDescription = "phoneIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        label = { Text(text = "Téléphone") },
-        placeholder = { Text(text = "Numéro de téléphone") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
-}
-
-@Composable
-fun TextCP(
-    textCP: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textCP,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "CPIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        label = { Text(text = "Code postal") },
-        placeholder = { Text(text = "Code postal") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
-}
-
-@Composable
-fun TextStandard(
-    label:String="",
-    textStandard: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textStandard,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "CPIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        label = { Text(text = label) },
-        placeholder = { Text(text = label) },
-        shape = RoundedCornerShape(12.dp),
-
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
-}
-
-@Composable
-fun TextNom(
-    textNom: String,
-    onTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = textNom,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "CPIcon"
-            )
-        },
-        onValueChange = {
-            onTextChanged(it)
-        },
-        label = { Text(text = "Nom") },
-        placeholder = { Text(text = "Nom du rendez-vous") },
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-    )
 }
 
