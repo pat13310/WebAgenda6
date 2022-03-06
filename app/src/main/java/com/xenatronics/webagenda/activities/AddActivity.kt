@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.activities
 
+import android.app.Notification
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.xenatronics.webagenda.Action
 import com.xenatronics.webagenda.components.*
+import com.xenatronics.webagenda.navigation.Screen
 
 @Composable
 fun AddActivity(navController: NavController) {
@@ -24,7 +27,12 @@ fun AddActivity(navController: NavController) {
     ) {
         Scaffold(
             topBar = {
-                NewTaskBar("Nouveau Rendez-vous",NavigateToListScreen = {})
+                NewTaskBar("Nouveau Rendez-vous",
+                    NavigateToListScreen = {action->
+                    if (action ==  Action.ADD){
+                        navController.navigate(Screen.ContactScreen.route)
+                    }
+                })
             },
             content = {
                 DateContent(modifier = Modifier, navController)
