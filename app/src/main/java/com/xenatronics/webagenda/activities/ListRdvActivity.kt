@@ -19,7 +19,7 @@ import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 fun ListActivity(navController: NavController) {
     Scaffold(
         topBar = {
-            ListTaskBar(NavigateToListScreen = {
+            ListTaskBar("Liste",NavigateToListScreen = {
                 navController.popBackStack() })
         },
         content = {
