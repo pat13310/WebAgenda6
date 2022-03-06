@@ -18,12 +18,15 @@ import com.xenatronics.webagenda.R
 @Composable
 fun NewTaskBar(
     title:String="",
-    NavigateToListScreen: (Action) -> Unit
+    NavigateToListScreen: (Action) -> Unit,
+    noBack:Boolean=false,
 ) {
     TopAppBar(
         elevation = 12.dp,
         navigationIcon = {
-            BackAction(onBackClicked = NavigateToListScreen)
+            if (!noBack) {
+                BackAction(onBackClicked = NavigateToListScreen)
+            }
         },
         title = {
             Text(
