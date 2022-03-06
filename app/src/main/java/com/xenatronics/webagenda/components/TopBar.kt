@@ -41,6 +41,7 @@ fun NewTaskBar(
 
 @Composable
 fun ListTaskBar(
+    title:String,
     NavigateToListScreen: (Action) -> Unit
 ) {
     TopAppBar(
@@ -50,7 +51,7 @@ fun ListTaskBar(
         },
         title = {
             Text(
-                text = stringResource(id = R.string.TaskList),
+                text = title,
                 color = Color.White
             )
         },

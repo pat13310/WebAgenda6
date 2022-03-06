@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ViewmodelRdv : ViewModel() {
+class ViewmodelRdv() : ViewModel() {
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
     val addRdvFlow = MutableStateFlow<Boolean>(false)
     private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())

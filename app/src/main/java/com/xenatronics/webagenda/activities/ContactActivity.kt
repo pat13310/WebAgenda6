@@ -21,36 +21,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.xenatronics.webagenda.Action
 import com.xenatronics.webagenda.components.NewTaskBar
-import com.xenatronics.webagenda.data.PostRequest
+import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
 
 val TOP_SPACE = 6.dp
 
 @Composable
-fun NewMain(viewModel: ViewmodelRdv) {
+fun ContactActivity(navController: NavController) {
     Scaffold(
         topBar = {
             NewTaskBar("Ajouter vos Contacts",NavigateToListScreen = {action->
                 when (action){
-                    Action.ADD->{
-                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
-                        viewModel.AddRdv(post)
-                    }
+//                    Action.ADD->{
+//                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
+//                        viewModel.AddRdv(post)
+//                    }
                     Action.NO_ACTION->{
-
+                        navController.popBackStack()
                     }
                 }
             })
         },
-        content = { NewCardScreen(viewModel = viewModel) }
+        content = { ContactContent(viewModel = ViewModelContact()) }
     )
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun NewCardScreen(viewModel: ViewmodelRdv) {
+fun ContactContent(viewModel: ViewModelContact) {
     Column(
         Modifier
             .fillMaxWidth()

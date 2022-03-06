@@ -15,13 +15,13 @@ import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        //installSplashScreen()
         setContent {
             WebAgendaTheme {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.AddScreen.route
+                    startDestination = Screen.SplashScreen.route
                 ) {
                     composable(Screen.AddScreen.route) {
                         AddActivity(navController = navController)
@@ -30,7 +30,10 @@ class MainActivity : ComponentActivity() {
                         ListActivity(navController = navController)
                     }
                     composable(Screen.ContactScreen.route) {
-                        ContactActivity(navController =  navController)
+                        ContactActivity(navController = navController)
+                    }
+                    composable(Screen.ListContactScreen.route) {
+                        ListContactActivity(navController = navController)
                     }
                     composable(Screen.LoginScreen.route) {
                         LoginActivity(navController = navController)
@@ -39,7 +42,7 @@ class MainActivity : ComponentActivity() {
                         RegisterActivity(navController = navController)
                     }
                     composable(Screen.SplashScreen.route) {
-                        SplashActivity(navController =  navController)
+                        SplashActivity(navController = navController)
                     }
                 }
             }

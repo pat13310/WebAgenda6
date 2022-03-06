@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.viewmodel.ViewModelAdd
 
@@ -142,7 +143,9 @@ fun UI2ComboContact(
                 color = MaterialTheme.colors.primary
             )
             IconButton(onClick = {
+
                 expanded = false
+                navController.navigate(Screen.ContactScreen.route)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_person_add),
