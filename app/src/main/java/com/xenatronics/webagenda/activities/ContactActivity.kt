@@ -58,7 +58,6 @@ fun ContactContent(viewModel: ViewModelContact) {
         var mail by viewModel.mail
         var phone by viewModel.tel
 
-
         TextStandard(
             label = "Rendez-vous",
             textStandard = nom,
@@ -95,7 +94,6 @@ fun ContactContent(viewModel: ViewModelContact) {
             icon = Icons.Default.Phone,
             keyboardType = KeyboardType.Phone
         )
-
     }
 }
 

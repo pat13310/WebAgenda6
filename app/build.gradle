@@ -81,6 +81,8 @@ android {
         //navigation
         def nav_version="2.4.1"
         implementation "androidx.navigation:navigation-compose:$nav_version"
+        //icons extra
+        implementation "androidx.compose.material:material-icons-extended:$compose_version"
     }
 }
 
