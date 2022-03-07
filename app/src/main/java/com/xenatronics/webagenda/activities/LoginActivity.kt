@@ -61,6 +61,7 @@ fun LoginContent(
             .fillMaxSize()
             .padding(16.dp)) {
         UITextStandard(
+            label="Login",
             icon= Icons.Default.Person,
             value = nom,
             onTextChanged = {
