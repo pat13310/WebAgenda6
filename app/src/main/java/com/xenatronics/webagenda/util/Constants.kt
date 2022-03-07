@@ -13,4 +13,6 @@ object Constants {
     const val FADE_OUT_ANIMATION_DURATION = 100
     const val FADE_IN_ANIMATION_DURATION = 200
     val HEIGHT_COMPONENT=57.dp
+    const val RADIUS_SMALL=40
+    const val RADIUS_MEDIUM=50
 }

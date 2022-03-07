@@ -23,6 +23,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
 import com.xenatronics.webagenda.viewmodel.ViewModelAdd
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -32,7 +33,7 @@ import java.util.*
 
 @Composable
 fun UiDatePicker(
-
+    viewModel: ViewModelAdd,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .background(Color.White),
@@ -41,7 +42,7 @@ fun UiDatePicker(
     iconColor: Color = MaterialTheme.colors.primary,
 ) {
     Locale.setDefault(Locale.FRANCE)
-    val viewModel = ViewModelAdd()
+
     var date by viewModel.date
     val datetmp = remember { mutableStateOf(date) }
     val dlg = showDialogDate(datetmp)
@@ -55,7 +56,7 @@ fun UiDatePicker(
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(50),
+                shape = RoundedCornerShape(RADIUS_MEDIUM),
             )
             .clickable {
                 dlg.show()
@@ -82,7 +83,7 @@ fun UiDatePicker(
 @Preview
 @Composable
 fun DatePreview() {
-    UiDatePicker()
+    //UiDatePicker()
 }
 
 fun dateFormatter(milliseconds: Long?): String {

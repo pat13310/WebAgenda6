@@ -22,6 +22,7 @@ import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
 import com.xenatronics.webagenda.viewmodel.ViewModelAdd
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -31,6 +32,7 @@ import java.util.*
 
 @Composable
 fun UiTimePicker(
+    viewModel: ViewModelAdd,
     texte: String = "",
     modifier: Modifier=Modifier.fillMaxWidth(),
     borderColor: Color = MaterialTheme.colors.primary,
@@ -42,11 +44,10 @@ fun UiTimePicker(
     val calendar = Calendar.getInstance(Locale.FRANCE)
     val hour = calendar[Calendar.HOUR]
     val minute = calendar[Calendar.MINUTE]
-    val viewModel = ViewModelAdd()
+
     var time by viewModel.time
     val timeTmp = remember { mutableStateOf(time)}
     val dlg = showTimeDialog(timeTmp)
-
     time=timeTmp.value
 
     Box(
@@ -57,7 +58,7 @@ fun UiTimePicker(
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(50),
+                shape = RoundedCornerShape(RADIUS_MEDIUM),
             )
             .clickable {
                 dlg.show()
@@ -104,9 +105,4 @@ fun showTimeDialog(time: MutableState<String>): MaterialDialogState {
     return dialogState
 }
 
-@Preview
-@Composable
-fun TimePreview() {
-    UiTimePicker("Aujourd'hui")
-}
 

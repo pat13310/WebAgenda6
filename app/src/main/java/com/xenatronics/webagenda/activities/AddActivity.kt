@@ -1,6 +1,5 @@
 package com.xenatronics.webagenda.activities
 
-import android.app.Notification
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,7 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.Action
 import com.xenatronics.webagenda.components.*
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.viewmodel.ViewModelAdd
 
 @Composable
 fun AddActivity(navController: NavController) {
@@ -35,22 +35,27 @@ fun AddActivity(navController: NavController) {
                 })
             },
             content = {
-                DateContent(modifier = Modifier, navController)
+                DateContent(modifier = Modifier, navController, viewModel())
             }
         )
     }
 }
 
 @Composable
-fun DateContent(modifier: Modifier, navController: NavController) {
+fun DateContent(
+    modifier: Modifier,
+                navController: NavController,
+    viewModel: ViewModelAdd
+) {
     Column(modifier = modifier
         .fillMaxSize()
         .background(Color.White)) {
         var selectedOptionText by remember { mutableStateOf("") }
         val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
         Spacer(modifier = Modifier.height(8.dp))
-        UI2ComboContact(navController=navController,  options = options, viewModelAdd = viewModel())
-        UiDatePicker()
-        UiTimePicker()
+
+        UI2ComboContact(navController=navController,  options = options, viewModel = viewModel )
+        UiDatePicker(viewModel=viewModel)
+        UiTimePicker(viewModel=viewModel)
     }
 }

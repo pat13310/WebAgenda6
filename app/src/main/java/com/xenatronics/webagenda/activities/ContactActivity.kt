@@ -60,36 +60,36 @@ fun ContactContent(viewModel: ViewModelContact) {
 
         UITextStandard(
             label = "Rendez-vous",
-            textStandard = nom,
+            value = nom,
             onTextChanged = { nom = it },
             icon = Icons.Default.Person
         )
         UITextStandard(
             label = "Adresse",
-            textStandard = adresse,
+            value = adresse,
             onTextChanged = { adresse = it }
         )
         UITextStandard(
             label = "Ville",
-            textStandard = ville,
+            value = ville,
             onTextChanged = { ville = it }
         )
         UITextStandard(
             label = "Code Postal",
-            textStandard = cp,
+            value = cp,
             onTextChanged = { cp = it },
             icon = Icons.Default.Place,
             keyboardType = KeyboardType.Number
         )
         UITextStandard(
             label = "Adresse Mail",
-            textStandard = mail,
+            value = mail,
             onTextChanged = { mail = it },
             icon = Icons.Default.Email,
         )
         UITextStandard(
             label = "Téléphone",
-            textStandard = phone,
+            value = phone,
             onTextChanged = { phone = it },
             icon = Icons.Default.Phone,
             keyboardType = KeyboardType.Phone

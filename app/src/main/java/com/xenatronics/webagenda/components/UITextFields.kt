@@ -1,6 +1,7 @@
 package com.xenatronics.webagenda.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,19 +19,21 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.activities.TOP_SPACE
-
+import com.xenatronics.webagenda.util.Constants
+import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
+import com.xenatronics.webagenda.util.Constants.RADIUS_SMALL
 
 
 @Composable
 fun UITextStandard(
     label: String = "",
-    textStandard: String,
+    value: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector = Icons.Default.Place,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     OutlinedTextField(
-        value = textStandard,
+        value = value,
         leadingIcon = {
             Icon(
                 imageVector = icon,
@@ -41,25 +44,26 @@ fun UITextStandard(
             onTextChanged(it)
         },
         placeholder = { Text(text = label) },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(RADIUS_SMALL),
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = TOP_SPACE),
+            .padding(top = TOP_SPACE)
+            .height(Constants.HEIGHT_COMPONENT),
     )
 }
 
 @Composable
 fun UITextPassword(
     label: String = "Mot de passe",
-    textNom: String,
+    value: String,
     onTextChanged: (String) -> Unit,
-    icon: ImageVector = Icons.Default.Password,
+    icon: ImageVector = Icons.Default.VpnKey,
 ) {
     var visibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = textNom,
+        value = value,
         leadingIcon = {
             Icon(
                 imageVector = icon,
@@ -78,10 +82,11 @@ fun UITextPassword(
             onTextChanged(it)
         },
         placeholder = { Text(text = label) },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(RADIUS_SMALL),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = TOP_SPACE),
+            .padding(top = TOP_SPACE)
+        .height(Constants.HEIGHT_COMPONENT),
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation()
     )
 }
