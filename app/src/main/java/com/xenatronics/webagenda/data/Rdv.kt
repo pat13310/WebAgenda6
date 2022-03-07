@@ -6,20 +6,13 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-data class Rdv(val name: String, val date: Int, val id: Int, val id_infos: Int=-1)
+data class Rdv(val name: String, val date: Int, val id: Int, val id_contact: Int=-1)
 
 @Keep
 @Serializable
-data class PostRequest(val name: String, val date: Long, val id_infos: Int=-1)
+data class PostRequest(val name: String, val date: Long, val id_contact: Int=-1)
 
-
-
-enum class Priority {
-    HIGH,
-    LOW,
-    MEDIUM
-}
 
 @Keep
 @Serializable
-data class CardResponse(val name: String="", val date: Long=0, val id_infos: Int=0, val id: Int=0)
+data class ResponseRDV(val name: String="", val date: Long=0, val id_contact: Int=0, val id: Int=0)
