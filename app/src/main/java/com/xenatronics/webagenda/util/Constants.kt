@@ -4,11 +4,22 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
     const val IP="192.168.1.68"
-    const val URL="http://$IP/api/V21/agenda/tasks"
-    const val GET_TASKS="$URL/all"
-    const val CLEAR_TASKS="$URL/clear"
-    const val ADD_TASK="$URL/add"
-    const val DEL_TASK="$URL/delete"
+
+    const val URL_RDV="http://$IP/api/V21/agenda/tasks"
+    const val GET_ALL_RDV="$URL_RDV/all"
+    const val CLEAR_RDV="$URL_RDV/clear"
+    const val ADD_RDV="$URL_RDV/add"
+    const val UPDATE_RDV="$URL_RDV/update"
+    const val DEL_RDV="$URL_RDV/delete"
+
+    const val URL_CONTACT="http://$IP/api/V21/agenda/contact"
+    const val GET_ALL_CONTACT="$URL_CONTACT/all"
+    const val CLEAR_CONTACT="$URL_CONTACT/clear"
+    const val ADD_CONTACT="$URL_CONTACT/add"
+    const val UPDATE_CONTACT="$URL_CONTACT/update"
+    const val DEL_CONTACT="$URL_CONTACT/delete"
+
+
     const val EXPAND_ANIMATION_DURATION = 450
     const val FADE_OUT_ANIMATION_DURATION = 100
     const val FADE_IN_ANIMATION_DURATION = 200
