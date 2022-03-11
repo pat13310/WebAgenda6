@@ -39,7 +39,7 @@ fun LoginActivity(navController: NavController) {
             },
             content = {
                 LoginContent(
-                    modifier = Modifier,
+                    modifier = Modifier.padding(16.dp),
                     viewModel = ViewModelLogin()
                 )
             }
@@ -49,7 +49,7 @@ fun LoginActivity(navController: NavController) {
 
 @Composable
 fun LoginContent(
-    modifier: Modifier=Modifier.padding(16.dp),
+    modifier: Modifier,
     viewModel: ViewModelLogin
 ) {
 

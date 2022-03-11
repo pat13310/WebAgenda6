@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xenatronics.webagenda.data.PostRequest
+import com.xenatronics.webagenda.data.PostRdv
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.repository.RepositoryRdv
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class ViewmodelRdv() : ViewModel() {
     init {
         viewModelScope.launch {
             kotlin.runCatching {
-                RepositoryRdv.getListe()
+                RepositoryRdv.getAllRdv()
             }.onFailure {
                 allRdvFlow.value = emptyList()
             }.onSuccess {
@@ -43,7 +43,7 @@ class ViewmodelRdv() : ViewModel() {
         }
     }
 
-    fun AddRdv(rdv: PostRequest) {
+    fun AddRdv(rdv: PostRdv) {
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.addRdv(rdv)

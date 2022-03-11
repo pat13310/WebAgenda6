@@ -16,7 +16,7 @@ data class Contact(
 
 @Keep
 @Serializable
-data class SendContact(
+data class PostContact(
     val name: String,
     val adresse: String,
     val cp: String,
@@ -28,13 +28,20 @@ data class SendContact(
 
 @Keep
 @Serializable
+data class ResponseSimpleContact(
+    val status:String
+)
+
+
+@Keep
+@Serializable
 data class ResponseContact(
     val id: Int = 0,
-    val name: String ,
-    val adresse: String,
-    val cp: String,
-    val ville: String,
-    val tel: String,
-    val mail: String,
+    val name: String ="",
+    val adresse: String="",
+    val cp: String="",
+    val ville: String="",
+    val tel: String="",
+    val mail: String="",
     val status: String
 )

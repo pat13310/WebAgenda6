@@ -1,9 +1,90 @@
 package com.xenatronics.webagenda.activities
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.xenatronics.webagenda.Action
+import com.xenatronics.webagenda.components.NewTaskBar
+import com.xenatronics.webagenda.components.UITextPassword
+import com.xenatronics.webagenda.components.UITextStandard
+import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.viewmodel.ViewModelRegister
 
 @Composable
-fun RegisterActivity(navController: NavController){
-
+fun RegisterActivity(navController: NavController) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background
+    ) {
+        Scaffold(
+            topBar = {
+                NewTaskBar(
+                    "Inscription",
+                    NavigateToListScreen = { action ->
+                        if (action == Action.ADD) {
+                            navController.navigate(Screen.AddScreen.route)
+                        }
+                    },
+                    noBack = true
+                )
+            },
+            content = {
+                RegisterContent(
+                    modifier = Modifier.padding(16.dp),
+                    viewModel = ViewModelRegister()
+                )
+            }
+        )
+    }
 }
+
+@Composable
+fun RegisterContent(
+    modifier: Modifier,
+    viewModel: ViewModelRegister
+) {
+
+    var nom by viewModel.nom
+    var mail by viewModel.mail
+    var password by viewModel.password
+
+    Column(
+        modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        UITextStandard(
+            label = "nom de famille",
+            icon = Icons.Default.Person,
+            value = nom,
+            onTextChanged = {
+                nom = it
+            })
+        Spacer(modifier = Modifier.height(16.dp))
+        UITextStandard(
+            label = "adresse mail",
+            icon = Icons.Default.Person,
+            value = mail,
+            onTextChanged = {
+                mail = it
+            })
+        Spacer(modifier = Modifier.height(16.dp))
+        UITextPassword(
+            value = password,
+            onTextChanged = {
+                password = it
+            }
+        )
+    }
+}
+
+
