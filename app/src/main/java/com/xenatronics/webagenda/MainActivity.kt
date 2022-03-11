@@ -11,7 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.xenatronics.webagenda.activities.*
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
