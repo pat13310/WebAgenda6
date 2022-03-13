@@ -58,7 +58,7 @@ fun UiTimePicker(
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(RADIUS_MEDIUM),
+                shape = MaterialTheme.shapes.large,
             )
             .clickable {
                 dlg.show()

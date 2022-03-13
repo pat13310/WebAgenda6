@@ -38,7 +38,6 @@ fun UITextStandard(
             trailingIconColor = MaterialTheme.colors.primary,
             unfocusedBorderColor = MaterialTheme.colors.primary
         ),
-
         value = value,
         leadingIcon = {
             Icon(
@@ -52,7 +51,7 @@ fun UITextStandard(
             }
         },
         placeholder = { Text(text = label) },
-        shape = RoundedCornerShape(RADIUS_SMALL),
+        shape = MaterialTheme.shapes.medium,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier
             .fillMaxWidth()

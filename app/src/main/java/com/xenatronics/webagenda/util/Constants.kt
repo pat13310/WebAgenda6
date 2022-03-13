@@ -3,6 +3,7 @@ package com.xenatronics.webagenda.util
 import androidx.compose.ui.unit.dp
 
 object Constants {
+    const val DELAY_SPLASH=0
     const val IP="192.168.1.68"
 
     const val URL_RDV="http://$IP/api/V22/agenda/tasks"

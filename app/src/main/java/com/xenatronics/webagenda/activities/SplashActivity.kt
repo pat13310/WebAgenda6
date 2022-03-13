@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.util.Constants.DELAY_SPLASH
 import kotlinx.coroutines.delay
 
 
@@ -27,7 +28,7 @@ fun SplashActivity(navController: NavController) {
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(durationMillis = 2000),
+        animationSpec = tween(durationMillis = DELAY_SPLASH),
     )
     SplashContent(alpha = alphaAnim.value)
     LaunchedEffect(key1 = true) {
