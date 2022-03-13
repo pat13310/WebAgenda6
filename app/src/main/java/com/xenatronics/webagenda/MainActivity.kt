@@ -11,9 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.xenatronics.webagenda.activities.*
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
-import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.AndroidEntryPoint
 
-@HiltAndroidApp
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = Screen.SplashScreen.route
                 ) {
                     composable(Screen.AddScreen.route) {
-                        AddActivity(navController = navController)
+                        NewRdvActivity(navController = navController)
                     }
                     composable(Screen.CardScreen.route) {
                         ListActivity(navController = navController)

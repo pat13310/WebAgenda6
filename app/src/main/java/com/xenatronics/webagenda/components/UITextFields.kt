@@ -28,7 +28,8 @@ fun UITextStandard(
     value: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector = Icons.Default.Place,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    maxLength:Int=35
 ) {
     OutlinedTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -37,6 +38,7 @@ fun UITextStandard(
             trailingIconColor = MaterialTheme.colors.primary,
             unfocusedBorderColor = MaterialTheme.colors.primary
         ),
+
         value = value,
         leadingIcon = {
             Icon(
@@ -45,7 +47,9 @@ fun UITextStandard(
             )
         },
         onValueChange = {
-            onTextChanged(it)
+            if (it.length<maxLength){
+                onTextChanged(it)
+            }
         },
         placeholder = { Text(text = label) },
         shape = RoundedCornerShape(RADIUS_SMALL),
@@ -63,6 +67,7 @@ fun UITextPassword(
     value: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector = Icons.Default.VpnKey,
+    maxLength:Int=16
 ) {
     var visibility by remember { mutableStateOf(false) }
 
@@ -89,7 +94,8 @@ fun UITextPassword(
             }
         },
         onValueChange = {
-            onTextChanged(it)
+            if (it.length<maxLength)
+                onTextChanged(it)
         },
         placeholder = { Text(text = label) },
         shape = RoundedCornerShape(RADIUS_SMALL),

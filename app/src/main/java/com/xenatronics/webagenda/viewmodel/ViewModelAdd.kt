@@ -14,8 +14,8 @@ class ViewModelAdd:ViewModel() {
 
     init{
         val calendar = Calendar.getInstance(Locale.getDefault())
-        val formatter = SimpleDateFormat("dd LLL yyyy", Locale.getDefault())
-        val formatTime = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd LLLL yyyy", Locale.FRANCE)
+        val formatTime = SimpleDateFormat("HH:mm", Locale.FRANCE)
         date.value=formatter.format(calendar.time)
         time.value=formatTime.format(calendar.time)
     }

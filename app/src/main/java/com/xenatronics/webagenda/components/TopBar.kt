@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -20,9 +22,10 @@ fun NewTaskBar(
     title:String="",
     NavigateToListScreen: (Action) -> Unit,
     noBack:Boolean=false,
+    action:Boolean=true
 ) {
     TopAppBar(
-        elevation = 12.dp,
+        elevation = 8.dp,
         navigationIcon = {
             if (!noBack) {
                 BackAction(onBackClicked = NavigateToListScreen)
@@ -30,14 +33,17 @@ fun NewTaskBar(
         },
         title = {
             Text(
+                modifier=Modifier.fillMaxWidth(0.9f),
                 text = title,
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1
             )
         },
         backgroundColor = MaterialTheme.colors.primary,
         actions = {
-            ValidateAction(onValidateClicked = NavigateToListScreen)
+            if (action)
+                ValidateAction(onValidateClicked = NavigateToListScreen)
         }
     )
 }
@@ -48,14 +54,16 @@ fun ListTaskBar(
     NavigateToListScreen: (Action) -> Unit
 ) {
     TopAppBar(
-        elevation = 12.dp,
+        elevation = 2.dp,
         navigationIcon = {
             CloseAction(onCloseClicked = NavigateToListScreen)
         },
         title = {
             Text(
+                modifier=Modifier.fillMaxWidth(0.8f),
                 text = title,
-                color = Color.White
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
         },
         backgroundColor = MaterialTheme.colors.primary,

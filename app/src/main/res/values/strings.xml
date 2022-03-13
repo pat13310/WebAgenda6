@@ -3,4 +3,8 @@
     <string name="back">retour</string>
     <string name="TaskList">Liste des tâches</string>
     <string name="NewTask">Nouvelle tâche</string>
+    <string name="Register">Pas encore inscrit?</string>
+    <string name="SignUp">Inscrivez-vous!</string>
+    <string name="Login">Déjà inscrit?</string>
+    <string name="SignIn">Connectez vous!</string>
 </resources>
