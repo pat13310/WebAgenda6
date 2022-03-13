@@ -7,11 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.data.PostRdv
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.repository.RepositoryRdv
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ViewmodelRdv() : ViewModel() {
+@HiltViewModel
+class ViewModelRdv @Inject constructor() : ViewModel() {
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
     val addRdvFlow = MutableStateFlow<Boolean>(false)
     private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())

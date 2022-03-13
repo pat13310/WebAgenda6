@@ -3,10 +3,13 @@ package com.xenatronics.webagenda.viewmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class ViewModelAdd:ViewModel() {
+@HiltViewModel
+class ViewModelAdd @Inject constructor():ViewModel() {
 
 
     val textContactName:MutableState<String> = mutableStateOf("")

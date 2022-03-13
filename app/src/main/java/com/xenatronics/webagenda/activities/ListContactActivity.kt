@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.ListTaskBar
-import com.xenatronics.webagenda.viewmodel.ViewModelContact
-import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
+import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 @Composable
 fun ListContactActivity(navController:NavController){
@@ -23,6 +22,6 @@ fun ListContactActivity(navController:NavController){
 }
 
 @Composable
-fun ListContactContent(navController: NavController, viewModel: ViewmodelRdv) {
+fun ListContactContent(navController: NavController, viewModel: ViewModelRdv) {
 
 }

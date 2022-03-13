@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.ExpandableCard
 import com.xenatronics.webagenda.components.ListTaskBar
-import com.xenatronics.webagenda.viewmodel.ViewmodelRdv
+import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 @Composable
 fun ListActivity(navController: NavController) {
@@ -23,14 +23,14 @@ fun ListActivity(navController: NavController) {
                 navController.popBackStack() })
         },
         content = {
-            CardContent(navController = navController, viewModel = viewModel() as ViewmodelRdv)
+            CardContent(navController = navController, viewModel = viewModel() as ViewModelRdv)
         }
     )
 }
 
 
 @Composable
-fun CardContent(navController: NavController, viewModel: ViewmodelRdv) {
+fun CardContent(navController: NavController, viewModel: ViewModelRdv) {
 
     val cards = viewModel.allRdvFlow.collectAsState()
     val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
