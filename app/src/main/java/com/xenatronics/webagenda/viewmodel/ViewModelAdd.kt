@@ -8,6 +8,7 @@ import java.util.*
 
 class ViewModelAdd:ViewModel() {
 
+
     val textContactName:MutableState<String> = mutableStateOf("")
     val date:MutableState<String> = mutableStateOf("")
     val time:MutableState<String> = mutableStateOf("")
