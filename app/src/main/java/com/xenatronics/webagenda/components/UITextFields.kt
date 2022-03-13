@@ -105,4 +105,3 @@ fun UITextPassword(
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation()
     )
 }
-
