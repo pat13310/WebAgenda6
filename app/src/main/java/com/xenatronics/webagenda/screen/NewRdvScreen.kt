@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.activities
+package com.xenatronics.webagenda.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.Action
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.components.*
 import com.xenatronics.webagenda.navigation.Screen
-import com.xenatronics.webagenda.viewmodel.ViewModelAdd
+import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
 
 @Composable
-fun NewRdvActivity(navController: NavController) {
+fun NewRdvScreen(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -30,7 +30,7 @@ fun NewRdvActivity(navController: NavController) {
                 NewTaskBar("Nouveau Rendez-vous",
                     NavigateToListScreen = {action->
                     if (action ==  Action.ADD){
-                        navController.navigate(Screen.ContactScreen.route)
+                        navController.navigate(Screen.NewContactScreen.route)
                     }
                 })
             },
@@ -45,7 +45,7 @@ fun NewRdvActivity(navController: NavController) {
 fun DateContent(
     modifier: Modifier,
                 navController: NavController,
-    viewModel: ViewModelAdd= hiltViewModel()
+    viewModel: ViewModelRdvAdd= hiltViewModel()
 ) {
     Column(modifier = modifier
         .fillMaxSize()

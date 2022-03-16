@@ -1,10 +1,10 @@
 package com.xenatronics.webagenda.navigation
 
 sealed class Screen(val route:String){
-    object AddScreen:Screen("add")
-    object ContactScreen:Screen("contact")
-    object ListContactScreen:Screen("listcontact")
-    object CardScreen:Screen("list")
+    object NewRdvScreen:Screen("new_rdv")
+    object NewContactScreen:Screen("new_contact")
+    object ListContactScreen:Screen("list_contact")
+    object ListRdvScreen:Screen("list")
     object LoginScreen:Screen("login")
     object RegisterScreen:Screen("register")
     object SplashScreen:Screen("splash")

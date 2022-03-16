@@ -1,5 +1,6 @@
-package com.xenatronics.webagenda.activities
+package com.xenatronics.webagenda.screen
 
+import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -20,17 +21,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.Action
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextPassword
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.navigation.Screen
-import com.xenatronics.webagenda.viewmodel.ViewModelRegister
+import com.xenatronics.webagenda.util.LockScreenOrientation
+import com.xenatronics.webagenda.viewmodel.ViewModelLogin
 
 @Composable
-fun RegisterActivity(navController: NavController) {
+fun LoginScreen(navController: NavController) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -38,20 +43,19 @@ fun RegisterActivity(navController: NavController) {
         Scaffold(
             topBar = {
                 NewTaskBar(
-                    "Inscription",
+                    "Connexion",
                     NavigateToListScreen = { action ->
                         if (action == Action.ADD) {
-                            navController.navigate(Screen.AddScreen.route)
+                            navController.navigate(Screen.NewRdvScreen.route)
                         }
                     },
                     noBack = true
                 )
             },
             content = {
-                RegisterContent(
+                LoginContent(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = ViewModelRegister(),
-                    navController = navController
+                    viewModel =  hiltViewModel(), navController = navController
                 )
             }
         )
@@ -59,47 +63,38 @@ fun RegisterActivity(navController: NavController) {
 }
 
 @Composable
-fun RegisterContent(
+fun LoginContent(
     modifier: Modifier,
-    viewModel: ViewModelRegister,
-    navController: NavController
+    viewModel: ViewModelLogin,
+    navController: NavController,
 ) {
-
     var nom by viewModel.nom
-    var mail by viewModel.mail
     var password by viewModel.password
 
     Box(
-        Modifier
-            .fillMaxSize()
+        modifier = Modifier
             .padding(
                 top = 120.dp,
-                start = 2.dp,
-                end = 2.dp,
+                start = 0.dp,
+                end = 0.dp,
                 bottom = 50.dp,
-            )
-    ) {
+            ),
+        contentAlignment = Alignment.Center
+    )
+    {
         Column(
             modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
             UITextStandard(
-                label = "nom de famille",
+                label = "Login",
                 icon = Icons.Default.Person,
                 value = nom,
                 onTextChanged = {
                     nom = it
                 })
-            Spacer(modifier = Modifier.height(16.dp))
-            UITextStandard(
-                label = "adresse mail",
-                icon = Icons.Default.Person,
-                value = mail,
-                onTextChanged = {
-                    mail = it
-                })
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
             UITextPassword(
                 value = password,
                 onTextChanged = {
@@ -107,15 +102,17 @@ fun RegisterContent(
                 }
             )
         }
-        AnnotatedRegisterClickableText(modifier = Modifier.align(Alignment.BottomCenter), onLink = {
-            navController.navigate(Screen.LoginScreen.route)
-        })
+        AnnotatedClickableText(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onLink = {
+                navController.navigate(Screen.RegisterScreen.route)
+            }
+        )
     }
 }
 
-
 @Composable
-fun AnnotatedRegisterClickableText(modifier: Modifier,
+fun AnnotatedClickableText(modifier: Modifier,
                            onLink:()->Unit
 ) {
     val annotatedText = buildAnnotatedString() {
@@ -125,20 +122,20 @@ fun AnnotatedRegisterClickableText(modifier: Modifier,
                 fontWeight = FontWeight.Light
             )
         ) {
-            append(stringResource(id = R.string.Login))
+            append(stringResource(id = R.string.Register))
         }
         addStringAnnotation(
             tag = "ACTION",
-            annotation = stringResource(id = R.string.SignUp), start = 15, end = 35
+            annotation = stringResource(id = R.string.SignUp), start = 20, end = 35
         )
         append("  ")
         withStyle(
-            style = SpanStyle(
+                style = SpanStyle(
                 color = Color.Blue,
                 fontWeight = FontWeight.W800
-            )
+                            )
         ) {
-            append(stringResource(id = R.string.SignIn))
+            append(stringResource(id = R.string.SignUp))
         }
     }
     ClickableText(

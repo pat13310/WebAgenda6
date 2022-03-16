@@ -24,5 +24,6 @@ data class ResponseRDV(
     val name: String = "",
     val date: Long = 0,
     val id_contact: Int = 0,
-    val id: Int = 0
+    val id: Int = 0,
+    val status: String=""
 )

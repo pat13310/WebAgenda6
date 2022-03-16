@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda
+package com.xenatronics.webagenda.util
 
 enum class Action {
     ADD,

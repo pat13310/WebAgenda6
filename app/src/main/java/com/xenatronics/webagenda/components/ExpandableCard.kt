@@ -11,19 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.FADE_IN_ANIMATION_DURATION
 import com.xenatronics.webagenda.util.Constants.FADE_OUT_ANIMATION_DURATION
-import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
@@ -86,13 +82,14 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CardArrow(
+                    Modifier.fillMaxWidth(0.1f),
                     degrees = arrowRotationDegree,
                     onClick = onCardArrowClick
                 )
-                CardTitle(title = card.name, date = card.date)
+                CardRdvTitle(title = card.name, date = card.date)
             }
         }
-        ExpandableContent(
+        ExpandableRdvContent(
             adresse = "3 rue des mimosas",
             cp = "13310",
             ville = "St martin de crau",
@@ -105,7 +102,7 @@ fun ExpandableCard(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ExpandableContent(
+fun ExpandableRdvContent(
     adresse: String = "",
     cp: String = "",
     ville: String = "",
@@ -165,7 +162,7 @@ fun ExpandableContent(
 }
 
 @Composable
-fun CardTitle(title: String, date: Int) {
+fun CardRdvTitle(title: String, date: Int) {
     Text(
         text = title,
         fontSize = 15.sp,
@@ -180,26 +177,3 @@ fun CardTitle(title: String, date: Int) {
     )
 }
 
-@Composable
-fun CardArrow(
-    degrees: Float,
-    onClick: () -> Unit
-) {
-    IconButton(
-        onClick = onClick,
-        content = {
-            Icon(
-                painter = painterResource(id = R.drawable.drop_up),
-                contentDescription = "Expandable Arrow",
-                modifier = Modifier.rotate(degrees),
-            )
-        }
-    )
-}
-
-@SuppressLint("SimpleDateFormat")
-fun convertTime(timestamp: Long): String {
-    val simpleDateFormat =
-        SimpleDateFormat("'Le' dd MMMM yyyy 'à' HH:mm", Locale.FRANCE)
-    return simpleDateFormat.format(timestamp * 1000L)
-}

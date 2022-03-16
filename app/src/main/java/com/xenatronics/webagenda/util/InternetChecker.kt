@@ -18,6 +18,5 @@ fun checkInternetAvailable(context:Context):Boolean{
             else ->false
         }
     }
-
     return connectManager.activeNetworkInfo?.isAvailable?:false
 }

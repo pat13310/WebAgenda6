@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.xenatronics.webagenda.Action
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.R
 
 
@@ -60,7 +60,7 @@ fun ListTaskBar(
         },
         title = {
             Text(
-                modifier=Modifier.fillMaxWidth(0.8f),
+                modifier=Modifier.fillMaxWidth(0.9f),
                 text = title,
                 color = Color.White,
                 textAlign = TextAlign.Center

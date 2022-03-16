@@ -1,5 +1,6 @@
-package com.xenatronics.webagenda.activities
+package com.xenatronics.webagenda.screen
 
+import android.content.pm.ActivityInfo
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -20,11 +21,13 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.DELAY_SPLASH
+import com.xenatronics.webagenda.util.LockScreenOrientation
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashActivity(navController: NavController) {
+fun SplashScreen(navController: NavController) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,

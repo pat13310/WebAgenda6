@@ -18,14 +18,14 @@ import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
-import com.xenatronics.webagenda.viewmodel.ViewModelAdd
+import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UI2ComboContact(
     modifier: Modifier = Modifier.padding(6.dp),
-    viewModel: ViewModelAdd,
+    viewModel: ViewModelRdvAdd,
     navController: NavController,
     options: List<String>
 ) {
@@ -67,7 +67,7 @@ fun UI2ComboContact(
             )
             IconButton(onClick = {
                 expanded = false
-                navController.navigate(Screen.ContactScreen.route)
+                navController.navigate(Screen.NewContactScreen.route)
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_person_add),

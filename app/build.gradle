@@ -89,6 +89,7 @@ android {
         implementation "androidx.navigation:navigation-compose:$nav_version"
         //icons extra
         implementation "androidx.compose.material:material-icons-extended:$compose_version"
+        implementation "com.google.code.gson:gson:2.8.6"
     }
     kapt {
         correctErrorTypes = true

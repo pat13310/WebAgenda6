@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.repository
 
+import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.data.ResponseContact
 import com.xenatronics.webagenda.data.PostContact
 import com.xenatronics.webagenda.data.ResponseSimpleContact
@@ -82,7 +83,7 @@ object RepositoryContact {
             ResponseSimpleContact("")
         }
     }
-    suspend fun updateContact(contact:PostContact):ResponseSimpleContact{
+    suspend fun updateContact(contact: Contact):ResponseSimpleContact{
         return try {
             KtorClient.httpClient.put() {
                 url(Constants.UPDATE_CONTACT)

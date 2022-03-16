@@ -4,47 +4,69 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.xenatronics.webagenda.activities.*
+import androidx.navigation.navArgument
+import com.google.gson.Gson
+import com.xenatronics.webagenda.data.ResponseContact
+import com.xenatronics.webagenda.screen.*
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
+import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import java.lang.Thread.sleep
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //installSplashScreen()
         setContent {
             WebAgendaTheme {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.SplashScreen.route
+                    startDestination = Screen.ListContactScreen.route
                 ) {
-                    composable(Screen.AddScreen.route) {
-                        NewRdvActivity(navController = navController)
+                    composable(Screen.NewRdvScreen.route) {
+                        NewRdvScreen(navController = navController)
                     }
-                    composable(Screen.CardScreen.route) {
-                        ListActivity(navController = navController)
+                    composable(Screen.ListRdvScreen.route) {
+                        ListRdvScreen(navController = navController)
                     }
-                    composable(Screen.ContactScreen.route) {
-                        ContactActivity(navController = navController)
+                    composable(route=Screen.NewContactScreen.route + "/{contact}",
+                        arguments = listOf(navArgument("contact") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        //val id =savedInstanceState?.get("id").toString()
+                        backStackEntry.arguments?.getString("contact")?.let() {
+                            //on convertit la chaine en objet Contact
+                            val contact= Gson().fromJson(it,ResponseContact::class.java)
+                            NewContactScreen(navController = navController, contact)
+                        }
                     }
-                    composable(Screen.ListContactScreen.route) {
-                        ListContactActivity(navController = navController)
+                    composable( Screen.ListContactScreen.route) {
+                        val viewModel: ViewModelContact = hiltViewModel()
+                        val isLoading by viewModel.isLoading.collectAsState()
+                        if (isLoading) {
+                            LoadingScreen(navController = navController)
+                        }
+                        viewModel.load()
+                        ListContactScreen(navController = navController)
                     }
                     composable(Screen.LoginScreen.route) {
-                        LoginActivity(navController = navController)
+                        LoginScreen(navController = navController)
                     }
                     composable(Screen.RegisterScreen.route) {
-                        RegisterActivity(navController = navController)
+                        RegisterScreen(navController = navController)
                     }
                     composable(Screen.SplashScreen.route) {
-                        SplashActivity(navController = navController)
+                        SplashScreen(navController = navController)
                     }
                 }
             }
@@ -52,11 +74,4 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    @Preview(showBackground = true)
-    @Composable
-    fun DefaultPreview() {
-        WebAgendaTheme {
-            //CardActivity(navController = {}, viewModel = viewModel())
-        }
-    }
 }

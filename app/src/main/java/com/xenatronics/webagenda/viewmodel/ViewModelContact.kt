@@ -1,22 +1,31 @@
 package com.xenatronics.webagenda.viewmodel
 
+import android.annotation.SuppressLint
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.data.PostContact
 import com.xenatronics.webagenda.data.Rdv
+import com.xenatronics.webagenda.data.ResponseContact
+import com.xenatronics.webagenda.repository.RepositoryContact
+import com.xenatronics.webagenda.repository.RepositoryRdv
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelContact @Inject constructor():ViewModel() {
-    val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
-    val addRdvFlow = MutableStateFlow<Boolean>(false)
-    val index = mutableStateOf(0)
+class ViewModelContact @Inject constructor() : ViewModel() {
+    val allContactFlow = MutableStateFlow<List<ResponseContact>>(emptyList())
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     val nom: MutableState<String> = mutableStateOf("")
-    val timestamp: MutableState<Long> = mutableStateOf(0L)
     val adresse: MutableState<String> = mutableStateOf("")
     val ville: MutableState<String> = mutableStateOf("")
     val cp: MutableState<String> = mutableStateOf("")
@@ -29,7 +38,39 @@ class ViewModelContact @Inject constructor():ViewModel() {
 
     }
 
-    fun AddContact(contact: Contact){
+    fun load() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            kotlin.runCatching {
+                //delay(5000)
+                RepositoryContact.getAllContact()
 
+            }.onFailure {
+                allContactFlow.value = emptyList()
+                _isLoading.value = false
+            }.onSuccess {
+                allContactFlow.value = it
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun AddContact(contact: PostContact) {
+        viewModelScope.launch {
+            RepositoryContact.addContact(contact = contact)
+        }
+    }
+
+
+    fun UpdateContact(contact: Contact) {
+        viewModelScope.launch {
+            RepositoryContact.updateContact(contact = contact)
+        }
+    }
+
+    fun onCardArrowClicked(cardId: Int) {
+        _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
+            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
+        }
     }
 }

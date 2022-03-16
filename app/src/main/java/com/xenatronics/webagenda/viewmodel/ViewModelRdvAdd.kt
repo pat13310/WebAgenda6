@@ -9,8 +9,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelAdd @Inject constructor():ViewModel() {
-
+class ViewModelRdvAdd @Inject constructor():ViewModel() {
 
     val textContactName:MutableState<String> = mutableStateOf("")
     val date:MutableState<String> = mutableStateOf("")

@@ -7,24 +7,25 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Contact(
     val id: Int,
+    val nom: String,
     val adresse: String,
     val cp: String,
     val ville: String,
-    val mail: String,
     val tel: String,
+    val mail: String,
+
 )
 
 @Keep
 @Serializable
 data class PostContact(
-    val name: String,
-    val adresse: String,
-    val cp: String,
-    val ville: String,
-    val tel: String,
-    val mail: String,
+    val nom: String,
+    val adresse: String="",
+    val cp: String="",
+    val ville: String="",
+    val tel: String="",
+    val mail: String="",
 )
-
 
 @Keep
 @Serializable
@@ -32,16 +33,15 @@ data class ResponseSimpleContact(
     val status:String
 )
 
-
 @Keep
 @Serializable
 data class ResponseContact(
     val id: Int = 0,
-    val name: String ="",
-    val adresse: String="",
-    val cp: String="",
-    val ville: String="",
-    val tel: String="",
-    val mail: String="",
-    val status: String
+    var nom: String ="",
+    var adresse: String="",
+    var cp: String="",
+    var ville: String="",
+    var tel: String="",
+    var mail: String="",
+    var status: String="",
 )
