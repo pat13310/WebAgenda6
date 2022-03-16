@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.screen
+package com.xenatronics.webagenda.screens
 
 
 import androidx.compose.foundation.layout.Box

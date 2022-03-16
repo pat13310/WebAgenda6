@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.screen
+package com.xenatronics.webagenda.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize

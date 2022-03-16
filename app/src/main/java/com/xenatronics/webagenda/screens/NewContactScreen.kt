@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.screen
+package com.xenatronics.webagenda.screens
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.components.NewTaskBar
@@ -25,7 +24,6 @@ import com.xenatronics.webagenda.data.ResponseContact
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable

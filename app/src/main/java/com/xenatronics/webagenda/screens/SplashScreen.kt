@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.screen
+package com.xenatronics.webagenda.screens
 
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.core.animateFloatAsState
