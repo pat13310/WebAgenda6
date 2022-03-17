@@ -1,19 +1,12 @@
 package com.xenatronics.webagenda.viewmodel
 
-import android.annotation.SuppressLint
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.PostContact
-import com.xenatronics.webagenda.data.Rdv
-import com.xenatronics.webagenda.data.ResponseContact
+import com.xenatronics.webagenda.data.*
 import com.xenatronics.webagenda.repository.RepositoryContact
-import com.xenatronics.webagenda.repository.RepositoryRdv
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewModelContact @Inject constructor() : ViewModel() {
-    val allContactFlow = MutableStateFlow<List<ResponseContact>>(emptyList())
+    var allContactFlow = MutableStateFlow<List<ResponseContact>>(emptyList())
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -58,6 +51,12 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     fun AddContact(contact: PostContact) {
         viewModelScope.launch {
             RepositoryContact.addContact(contact = contact)
+        }
+    }
+
+    fun DeleteContact(idContact: PostID) {
+        viewModelScope.launch {
+            RepositoryContact.deleteContact(idContact)
         }
     }
 

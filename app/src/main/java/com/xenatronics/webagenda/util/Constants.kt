@@ -29,5 +29,5 @@ object Constants {
     const val RADIUS_SMALL=40
     const val RADIUS_MEDIUM=50
     val TOP_SPACE = 10.dp
-
+    const val SHRINK_DELAY=300
 }

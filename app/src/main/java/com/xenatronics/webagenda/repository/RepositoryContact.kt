@@ -1,9 +1,6 @@
 package com.xenatronics.webagenda.repository
 
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.ResponseContact
-import com.xenatronics.webagenda.data.PostContact
-import com.xenatronics.webagenda.data.ResponseSimpleContact
+import com.xenatronics.webagenda.data.*
 import com.xenatronics.webagenda.network.KtorClient
 import com.xenatronics.webagenda.util.Constants
 import io.ktor.client.features.*
@@ -14,111 +11,173 @@ object RepositoryContact {
     suspend fun getAllContact(): List<ResponseContact> {
         return try {
             KtorClient.httpClient.get { url(Constants.GET_ALL_CONTACT) }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // xxx --
             println(e.message)
             emptyList()
         }
     }
 
-    suspend fun getContact(id: Int):List<ResponseContact> {
+    suspend fun getContact(id: Int): List<ResponseContact> {
         return try {
             KtorClient.httpClient.get {
                 url(Constants.GET_CONTACT)
-                parameter(key="id", value = id)
+                parameter(key = "id", value = id)
             }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // 3xx --
             println(e.message)
             emptyList()
         }
     }
 
-    suspend fun addContact(contact:PostContact): ResponseSimpleContact {
+    suspend fun addContact(contact: PostContact): ResponseSimpleContact {
         return try {
             KtorClient.httpClient.post() {
                 url(Constants.ADD_CONTACT)
                 contentType(ContentType.Application.Json)
-                body=contact
+                body = contact
             }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // 3xx --
             println(e.message)
             ResponseSimpleContact("")
         }
     }
-    suspend fun updateContact(contact: Contact):ResponseSimpleContact{
+
+    suspend fun updateContact(contact: Contact): ResponseSimpleContact {
         return try {
             KtorClient.httpClient.put() {
                 url(Constants.UPDATE_CONTACT)
                 contentType(ContentType.Application.Json)
-                body=contact
+                body = contact
             }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             ResponseSimpleContact("")
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // xxx --
             println(e.message)
             ResponseSimpleContact("")
         }
     }
-    suspend fun deleteContact(id:Int):ResponseSimpleContact{
-        return KtorClient.httpClient.use {
-            it.delete(Constants.DELETE_CONTACT){
-                parameter("id",id)
+
+    suspend fun deleteContact(postId: PostID): ResponseSimpleContact {
+        return try {
+            KtorClient.httpClient.delete() {
+                url(Constants.DELETE_CONTACT)
+                contentType(ContentType.Application.Json)
+                body = postId
             }
+        }
+        catch (e: RedirectResponseException) {
+            // 3xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: ClientRequestException) {
+            // 4xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: ServerResponseException) {
+            // 5xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: Exception) {
+            // xxx --
+            println(e.message)
+            ResponseSimpleContact("")
         }
     }
 
     suspend fun clearContact(): ResponseSimpleContact {
-        return KtorClient.httpClient.use {
-            it.get(Constants.CLEAR_CONTACT)
+        return try {
+            KtorClient.httpClient.get {
+                url(Constants.CLEAR_CONTACT)
+            }
+        }
+        catch (e: RedirectResponseException) {
+            // 3xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: ClientRequestException) {
+            // 4xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: ServerResponseException) {
+            // 5xx --
+            println(e.response.status.description)
+            ResponseSimpleContact("")
+        }
+        catch (e: Exception) {
+            // xxx --
+            println(e.message)
+            ResponseSimpleContact("")
         }
     }
 }

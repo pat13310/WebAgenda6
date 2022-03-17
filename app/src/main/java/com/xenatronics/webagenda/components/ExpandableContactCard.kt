@@ -96,7 +96,7 @@ fun ExpandableContactCard(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(cardPaddingHorizontal, 16.dp, end = cardPaddingHorizontal, bottom = 0.dp)
+            .padding(cardPaddingHorizontal, 8.dp, end = cardPaddingHorizontal, bottom = 8.dp)
             .clickable {
                 isSelected.value = !isSelected.value
                 onClickItem(contact)

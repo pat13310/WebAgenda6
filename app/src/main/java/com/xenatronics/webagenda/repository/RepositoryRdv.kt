@@ -1,8 +1,6 @@
 package com.xenatronics.webagenda.repository
 
-import com.xenatronics.webagenda.data.PostRdv
-import com.xenatronics.webagenda.data.Rdv
-import com.xenatronics.webagenda.data.ResponseSimpleRdv
+import com.xenatronics.webagenda.data.*
 import com.xenatronics.webagenda.network.KtorClient
 import com.xenatronics.webagenda.util.Constants.ADD_RDV
 import com.xenatronics.webagenda.util.Constants.CLEAR_RDV
@@ -18,42 +16,52 @@ object RepositoryRdv {
     suspend fun getAllRdv(): List<Rdv> {
         return try {
             KtorClient.httpClient.get { url(GET_ALL_RDV) }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // 3xx --
             println(e.message)
             emptyList()
         }
     }
 
-    suspend fun getRdv(id: Int): List<Rdv> {
+    suspend fun getRdv(id: Int): List<ResponseRDV> {
         return try {
-            KtorClient.httpClient.get { url(GET_ALL_RDV)
-            parameter(key = "id",value = id)}
-        } catch (e: RedirectResponseException) {
+            KtorClient.httpClient.get {
+                url(GET_ALL_RDV)
+                parameter(key = "id", value = id)
+            }
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             emptyList()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // 3xx --
             println(e.message)
             emptyList()
@@ -61,14 +69,60 @@ object RepositoryRdv {
     }
 
     suspend fun clearRdv(): ResponseSimpleRdv {
-        return KtorClient.httpClient.use {
-            it.get(CLEAR_RDV)
+        return try {
+            KtorClient.httpClient.get {
+                url(CLEAR_RDV)
+            }
+        }
+        catch (e: RedirectResponseException) {
+            // 3xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: ClientRequestException) {
+            // 4xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: ServerResponseException) {
+            // 5xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: Exception) {
+            // xxx --
+            println(e.message)
+            ResponseSimpleRdv("")
         }
     }
 
-    suspend fun deleteRdv(id: Int): ResponseSimpleRdv {
-        return KtorClient.httpClient.use {
-            it.get("$DEL_RDV/$id")
+    suspend fun deleteRdv(id: PostID): ResponseSimpleRdv {
+        return try {
+            KtorClient.httpClient.delete {
+                url(DEL_RDV)
+                contentType(ContentType.Application.Json)
+                body = id
+            }
+        }
+        catch (e: RedirectResponseException) {
+            // 3xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: ClientRequestException) {
+            // 4xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: ServerResponseException) {
+            // 5xx --
+            println(e.response.status.description)
+            ResponseSimpleRdv("")
+        }
+        catch (e: Exception) {
+            // xxx --
+            println(e.message)
+            ResponseSimpleRdv("")
         }
     }
 
@@ -79,19 +133,23 @@ object RepositoryRdv {
                 contentType(ContentType.Application.Json)
                 body = rdv
             }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // xxx --
             println(e.message)
             ResponseSimpleRdv("")
@@ -105,19 +163,23 @@ object RepositoryRdv {
                 contentType(ContentType.Application.Json)
                 body = rdv
             }
-        } catch (e: RedirectResponseException) {
+        }
+        catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: ServerResponseException) {
+        }
+        catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
             ResponseSimpleRdv("")
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             // xxx --
             println(e.message)
             ResponseSimpleRdv("")

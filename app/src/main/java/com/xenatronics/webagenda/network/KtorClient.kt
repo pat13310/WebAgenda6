@@ -19,7 +19,7 @@ object KtorClient {
         ignoreUnknownKeys=true
     }
 
-    val httpClient= HttpClient(Android){
+    val httpClient= HttpClient(){
         install(JsonFeature){
             serializer=KotlinxSerializer(json)
         }
@@ -27,9 +27,9 @@ object KtorClient {
             level=LogLevel.ALL
         }
         install(HttpTimeout){
-            socketTimeoutMillis=30_000
-            requestTimeoutMillis=30_000
-            connectTimeoutMillis=30_000
+            socketTimeoutMillis=60_000
+            requestTimeoutMillis=60_000
+            connectTimeoutMillis=60_000
         }
         defaultRequest {
             contentType(ContentType.Application.Json)
