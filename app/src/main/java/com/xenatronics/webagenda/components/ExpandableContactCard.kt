@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -27,8 +28,6 @@ import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants
-import com.xenatronics.webagenda.util.Constants.FADE_IN_ANIMATION_DURATION
-import com.xenatronics.webagenda.util.Constants.FADE_OUT_ANIMATION_DURATION
 
 
 @SuppressLint("UnusedTransitionTargetStateParameter", "UnrememberedMutableState")
@@ -38,13 +37,12 @@ fun ExpandableContactCard2(
     onCardArrowClick: () -> Unit,
     onSelectItem: (Contact) -> Unit,
     onNavigate: (String) -> Unit,
-    expanded: Boolean,
     selected: Boolean,
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
 
     val transitionState = remember {
-        MutableTransitionState(expanded).apply {
+        MutableTransitionState(isExpanded).apply {
             targetState = !isExpanded
         }
     }
@@ -53,17 +51,17 @@ fun ExpandableContactCard2(
     val cardBgColor by transition.animateColor({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
     }, label = "") {
-        if (expanded) Color.White else MaterialTheme.colors.secondary
+        if (isExpanded) Color.White else MaterialTheme.colors.secondary
     }
     val cardFgColor by transition.animateColor({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
     }, label = "") {
-        if (expanded) Color.Black else colorResource(id = R.color.purple_900)
+        if (isExpanded) Color.Black else colorResource(id = R.color.purple_900)
     }
     val cardPaddingHorizontal by transition.animateDp({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
     }, label = "") {
-        if (expanded) 12.dp else 8.dp
+        if (isExpanded) 12.dp else 8.dp
     }
     val cardElevation by transition.animateDp({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
@@ -84,7 +82,7 @@ fun ExpandableContactCard2(
             easing = FastOutSlowInEasing
         )
     }, label = "") {
-        if (isExpanded) 148.dp else 60.dp
+        if (isExpanded) 155.dp else 68.dp
     }
     val arrowRotationDegree by transition.animateFloat({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
@@ -104,7 +102,6 @@ fun ExpandableContactCard2(
             .fillMaxWidth()
             .padding(cardPaddingHorizontal, 8.dp, end = cardPaddingHorizontal, bottom = 8.dp)
             .clickable {
-                //isSelected.value = !isSelected.value
                 contact.selected = selected
                 onSelectItem(contact)
             },
@@ -135,9 +132,8 @@ fun ExpandableContactCard2(
                 )
             }
         }
-        ContactContent2(onNavigate = onNavigate, contact =contact )
+        ContactExtraContent(onNavigate = onNavigate, contact =contact )
     }
-
 }
 
 
@@ -171,7 +167,7 @@ fun CardContactTitle(
 
 
 @Composable
-fun ContactContent2(
+fun ContactExtraContent(
     onNavigate: (String) -> Unit,
     contact: Contact,
 ) {
@@ -183,18 +179,23 @@ fun ContactContent2(
             fontSize = 14.sp,
             color = Color.DarkGray
         )
+        Spacer(modifier = Modifier.height(3.dp))
         Text(
             text = contact.cp + " " + contact.ville,
             fontSize = 14.sp,
             color = Color.DarkGray
         )
+        Spacer(modifier = Modifier.height(3.dp))
         Text(
             text = contact.tel,
             fontSize = 14.sp,
             color = Color.DarkGray
         )
-        Row(Modifier.fillMaxWidth()
-            .align(CenterHorizontally),
+        Spacer(modifier = Modifier.height(3.dp))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
 
         ) {

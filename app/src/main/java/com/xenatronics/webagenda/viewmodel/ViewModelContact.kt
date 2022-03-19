@@ -29,6 +29,8 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     private val tel: MutableState<String> = mutableStateOf("")
     private val mail: MutableState<String> = mutableStateOf("")
     val action = mutableStateOf(Action.NO_ACTION)
+    val selectedItem= mutableStateOf(Contact())
+
     private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
     val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
 

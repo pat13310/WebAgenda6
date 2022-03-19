@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -17,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -96,14 +98,11 @@ fun ListContactContent(
     navController: NavController,
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
-
-    ) {
+) {
     /* ne pas mettre dans launch effect car déjà lancé dans le viewmodel */
-    val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
+    //val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
+    var selectedItem by viewModel.selectedItem
 
-    var selectedItem by remember {
-        mutableStateOf(Contact())
-    }
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts) { item ->
@@ -147,7 +146,7 @@ fun ListContactContent(
                         val color = when (state.targetValue) {
                             DismissValue.DismissedToStart -> MaterialTheme.colors.primary
                             DismissValue.DismissedToEnd -> Color.Transparent
-                            DismissValue.Default -> Color.Transparent
+                            DismissValue.Default -> MaterialTheme.colors.primary
                         }
                         RedBackground(degrees = degrees, color)
                     },
@@ -155,8 +154,7 @@ fun ListContactContent(
                         ExpandableContactCard2(
                             selected = selectedItem == item,
                             contact = item,
-                            onCardArrowClick = { viewModel.onCardArrowClicked(item.id) },
-                            expanded = expandedCardIds.value.contains(item.id),
+                            onCardArrowClick = { selectedItem = item },
                             onSelectItem = { contact ->
                                 viewModel.updateFields(contact)
                                 selectedItem = contact
@@ -177,9 +175,10 @@ fun ListContactContent(
 fun RedBackground(degrees: Float, color: Color) {
     Box(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxSize()
-            .background(color),
+            .background(color)
+            .clip(shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.CenterEnd
     ) {
         Icon(
