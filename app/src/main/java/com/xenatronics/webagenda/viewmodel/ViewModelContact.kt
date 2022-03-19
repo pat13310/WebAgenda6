@@ -29,10 +29,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     private val tel: MutableState<String> = mutableStateOf("")
     private val mail: MutableState<String> = mutableStateOf("")
     val action = mutableStateOf(Action.NO_ACTION)
-    val selectedItem= mutableStateOf(Contact())
-
-    private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
-    val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
+    val selectedItem = mutableStateOf(Contact())
 
 
     fun load() {
@@ -112,13 +109,6 @@ class ViewModelContact @Inject constructor() : ViewModel() {
         }
     }
 
-    fun onCardArrowClicked(cardId: Int) {
-
-        _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
-            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
-        }
-    }
-
     fun updateFields(contact: Contact) {
         id.value = contact.id
         nom.value = contact.nom
@@ -128,5 +118,4 @@ class ViewModelContact @Inject constructor() : ViewModel() {
         tel.value = contact.tel
         mail.value = contact.mail
     }
-
 }

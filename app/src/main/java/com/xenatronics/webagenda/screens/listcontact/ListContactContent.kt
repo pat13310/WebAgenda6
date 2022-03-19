@@ -99,10 +99,7 @@ fun ListContactContent(
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
 ) {
-    /* ne pas mettre dans launch effect car déjà lancé dans le viewmodel */
-    //val expandedCardIds = viewModel.expandedCardIdsList.collectAsState()
     var selectedItem by viewModel.selectedItem
-
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts) { item ->
@@ -191,5 +188,3 @@ fun RedBackground(degrees: Float, color: Color) {
         )
     }
 }
-
-
