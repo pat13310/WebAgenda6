@@ -30,4 +30,5 @@ object Constants {
     const val RADIUS_MEDIUM=50
     val TOP_SPACE = 10.dp
     const val SHRINK_DELAY=300
+    const val SWIPE_REFRESH_DELAY=1200L
 }

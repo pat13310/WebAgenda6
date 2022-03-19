@@ -89,7 +89,10 @@ android {
         implementation "androidx.navigation:navigation-compose:$nav_version"
         //icons extra
         implementation "androidx.compose.material:material-icons-extended:$compose_version"
+        //Gson serialise et deserialize
         implementation "com.google.code.gson:gson:2.8.6"
+        // swipe refresh (rafraichissement manuel)
+        implementation "com.google.accompanist:accompanist-swiperefresh:0.24.4-alpha"
     }
     kapt {
         correctErrorTypes = true

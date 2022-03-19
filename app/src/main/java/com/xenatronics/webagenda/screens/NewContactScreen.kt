@@ -19,8 +19,6 @@ import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.PostContact
-import com.xenatronics.webagenda.data.ResponseContact
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
@@ -29,7 +27,7 @@ import com.xenatronics.webagenda.viewmodel.ViewModelContact
 @Composable
 fun NewContactScreen(
     navController: NavController,
-    contact: ResponseContact,
+    contact: Contact,
     viewModel: ViewModelContact = hiltViewModel()
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -41,26 +39,11 @@ fun NewContactScreen(
                         Action.ADD -> {
                             // new contact
                             if (contact.id == 0) {
-                                val post = PostContact(
-                                    contact.nom,
-                                    contact.adresse,
-                                    contact.cp,
-                                    contact.ville,
-                                    contact.tel,
-                                    contact.mail
-                                )
-                                viewModel.AddContact(contact = post)
+                                viewModel.updateFields(contact = contact)
+                                viewModel.handleContactAction(Action.ADD)
                             } else { // update contact
-                                val update = Contact(
-                                    contact.id,
-                                    contact.nom,
-                                    contact.adresse,
-                                    contact.cp,
-                                    contact.ville,
-                                    contact.tel,
-                                    contact.mail
-                                )
-                                viewModel.UpdateContact(contact = update)
+                                viewModel.updateFields(contact = contact)
+                                viewModel.handleContactAction(Action.UPDATE)
                             }
                             navController.navigate(Screen.ListContactScreen.route)
 //                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
@@ -85,7 +68,7 @@ fun NewContactScreen(
 fun ContactContent(
 
     viewModel: ViewModelContact,
-    contact: ResponseContact
+    contact: Contact
 ) {
     Column(
         Modifier

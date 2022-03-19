@@ -8,4 +8,6 @@
     <string name="Login">Déjà inscrit?</string>
     <string name="SignIn">Connectez vous!</string>
     <string name="delete_item">supprimer</string>
+    <string name="unhappy">unhappy</string>
+    <string name="no_found">Aucun Contact</string>
 </resources>

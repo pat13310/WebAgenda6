@@ -8,7 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 
 object RepositoryContact {
-    suspend fun getAllContact(): List<ResponseContact> {
+    suspend fun getAllContact(): List<Contact> {
         return try {
             KtorClient.httpClient.get { url(Constants.GET_ALL_CONTACT) }
         }
@@ -34,7 +34,7 @@ object RepositoryContact {
         }
     }
 
-    suspend fun getContact(id: Int): List<ResponseContact> {
+    suspend fun getContact(id: Int): List<Contact> {
         return try {
             KtorClient.httpClient.get {
                 url(Constants.GET_CONTACT)
@@ -63,7 +63,7 @@ object RepositoryContact {
         }
     }
 
-    suspend fun addContact(contact: PostContact): ResponseSimpleContact {
+    suspend fun addContact(contact: Contact): ResponseSimpleContact {
         return try {
             KtorClient.httpClient.post() {
                 url(Constants.ADD_CONTACT)
@@ -87,9 +87,9 @@ object RepositoryContact {
             ResponseSimpleContact("")
         }
         catch (e: Exception) {
-            // 3xx --
+            // xxx --
             println(e.message)
-            ResponseSimpleContact("")
+            ResponseSimpleContact(e.message.toString())
         }
     }
 

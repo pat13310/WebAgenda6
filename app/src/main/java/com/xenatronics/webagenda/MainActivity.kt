@@ -12,9 +12,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
-import com.xenatronics.webagenda.data.ResponseContact
+import com.xenatronics.webagenda.data.Contact
+
 import com.xenatronics.webagenda.screens.*
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.screens.listcontact.ListContactScreen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,17 +44,17 @@ class MainActivity : ComponentActivity() {
                         //val id =savedInstanceState?.get("id").toString()
                         backStackEntry.arguments?.getString("contact")?.let() {
                             //on convertit la chaine en objet Contact
-                            val contact= Gson().fromJson(it,ResponseContact::class.java)
+                            val contact= Gson().fromJson(it, Contact::class.java)
                             NewContactScreen(navController = navController, contact)
                         }
                     }
                     composable( Screen.ListContactScreen.route) {
                         val viewModel: ViewModelContact = hiltViewModel()
                         val isLoading by viewModel.isLoading.collectAsState()
-                        if (isLoading) {
-                            LoadingScreen(navController = navController)
-                        }
-                        viewModel.load()
+//                        if (isLoading) {
+//                            LoadingScreen(navController = navController)
+//                        }
+                        //viewModel.load()
                         ListContactScreen(navController = navController)
                     }
                     composable(Screen.LoginScreen.route) {
