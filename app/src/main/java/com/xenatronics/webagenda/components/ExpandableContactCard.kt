@@ -10,11 +10,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -24,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Contact
@@ -32,109 +29,7 @@ import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.FADE_IN_ANIMATION_DURATION
 import com.xenatronics.webagenda.util.Constants.FADE_OUT_ANIMATION_DURATION
-import com.xenatronics.webagenda.viewmodel.ViewModelContact
 
-@SuppressLint("UnusedTransitionTargetStateParameter", "UnrememberedMutableState")
-@Composable
-fun ExpandableContactCard(
-    contact: Contact,
-    onCardArrowClick: () -> Unit,
-    onClickItem: (Contact) -> Unit,
-    expanded: Boolean,
-    selected: Boolean,
-    navController: NavController,
-    viewModel: ViewModelContact
-) {
-    val transitionState = remember {
-        MutableTransitionState(expanded).apply {
-            targetState = !expanded
-        }
-    }
-    val transition = updateTransition(transitionState, label = "")
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
-    }, label = "") {
-        if (expanded) Color.White else MaterialTheme.colors.secondary
-    }
-    val cardFgColor by transition.animateColor({
-        tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
-    }, label = "") {
-        if (expanded) Color.Black else colorResource(id = R.color.purple_900)
-    }
-    val cardPaddingHorizontal by transition.animateDp({
-        tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
-    }, label = "") {
-        if (expanded) 12.dp else 8.dp
-    }
-    val cardElevation by transition.animateDp({
-        tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
-    }, label = "") {
-        if (expanded) 20.dp else 14.dp
-    }
-    val cardRoundedCorners by transition.animateDp({
-        tween(
-            durationMillis = Constants.EXPAND_ANIMATION_DURATION,
-            easing = FastOutSlowInEasing
-        )
-    }, label = "") {
-        if (expanded) 8.dp else 12.dp
-    }
-    val arrowRotationDegree by transition.animateFloat({
-        tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
-    }, label = "") {
-        if (expanded) 0f else 180f
-    }
-    var isSelected = remember { mutableStateOf(false) }
-    Card(
-        backgroundColor = cardBgColor,
-        elevation = cardElevation,
-        shape = RoundedCornerShape(cardRoundedCorners),
-        border = BorderStroke(
-            width = 1.dp,
-            if (!selected) Color.LightGray else MaterialTheme.colors.primary
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(cardPaddingHorizontal, 8.dp, end = cardPaddingHorizontal, bottom = 8.dp)
-            .clickable {
-                isSelected.value = !isSelected.value
-                contact.selected = isSelected.value
-                viewModel.updateFields(contact = contact)
-                onClickItem(contact)
-            },
-    ) {
-        Column(
-            Modifier.fillMaxSize()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(1.0f)
-                    .padding(start = 0.dp, end = 18.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                CardArrow(
-                    modifier = Modifier.fillMaxWidth(0.1f),
-                    degrees = arrowRotationDegree,
-                    onClick = onCardArrowClick
-                )
-                CardContactTitle(
-                    modifier = Modifier.fillMaxWidth(0.65f),
-                    expanded = expanded,
-                    title = contact.nom,
-                    tel = contact.tel,
-                    color = cardFgColor
-                )
-            }
-        }
-        ExpandableContactContent(
-            contact = contact,
-            visible = expanded,
-            initialVisibility = expanded,
-            navController = navController
-        )
-    }
-}
 
 @SuppressLint("UnusedTransitionTargetStateParameter", "UnrememberedMutableState")
 @Composable
@@ -146,11 +41,14 @@ fun ExpandableContactCard2(
     expanded: Boolean,
     selected: Boolean,
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     val transitionState = remember {
         MutableTransitionState(expanded).apply {
-            targetState = !expanded
+            targetState = !isExpanded
         }
     }
+
     val transition = updateTransition(transitionState, label = "")
     val cardBgColor by transition.animateColor({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
@@ -170,7 +68,7 @@ fun ExpandableContactCard2(
     val cardElevation by transition.animateDp({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
     }, label = "") {
-        if (expanded) 20.dp else 14.dp
+        if (isExpanded) 20.dp else 14.dp
     }
     val cardRoundedCorners by transition.animateDp({
         tween(
@@ -178,14 +76,21 @@ fun ExpandableContactCard2(
             easing = FastOutSlowInEasing
         )
     }, label = "") {
-        if (expanded) 8.dp else 12.dp
+        if (isExpanded) 8.dp else 12.dp
+    }
+    val cardHeight by transition.animateDp({
+        tween(
+            durationMillis = Constants.EXPAND_ANIMATION_DURATION,
+            easing = FastOutSlowInEasing
+        )
+    }, label = "") {
+        if (isExpanded) 148.dp else 60.dp
     }
     val arrowRotationDegree by transition.animateFloat({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
     }, label = "") {
-        if (expanded) 0f else 180f
+        if (isExpanded) 0f else 180f
     }
-    //var isSelected = remember { mutableStateOf(false) }
     Card(
         backgroundColor = cardBgColor,
         elevation = cardElevation,
@@ -195,6 +100,7 @@ fun ExpandableContactCard2(
             if (!selected) Color.LightGray else MaterialTheme.colors.primary
         ),
         modifier = Modifier
+            .height(cardHeight)
             .fillMaxWidth()
             .padding(cardPaddingHorizontal, 8.dp, end = cardPaddingHorizontal, bottom = 8.dp)
             .clickable {
@@ -214,122 +120,47 @@ fun ExpandableContactCard2(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 CardArrow(
-                    modifier = Modifier.fillMaxWidth(0.1f),
+                    modifier = Modifier.weight(1f),
                     degrees = arrowRotationDegree,
                     onClick = {
                         onCardArrowClick()
-
+                        isExpanded = !isExpanded
                     }
                 )
                 CardContactTitle(
-                    modifier = Modifier.fillMaxWidth(0.65f),
-                    expanded = expanded,
-                    title = contact.nom,
-                    tel = contact.tel,
+                    modifier = Modifier.weight(6f),
+                    expanded = isExpanded,
+                    contact = contact,
                     color = cardFgColor
                 )
             }
         }
+        ContactContent2(onNavigate = onNavigate, contact =contact )
     }
-    ExpandableContactContent2(
-        contact = contact,
-        visible = expanded,
-        initialVisibility = expanded,
-        onNavigate = onNavigate
-    )
+
 }
 
-
-
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun ExpandableContactContent(
-    navController: NavController,
-    contact: Contact,
-    visible: Boolean = true,
-    initialVisibility: Boolean = false
-) {
-
-    val enterFadeIn = remember {
-        fadeIn(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_IN_ANIMATION_DURATION,
-                easing = FastOutLinearInEasing
-            )
-        )
-    }
-    val exitFadeOut = remember {
-        fadeOut(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_OUT_ANIMATION_DURATION,
-                easing = LinearOutSlowInEasing
-            )
-        )
-    }
-
-    AnimatedVisibility(
-        visible = visible,
-        initiallyVisible = initialVisibility,
-        enter = enterFadeIn,
-        exit = exitFadeOut
-    ) {
-        Column(modifier = Modifier.padding(12.dp, 8.dp, 8.dp, 8.dp)) {
-            Spacer(modifier = Modifier.heightIn(35.dp))
-            Text(
-                text = contact.adresse,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = contact.cp + " " + contact.ville,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = contact.tel,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Row(Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(0.88f),
-                    text = contact.mail,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray
-                )
-                IconButton(onClick = {
-                    val con = Gson().toJson(contact) // on convertit la classe en chaine String
-                    navController.navigate(Screen.NewContactScreen.route + "/$con")
-                }) {
-                    Icon(Icons.Filled.Edit, contentDescription = "")
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun CardContactTitle(
     modifier: Modifier,
     expanded: Boolean,
-    title: String,
-    tel: String,
+    contact: Contact,
     color: Color,
 ) {
     Text(
         modifier = modifier,
         color = color,
-        text = title,
+        text = contact.nom,
         fontSize = 15.sp,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Left
     )
     if (!expanded) {
-        //Spacer(modifier = Modifier.width(100.dp))
         Text(
-            modifier = Modifier.alpha(0.9f),
+            modifier = Modifier.alpha(0.75f),
             color = color,
-            text = tel,
+            text = contact.tel,
             fontSize = 15.sp,
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Italic,
@@ -338,69 +169,47 @@ fun CardContactTitle(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+
 @Composable
-fun ExpandableContactContent2(
+fun ContactContent2(
     onNavigate: (String) -> Unit,
     contact: Contact,
-    visible: Boolean = true,
-    initialVisibility: Boolean = false
 ) {
+    Column(modifier = Modifier.padding(start=16.dp,top= 42.dp, end =  8.dp, bottom =  10.dp),
 
-    val enterFadeIn = remember {
-        fadeIn(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_IN_ANIMATION_DURATION,
-                easing = FastOutLinearInEasing
-            )
-        )
-    }
-    val exitFadeOut = remember {
-        fadeOut(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_OUT_ANIMATION_DURATION,
-                easing = LinearOutSlowInEasing
-            )
-        )
-    }
-
-    AnimatedVisibility(
-        visible = visible,
-        initiallyVisible = initialVisibility,
-        enter = enterFadeIn,
-        exit = exitFadeOut
     ) {
-        Column(modifier = Modifier.padding(12.dp, 8.dp, 8.dp, 8.dp)) {
-            Spacer(modifier = Modifier.heightIn(35.dp))
+        Text(
+            text = contact.adresse,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Text(
+            text = contact.cp + " " + contact.ville,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Text(
+            text = contact.tel,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Row(Modifier.fillMaxWidth()
+            .align(CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
             Text(
-                text = contact.adresse,
+                modifier = Modifier.fillMaxWidth(0.88f),
+                text = contact.mail,
                 fontSize = 14.sp,
-                color = Color.DarkGray
+                color = Color.DarkGray,
             )
-            Text(
-                text = contact.cp + " " + contact.ville,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = contact.tel,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Row(Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(0.88f),
-                    text = contact.mail,
-                    fontSize = 14.sp,
-                    color = Color.DarkGray
-                )
-                IconButton(onClick = {
-                    val contact = Gson().toJson(contact) // on
-                    onNavigate(Screen.NewContactScreen.route + "/$contact")
-                    // convertit la classe en chaine String
-                }) {
-                    Icon(Icons.Filled.Edit, contentDescription = "")
-                }
+            IconButton(onClick = {
+                val con = Gson().toJson(contact) // on
+                onNavigate(Screen.NewContactScreen.route + "/$con")
+                // convertit la classe en chaine String
+            }) {
+                Icon(Icons.Filled.Edit, contentDescription = "")
             }
         }
     }

@@ -155,8 +155,7 @@ fun ListContactContent(
                         ExpandableContactCard2(
                             selected = selectedItem == item,
                             contact = item,
-                            onCardArrowClick = {
-                                viewModel.onCardArrowClicked(item.id) },
+                            onCardArrowClick = { viewModel.onCardArrowClicked(item.id) },
                             expanded = expandedCardIds.value.contains(item.id),
                             onSelectItem = { contact ->
                                 viewModel.updateFields(contact)
