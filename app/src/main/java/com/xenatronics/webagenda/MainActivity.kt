@@ -15,6 +15,7 @@ import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.screens.*
 import com.xenatronics.webagenda.screens.listcontact.ListContactScreen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
+import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -54,9 +55,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable(Screen.ListContactScreen.route) {
+                        val viewModel:ViewModelContact= hiltViewModel()
+                        //viewModel.load()
                         ListContactScreen(
                             navController = navController,
-                            viewModel = hiltViewModel()
+                            viewModel = viewModel
                         )
                     }
                     composable(Screen.LoginScreen.route) {

@@ -29,10 +29,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     private val tel: MutableState<String> = mutableStateOf("")
     private val mail: MutableState<String> = mutableStateOf("")
     val action = mutableStateOf(Action.NO_ACTION)
-    val selectedItem= mutableStateOf(Contact())
-
-    private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
-    val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
+    val selectedItem = mutableStateOf(Contact())
 
 
     private val _isSateChanged = MutableStateFlow(false)
@@ -40,6 +37,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
 
     fun load() {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("Agenda", "Load")
             _isLoading.value = true
             kotlin.runCatching {
                 RepositoryContact.getAllContact()
@@ -58,24 +56,24 @@ class ViewModelContact @Inject constructor() : ViewModel() {
         when (action) {
             Action.ADD -> {
                 addContact()
-                Log.d("Agenda","ajout")
+                Log.d("Agenda", "ajout")
             }
             Action.DELETE -> {
                 deleteContact()
-                Log.d("Agenda","suppression")
+                Log.d("Agenda", "suppression")
             }
             Action.UPDATE -> {
                 updateContact()
-                Log.d("Agenda","mise à jour")
+                Log.d("Agenda", "mise à jour")
             }
             Action.DELETE_ALL -> {
                 cleanContact()
                 println("efface tout")
-                Log.d("Agenda","efface tout")
+                Log.d("Agenda", "efface tout")
             }
             Action.UNDO -> {
                 addContact()
-                Log.d("Agenda","annuler suppression")
+                Log.d("Agenda", "annuler suppression")
             }
             else -> {}
         }
@@ -111,7 +109,6 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     }
 
     private fun updateContact() {
-
         viewModelScope.launch(Dispatchers.IO) {
             val contact = Contact(
                 id = id.value,
@@ -123,13 +120,6 @@ class ViewModelContact @Inject constructor() : ViewModel() {
                 mail = mail.value
             )
             RepositoryContact.updateContact(contact = contact)
-        }
-    }
-
-    fun onCardArrowClicked(cardId: Int) {
-
-        _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
-            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
         }
     }
 

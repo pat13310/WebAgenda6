@@ -100,31 +100,32 @@ fun ListContactContent(
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts) { item ->
-            val state = rememberDismissState(
-                confirmStateChange = {
-                    if (it == DismissValue.DismissedToStart) {
-                        onSwipToDelete(Action.DELETE, item)
-                    }
-                    true
-                }
-            )
+            val state = rememberDismissState()
+//                confirmStateChange = {
+//                    if (it == DismissValue.DismissedToStart) {
+//                        onSwipToDelete(Action.DELETE, item)
+//                    }
+//                    true
+//                }
+//            )
             val dismissDirection = state.dismissDirection
             val isDismissed = state.isDismissed(DismissDirection.EndToStart)
-            var itemAppeared by rememberSaveable { mutableStateOf(false) }
+            //var itemAppeared by rememberSaveable { mutableStateOf(false) }
             val degrees by animateFloatAsState(
                 targetValue = if (state.targetValue == DismissValue.Default) 0f else -45f
             )
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
                 val scope = rememberCoroutineScope()
                 scope.launch {
+                    onSwipToDelete(Action.DELETE,item)
                     delay(250L)
                 }
             }
             LaunchedEffect(key1 = true) {
-                itemAppeared = true
+                //itemAppeared = true
             }
             AnimatedVisibility(
-                visible = itemAppeared && !isDismissed,
+                visible = !isDismissed,// itemAppeared && !isDismissed,
                 enter = expandVertically(
                     animationSpec = tween(durationMillis = Constants.SHRINK_DELAY)
                 ),

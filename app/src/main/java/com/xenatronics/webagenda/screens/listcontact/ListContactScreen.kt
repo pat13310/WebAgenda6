@@ -23,26 +23,21 @@ fun ListContactScreen(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
-    //var action by rememberSaveable{ mutableStateOf(Action.NO_ACTION)}
     var action by viewModel.action
-
+    LaunchedEffect(key1 = action){
+        viewModel.load()
+    }
     //on appelle cette fonction quand l'action change
-    //LaunchedEffect(key1 = action) {
     viewModel.handleContactAction(action = action)
-    //}
+    val contacts by viewModel.allContactFlow.collectAsState()
 
     ShowSnackBar(
         scaffoldState = scaffoldState,
         action = action,
-        onUndoClick = {
-            action = it
-        },
+        onUndoClick = { action = it },
         title = viewModel.nom.value,
         onComplete = { action = it }
     )
-    viewModel.load()
-
-    val contacts by viewModel.allContactFlow.collectAsState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -82,15 +77,15 @@ fun ListContactScreen(
                     if (action == Action.DELETE) {
                         viewModel.updateFields(contact = contact)
                         viewModel.action.value = action
+                        viewModel.selectedItem.value=contact
                         //on supprime une eventuelle fenetre avant
                         scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                     }
                 },
                 onSelectItem = {
                     viewModel.selectedItem.value=it
-                    viewModel.updateFields(it)
+                    viewModel.updateFields(contact = it)
                 }
-
             )
         }
     )
@@ -115,8 +110,8 @@ fun ShowSnackBar(
                 if (snackResult == SnackbarResult.ActionPerformed && action == Action.DELETE)
                     onUndoClick(Action.UNDO)
             }
+            onComplete(Action.NO_ACTION)
         }
-        onComplete(Action.NO_ACTION)
     }
 }
 
