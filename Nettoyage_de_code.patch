@@ -1,0 +1,1033 @@
+Index: app/src/main/java/com/xenatronics/webagenda/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/MainActivity.kt b/app/src/main/java/com/xenatronics/webagenda/MainActivity.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/MainActivity.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/MainActivity.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -3,8 +3,6 @@
+ import android.os.Bundle
+ import androidx.activity.ComponentActivity
+ import androidx.activity.compose.setContent
+-import androidx.compose.runtime.collectAsState
+-import androidx.compose.runtime.getValue
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavType
+ import androidx.navigation.compose.NavHost
+@@ -13,12 +11,10 @@
+ import androidx.navigation.navArgument
+ import com.google.gson.Gson
+ import com.xenatronics.webagenda.data.Contact
+-
+-import com.xenatronics.webagenda.screens.*
+ import com.xenatronics.webagenda.navigation.Screen
++import com.xenatronics.webagenda.screens.*
+ import com.xenatronics.webagenda.screens.listcontact.ListContactScreen
+ import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
+-import com.xenatronics.webagenda.viewmodel.ViewModelContact
+ import dagger.hilt.android.AndroidEntryPoint
+ 
+ @AndroidEntryPoint
+@@ -33,35 +29,47 @@
+                     startDestination = Screen.ListContactScreen.route
+                 ) {
+                     composable(Screen.NewRdvScreen.route) {
+-                        NewRdvScreen(navController = navController)
++                        NewRdvScreen(
++                            navController = navController,
++                            viewModel = hiltViewModel()
++                        )
+                     }
+                     composable(Screen.ListRdvScreen.route) {
+-                        ListRdvScreen(navController = navController)
++                        ListRdvScreen(
++                            navController = navController,
++                            viewModel = hiltViewModel()
++                        )
+                     }
+-                    composable(route=Screen.NewContactScreen.route + "/{contact}",
++                    composable(
++                        route = Screen.NewContactScreen.route + "/{contact}",
+                         arguments = listOf(navArgument("contact") { type = NavType.StringType })
+                     ) { backStackEntry ->
+-                        //val id =savedInstanceState?.get("id").toString()
+                         backStackEntry.arguments?.getString("contact")?.let() {
+                             //on convertit la chaine en objet Contact
+-                            val contact= Gson().fromJson(it, Contact::class.java)
+-                            NewContactScreen(navController = navController, contact)
++                            val contact = Gson().fromJson(it, Contact::class.java)
++                            NewContactScreen(
++                                navController = navController,
++                                contact = contact
++                            )
+                         }
+                     }
+-                    composable( Screen.ListContactScreen.route) {
+-                        val viewModel: ViewModelContact = hiltViewModel()
+-                        val isLoading by viewModel.isLoading.collectAsState()
+-//                        if (isLoading) {
+-//                            LoadingScreen(navController = navController)
+-//                        }
+-                        //viewModel.load()
+-                        ListContactScreen(navController = navController)
++                    composable(Screen.ListContactScreen.route) {
++                        ListContactScreen(
++                            navController = navController,
++                            viewModel = hiltViewModel()
++                        )
+                     }
+                     composable(Screen.LoginScreen.route) {
+-                        LoginScreen(navController = navController)
++                        LoginScreen(
++                            navController = navController,
++                            viewModel = hiltViewModel()
++                        )
+                     }
+                     composable(Screen.RegisterScreen.route) {
+-                        RegisterScreen(navController = navController)
++                        RegisterScreen(
++                            navController = navController,
++                            viewModel = hiltViewModel()
++                        )
+                     }
+                     composable(Screen.SplashScreen.route) {
+                         SplashScreen(navController = navController)
+Index: app/src/main/java/com/xenatronics/webagenda/components/UIComboContact.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/components/UIComboContact.kt b/app/src/main/java/com/xenatronics/webagenda/components/UIComboContact.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/components/UIComboContact.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/components/UIComboContact.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -18,19 +18,19 @@
+ import com.xenatronics.webagenda.navigation.Screen
+ import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+ import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
+-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
++import com.xenatronics.webagenda.viewmodel.ViewModelRdv
+ 
+ 
+ @OptIn(ExperimentalMaterialApi::class)
+ @Composable
+ fun UI2ComboContact(
+     modifier: Modifier = Modifier.padding(6.dp),
+-    viewModel: ViewModelRdvAdd,
++    viewModel: ViewModelRdv,
+     navController: NavController,
+     options: List<String>
+ ) {
+     var expanded by remember { mutableStateOf(false) }
+-    var selectedOptionText by viewModel.textContactName
++    var selectedOptionText by viewModel.nom
+     Box(
+         modifier = Modifier
+             .padding(all = 16.dp)
+Index: app/src/main/java/com/xenatronics/webagenda/components/UIDatePicker.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/components/UIDatePicker.kt b/app/src/main/java/com/xenatronics/webagenda/components/UIDatePicker.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/components/UIDatePicker.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/components/UIDatePicker.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -20,7 +20,7 @@
+ import com.vanpra.composematerialdialogs.datetime.date.datepicker
+ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+ import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
++import com.xenatronics.webagenda.viewmodel.ViewModelRdv
+ import java.text.SimpleDateFormat
+ import java.time.LocalDate
+ import java.time.format.DateTimeFormatter
+@@ -29,7 +29,7 @@
+ 
+ @Composable
+ fun UiDatePicker(
+-    viewModel: ViewModelRdvAdd,
++    viewModel: ViewModelRdv,
+     modifier: Modifier = Modifier
+         .fillMaxWidth()
+         .background(Color.White),
+@@ -39,7 +39,8 @@
+ ) {
+     Locale.setDefault(Locale.FRANCE)
+ 
+-    var date by viewModel.date
++    val timestamp by viewModel.timestamp
++    var date= dateFormatter(timestamp)
+     val datetmp = remember { mutableStateOf(date) }
+     val dlg = showDialogDate(datetmp)
+     date = datetmp.value
+@@ -64,7 +65,7 @@
+             horizontalArrangement = Arrangement.SpaceBetween
+         ) {
+             Text(
+-                text = datetmp.value,
++                text = datetmp.value.toString(),
+                 color = textColor,
+             )
+             Icon(
+@@ -93,7 +94,7 @@
+ }
+ 
+ @Composable
+-fun showDialogDate(date: MutableState<String>): MaterialDialogState {
++fun showDialogDate(date: MutableState<String> ): MaterialDialogState {
+     val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy", Locale.FRANCE)
+     val dialogState = rememberMaterialDialogState()
+     MaterialDialog(
+Index: app/src/main/java/com/xenatronics/webagenda/components/UITimePicker.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/components/UITimePicker.kt b/app/src/main/java/com/xenatronics/webagenda/components/UITimePicker.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/components/UITimePicker.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/components/UITimePicker.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -20,18 +20,17 @@
+ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+ import com.xenatronics.webagenda.R
+ import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
++import com.xenatronics.webagenda.viewmodel.ViewModelRdv
+ import java.time.LocalTime
+ import java.time.format.DateTimeFormatter
+ import java.util.*
+ 
+ 
+-
+ @Composable
+ fun UiTimePicker(
+-    viewModel: ViewModelRdvAdd,
++    viewModel: ViewModelRdv,
+     texte: String = "",
+-    modifier: Modifier=Modifier.fillMaxWidth(),
++    modifier: Modifier = Modifier.fillMaxWidth(),
+     borderColor: Color = MaterialTheme.colors.primary,
+     textColor: Color = MaterialTheme.colors.primary,
+     iconColor: Color = MaterialTheme.colors.primary,
+@@ -43,9 +42,9 @@
+     val minute = calendar[Calendar.MINUTE]
+ 
+     var time by viewModel.time
+-    val timeTmp = remember { mutableStateOf(time)}
++    val timeTmp = remember { mutableStateOf(time) }
+     val dlg = showTimeDialog(timeTmp)
+-    time=timeTmp.value
++    time = timeTmp.value
+ 
+     Box(
+         modifier = modifier
+@@ -91,8 +90,9 @@
+             negativeButton("Annuler")
+         }
+     ) {
+-        timepicker(title = "Choisir l'heure",
+-            is24HourClock=true,
++        timepicker(
++            title = "Choisir l'heure",
++            is24HourClock = true,
+             initialTime = LocalTime.parse(time.value)
+         )//, initialTime = LocalTime.parse(time.value, formatter))
+         {
+Index: app/src/main/java/com/xenatronics/webagenda/repository/RepositoryContact.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/repository/RepositoryContact.kt b/app/src/main/java/com/xenatronics/webagenda/repository/RepositoryContact.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/repository/RepositoryContact.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/repository/RepositoryContact.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -1,13 +1,25 @@
+ package com.xenatronics.webagenda.repository
+ 
+-import com.xenatronics.webagenda.data.*
++import com.xenatronics.webagenda.data.Contact
++import com.xenatronics.webagenda.data.PostID
++import com.xenatronics.webagenda.data.ResponseSimpleContact
+ import com.xenatronics.webagenda.network.KtorClient
+ import com.xenatronics.webagenda.util.Constants
++import dagger.Module
++import dagger.Provides
++import dagger.hilt.InstallIn
++import dagger.hilt.android.components.ActivityComponent
++import dagger.hilt.android.components.ViewModelComponent
++import dagger.hilt.android.internal.managers.ApplicationComponentManager
++import dagger.hilt.components.SingletonComponent
+ import io.ktor.client.features.*
+ import io.ktor.client.request.*
+ import io.ktor.http.*
+ 
+-object RepositoryContact {
++@Module
++@InstallIn(SingletonComponent::class)
++object RepositoryContact  {
++    @Provides
+     suspend fun getAllContact(): List<Contact> {
+         return try {
+             KtorClient.httpClient.get { url(Constants.GET_ALL_CONTACT) }
+@@ -34,6 +46,7 @@
+         }
+     }
+ 
++
+     suspend fun getContact(id: Int): List<Contact> {
+         return try {
+             KtorClient.httpClient.get {
+Index: app/src/main/java/com/xenatronics/webagenda/screens/ListRdvScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/ListRdvScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/ListRdvScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/ListRdvScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/ListRdvScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -8,7 +8,6 @@
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.platform.LocalContext
+ import androidx.core.content.ContextCompat
+-import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+ import com.xenatronics.webagenda.R
+ import com.xenatronics.webagenda.components.ExpandableCard
+@@ -16,18 +15,24 @@
+ import com.xenatronics.webagenda.viewmodel.ViewModelRdv
+ 
+ @Composable
+-fun ListRdvScreen(navController: NavController) {
++fun ListRdvScreen(
++    navController: NavController,
++    viewModel: ViewModelRdv
++) {
+     Scaffold(
+         topBar = {
+-            ListTaskBar("Liste",NavigateToListScreen = {
+-                navController.popBackStack() })
++            ListTaskBar("Liste", NavigateToListScreen = {
++                navController.popBackStack()
++            })
+         },
+         content = {
+-            ListRdvContent(navController = navController, viewModel = hiltViewModel())
++            ListRdvContent(
++                navController = navController,
++                viewModel = viewModel
++            )
+         }
+     )
+ }
+-
+ 
+ @Composable
+ fun ListRdvContent(navController: NavController, viewModel: ViewModelRdv) {
+@@ -46,11 +51,10 @@
+             items(cards.value) {
+                 ExpandableCard(
+                     card = it,
+-                    onCardArrowClick = { viewModel?.onCardArrowClicked(it.id) },
++                    onCardArrowClick = { viewModel.onCardArrowClicked(it.id) },
+                     expanded = expandedCardIds.value.contains(it.id),
+                 )
+             }
+         }
+     }
+ }
+-
+Index: app/src/main/java/com/xenatronics/webagenda/screens/LoginScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/LoginScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/LoginScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/LoginScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/LoginScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -1,5 +1,6 @@
+ package com.xenatronics.webagenda.screens
+ 
++
+ import android.content.pm.ActivityInfo
+ import android.util.Log
+ import androidx.compose.foundation.layout.*
+@@ -21,20 +22,21 @@
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.text.withStyle
+ import androidx.compose.ui.unit.dp
+-import androidx.hilt.navigation.compose.hiltViewModel
+-//import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+-import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.R
+ import com.xenatronics.webagenda.components.NewTaskBar
+ import com.xenatronics.webagenda.components.UITextPassword
+ import com.xenatronics.webagenda.components.UITextStandard
+ import com.xenatronics.webagenda.navigation.Screen
++import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.util.LockScreenOrientation
+ import com.xenatronics.webagenda.viewmodel.ViewModelLogin
+ 
+ @Composable
+-fun LoginScreen(navController: NavController) {
++fun LoginScreen(
++    navController: NavController,
++    viewModel: ViewModelLogin
++) {
+     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+     Surface(
+         modifier = Modifier.fillMaxSize(),
+@@ -55,7 +57,7 @@
+             content = {
+                 LoginContent(
+                     modifier = Modifier.fillMaxSize(),
+-                    viewModel =  hiltViewModel(), navController = navController
++                    viewModel = viewModel, navController = navController
+                 )
+             }
+         )
+@@ -112,10 +114,11 @@
+ }
+ 
+ @Composable
+-fun AnnotatedClickableText(modifier: Modifier,
+-                           onLink:()->Unit
++fun AnnotatedClickableText(
++    modifier: Modifier,
++    onLink: () -> Unit
+ ) {
+-    val annotatedText = buildAnnotatedString() {
++    val annotatedText = buildAnnotatedString {
+         withStyle(
+             style = SpanStyle(
+                 color = Color.Black,
+@@ -130,10 +133,10 @@
+         )
+         append("  ")
+         withStyle(
+-                style = SpanStyle(
++            style = SpanStyle(
+                 color = Color.Blue,
+                 fontWeight = FontWeight.W800
+-                            )
++            )
+         ) {
+             append(stringResource(id = R.string.SignUp))
+         }
+Index: app/src/main/java/com/xenatronics/webagenda/screens/NewContactScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/NewContactScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/NewContactScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/NewContactScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/NewContactScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -1,6 +1,5 @@
+ package com.xenatronics.webagenda.screens
+ 
+-import android.annotation.SuppressLint
+ import android.content.pm.ActivityInfo
+ import androidx.compose.foundation.layout.*
+ import androidx.compose.material.Scaffold
+@@ -15,11 +14,11 @@
+ import androidx.compose.ui.unit.dp
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+-import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.components.NewTaskBar
+ import com.xenatronics.webagenda.components.UITextStandard
+ import com.xenatronics.webagenda.data.Contact
+ import com.xenatronics.webagenda.navigation.Screen
++import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.util.LockScreenOrientation
+ import com.xenatronics.webagenda.viewmodel.ViewModelContact
+ 
+@@ -46,8 +45,6 @@
+                                 viewModel.handleContactAction(Action.UPDATE)
+                             }
+                             navController.navigate(Screen.ListContactScreen.route)
+-//                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
+-//                        viewModel.AddRdv(post)
+                         }
+                         Action.NO_ACTION -> {
+                             navController.popBackStack()
+@@ -57,16 +54,14 @@
+                 })
+         },
+         content = {
+-            ContactContent(viewModel = hiltViewModel(), contact)
++            ContactContent(viewModel = viewModel, contact)
+         }
+     )
+ }
+ 
+ 
+-@SuppressLint("UnrememberedMutableState")
+ @Composable
+ fun ContactContent(
+-
+     viewModel: ViewModelContact,
+     contact: Contact
+ ) {
+@@ -142,7 +137,5 @@
+             },
+             icon = Icons.Default.Email,
+         )
+-
+     }
+ }
+-
+Index: app/src/main/java/com/xenatronics/webagenda/screens/NewRdvScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/NewRdvScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/NewRdvScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/NewRdvScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/NewRdvScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -8,19 +8,24 @@
+ import androidx.compose.material.MaterialTheme
+ import androidx.compose.material.Scaffold
+ import androidx.compose.material.Surface
+-import androidx.compose.runtime.*
++import androidx.compose.runtime.Composable
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.unit.dp
+-import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+-import com.xenatronics.webagenda.util.Action
+-import com.xenatronics.webagenda.components.*
++import com.xenatronics.webagenda.components.NewTaskBar
++import com.xenatronics.webagenda.components.UI2ComboContact
++import com.xenatronics.webagenda.components.UiDatePicker
++import com.xenatronics.webagenda.components.UiTimePicker
+ import com.xenatronics.webagenda.navigation.Screen
+-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
++import com.xenatronics.webagenda.util.Action
++import com.xenatronics.webagenda.viewmodel.ViewModelRdv
+ 
+ @Composable
+-fun NewRdvScreen(navController: NavController) {
++fun NewRdvScreen(
++    navController: NavController,
++    viewModel: ViewModelRdv
++) {
+     Surface(
+         modifier = Modifier.fillMaxSize(),
+         color = MaterialTheme.colors.background
+@@ -28,14 +33,18 @@
+         Scaffold(
+             topBar = {
+                 NewTaskBar("Nouveau Rendez-vous",
+-                    NavigateToListScreen = {action->
+-                    if (action ==  Action.ADD){
+-                        navController.navigate(Screen.NewContactScreen.route)
+-                    }
+-                })
++                    NavigateToListScreen = { action ->
++                        if (action == Action.ADD) {
++                            navController.navigate(Screen.NewContactScreen.route)
++                        }
++                    })
+             },
+             content = {
+-                DateContent(modifier = Modifier, navController)
++                DateContent(
++                    modifier = Modifier,
++                    navController = navController,
++                    viewModel = viewModel
++                )
+             }
+         )
+     }
+@@ -44,18 +53,20 @@
+ @Composable
+ fun DateContent(
+     modifier: Modifier,
+-                navController: NavController,
+-    viewModel: ViewModelRdvAdd= hiltViewModel()
++    navController: NavController,
++    viewModel: ViewModelRdv
+ ) {
+-    Column(modifier = modifier
+-        .fillMaxSize()
+-        .background(Color.White)) {
++    Column(
++        modifier = modifier
++            .fillMaxSize()
++            .background(Color.White)
++    ) {
+         //var selectedOptionText by remember { mutableStateOf("") }
+         val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
+         Spacer(modifier = Modifier.height(12.dp))
+ 
+-        UI2ComboContact(navController=navController,  options = options, viewModel = viewModel )
+-        UiDatePicker(viewModel=viewModel)
+-        UiTimePicker(viewModel=viewModel)
++        UI2ComboContact(navController = navController, options = options, viewModel = viewModel)
++        UiDatePicker(viewModel = viewModel)
++        UiTimePicker(viewModel = viewModel)
+     }
+ }
+Index: app/src/main/java/com/xenatronics/webagenda/screens/RegisterScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/RegisterScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/RegisterScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/RegisterScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/RegisterScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -22,17 +22,20 @@
+ import androidx.compose.ui.text.withStyle
+ import androidx.compose.ui.unit.dp
+ import androidx.navigation.NavController
+-import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.R
+ import com.xenatronics.webagenda.components.NewTaskBar
+ import com.xenatronics.webagenda.components.UITextPassword
+ import com.xenatronics.webagenda.components.UITextStandard
+ import com.xenatronics.webagenda.navigation.Screen
++import com.xenatronics.webagenda.util.Action
+ import com.xenatronics.webagenda.util.LockScreenOrientation
+ import com.xenatronics.webagenda.viewmodel.ViewModelRegister
+ 
+ @Composable
+-fun RegisterScreen(navController: NavController) {
++fun RegisterScreen(
++    navController: NavController,
++    viewModel: ViewModelRegister
++) {
+     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+     Surface(
+         modifier = Modifier.fillMaxSize(),
+@@ -53,7 +56,7 @@
+             content = {
+                 RegisterContent(
+                     modifier = Modifier.fillMaxSize(),
+-                    viewModel = ViewModelRegister(),
++                    viewModel = viewModel,
+                     navController = navController
+                 )
+             }
+@@ -118,8 +121,9 @@
+ 
+ 
+ @Composable
+-fun AnnotatedRegisterClickableText(modifier: Modifier,
+-                           onLink:()->Unit
++fun AnnotatedRegisterClickableText(
++    modifier: Modifier,
++    onLink: () -> Unit
+ ) {
+     val annotatedText = buildAnnotatedString() {
+         withStyle(
+Index: app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactContent.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactContent.kt b/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactContent.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactContent.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactContent.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -10,7 +10,6 @@
+ import androidx.compose.foundation.layout.*
+ import androidx.compose.foundation.lazy.LazyColumn
+ import androidx.compose.foundation.lazy.items
+-import androidx.compose.foundation.shape.RoundedCornerShape
+ import androidx.compose.material.*
+ import androidx.compose.material.icons.Icons
+ import androidx.compose.material.icons.filled.Delete
+@@ -18,7 +17,6 @@
+ import androidx.compose.runtime.saveable.rememberSaveable
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+-import androidx.compose.ui.draw.clip
+ import androidx.compose.ui.draw.rotate
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.res.painterResource
+@@ -43,6 +41,8 @@
+     contacts: List<Contact>,
+     viewModel: ViewModelContact,
+     navController: NavController,
++    onSwipToDelete: (Action, Contact) -> Unit,
++    onSelectItem: (Contact) -> Unit,
+ ) {
+     if (contacts.isEmpty()) {
+         ListContactEmptyContent()
+@@ -51,12 +51,8 @@
+             contacts = contacts,
+             viewModel = viewModel,
+             navController = navController,
+-            onSwipToDelete = { action, contact ->
+-                if (action == Action.DELETE) {
+-                    viewModel.updateFields(contact = contact)
+-                    viewModel.action.value = action
+-                }
+-            },
++            onSwipToDelete = onSwipToDelete,
++            onSelectItem = onSelectItem
+         )
+     }
+ }
+@@ -98,6 +94,7 @@
+     navController: NavController,
+     viewModel: ViewModelContact,
+     onSwipToDelete: (Action, Contact) -> Unit,
++    onSelectItem:(Contact)->Unit,
+ ) {
+     var selectedItem by viewModel.selectedItem
+ 
+@@ -141,10 +138,16 @@
+                     directions = setOf(DismissDirection.EndToStart),
+                     background = {
+                         val color = when (state.targetValue) {
+-                            DismissValue.DismissedToStart -> MaterialTheme.colors.primary
++                            DismissValue.DismissedToStart -> {
++                                MaterialTheme.colors.secondaryVariant
++                            }
+                             DismissValue.DismissedToEnd -> Color.Transparent
+                             DismissValue.Default -> MaterialTheme.colors.primary
+                         }
++                        if (state.dismissDirection==DismissDirection.EndToStart) {
++                            selectedItem=item
++                            onSelectItem(item)
++                        }
+                         RedBackground(degrees = degrees, color)
+                     },
+                     dismissContent = {
+@@ -153,8 +156,7 @@
+                             contact = item,
+                             onCardArrowClick = { selectedItem = item },
+                             onSelectItem = { contact ->
+-                                viewModel.updateFields(contact)
+-                                selectedItem = contact
++                                onSelectItem(contact)
+                             },
+                             onNavigate = { route ->
+                                 navController.navigate(route)
+@@ -174,8 +176,8 @@
+         modifier = Modifier
+             .padding(horizontal = 16.dp, vertical = 8.dp)
+             .fillMaxSize()
+-            .background(color)
+-            .clip(shape = RoundedCornerShape(8.dp)),
++            .background(color),
++        //.clip(shape = RoundedCornerShape(8.dp)),
+         contentAlignment = Alignment.CenterEnd
+     ) {
+         Icon(
+Index: app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactScreen.kt b/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactScreen.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactScreen.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/screens/listcontact/ListContactScreen.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -1,40 +1,48 @@
+ package com.xenatronics.webagenda.screens.listcontact
+ 
++import android.content.pm.ActivityInfo
+ import androidx.compose.material.*
+ import androidx.compose.material.icons.Icons
+ import androidx.compose.material.icons.filled.Add
+ import androidx.compose.runtime.*
+-import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+ import com.google.gson.Gson
+ import com.xenatronics.webagenda.components.ListTaskBar
+ import com.xenatronics.webagenda.data.Contact
+ import com.xenatronics.webagenda.navigation.Screen
+ import com.xenatronics.webagenda.util.Action
++import com.xenatronics.webagenda.util.LockScreenOrientation
+ import com.xenatronics.webagenda.viewmodel.ViewModelContact
+ import kotlinx.coroutines.launch
+ 
+ @OptIn(ExperimentalMaterialApi::class)
+ @Composable
+-fun ListContactScreen(navController: NavController, viewModel: ViewModelContact = hiltViewModel()) {
++fun ListContactScreen(
++    navController: NavController,
++    viewModel: ViewModelContact,
++) {
++    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+     val scaffoldState = rememberScaffoldState()
++    //var action by rememberSaveable{ mutableStateOf(Action.NO_ACTION)}
+     var action by viewModel.action
+ 
+-    val contacts = viewModel.allContactFlow.collectAsState()
+-    LaunchedEffect(key1 = true) {
+-        viewModel.load()
+-    }
+-
++    //on appelle cette fonction quand l'action change
++    //LaunchedEffect(key1 = action) {
+     viewModel.handleContactAction(action = action)
++    //}
++
+     ShowSnackBar(
+         scaffoldState = scaffoldState,
+         action = action,
+         onUndoClick = {
+             action = it
+         },
+-        title = viewModel.nom.value
++        title = viewModel.nom.value,
++        onComplete = { action = it }
+     )
+-    action = Action.NO_ACTION
++    viewModel.load()
++
++    val contacts by viewModel.allContactFlow.collectAsState()
+ 
+     Scaffold(
+         scaffoldState = scaffoldState,
+@@ -54,15 +62,35 @@
+             }
+         },
+         topBar = {
+-            ListTaskBar("Vos contacts", NavigateToListScreen = {
+-                navController.popBackStack()
++            ListTaskBar("Vos contacts", NavigateToListScreen = { action ->
++                if (viewModel.selectedItem.value.id > 0) {
++                    if (action == Action.DELETE) {
++                        viewModel.action.value = action
++                    }
++                    if (action == Action.ADD) {
++                        navController.navigate(Screen.NewRdvScreen.route)
++                    }
++                }
+             })
+         },
+         content = {
+             HandleContactContent(
+-                contacts = contacts.value,
++                contacts = contacts,
+                 viewModel = viewModel,
+-                navController = navController
++                navController = navController,
++                onSwipToDelete = { action, contact ->
++                    if (action == Action.DELETE) {
++                        viewModel.updateFields(contact = contact)
++                        viewModel.action.value = action
++                        //on supprime une eventuelle fenetre avant
++                        scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
++                    }
++                },
++                onSelectItem = {
++                    viewModel.selectedItem.value=it
++                    viewModel.updateFields(it)
++                }
++
+             )
+         }
+     )
+@@ -74,6 +102,7 @@
+     scaffoldState: ScaffoldState,
+     onUndoClick: (Action) -> Unit,
+     title: String = "",
++    onComplete: (Action) -> Unit
+ ) {
+     val scope = rememberCoroutineScope()
+     LaunchedEffect(key1 = action) {
+@@ -87,9 +116,9 @@
+                     onUndoClick(Action.UNDO)
+             }
+         }
++        onComplete(Action.NO_ACTION)
+     }
+ }
+-
+ 
+ fun setActionLabel(action: Action): String {
+     return when (action) {
+Index: app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelContact.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelContact.kt b/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelContact.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelContact.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelContact.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -1,12 +1,12 @@
+ package com.xenatronics.webagenda.viewmodel
+ 
++import android.util.Log
+ import androidx.compose.runtime.MutableState
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.lifecycle.ViewModel
+ import androidx.lifecycle.viewModelScope
+ import com.xenatronics.webagenda.data.Contact
+ import com.xenatronics.webagenda.data.PostID
+-
+ import com.xenatronics.webagenda.repository.RepositoryContact
+ import com.xenatronics.webagenda.util.Action
+ import dagger.hilt.android.lifecycle.HiltViewModel
+@@ -35,6 +35,9 @@
+     val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
+ 
+ 
++    private val _isSateChanged = MutableStateFlow(false)
++    val isStateChanged: StateFlow<Boolean> = _isSateChanged
++
+     fun load() {
+         viewModelScope.launch(Dispatchers.IO) {
+             _isLoading.value = true
+@@ -44,32 +47,41 @@
+                 allContactFlow.value = emptyList()
+                 _isLoading.value = false
+             }.onSuccess { list ->
+-                allContactFlow.value = list//.sortedBy { contact -> contact.nom }
++                allContactFlow.value = list.sortedBy { contact -> contact.nom }
+                 _isLoading.value = false
+             }
+         }
+     }
+ 
+     fun handleContactAction(action: Action) {
++        _isSateChanged.value = true
+         when (action) {
+             Action.ADD -> {
+                 addContact()
++                Log.d("Agenda","ajout")
+             }
+             Action.DELETE -> {
+                 deleteContact()
++                Log.d("Agenda","suppression")
+             }
+             Action.UPDATE -> {
+                 updateContact()
++                Log.d("Agenda","mise à jour")
+             }
+             Action.DELETE_ALL -> {
+                 cleanContact()
++                println("efface tout")
++                Log.d("Agenda","efface tout")
+             }
+             Action.UNDO -> {
+                 addContact()
++                Log.d("Agenda","annuler suppression")
+             }
+             else -> {}
+         }
++        _isSateChanged.value = false
+     }
++
+ 
+     private fun cleanContact() {
+         viewModelScope.launch(Dispatchers.IO) {
+@@ -77,6 +89,7 @@
+         }
+     }
+ 
++
+     private fun addContact() {
+         viewModelScope.launch(Dispatchers.IO) {
+             val contact = Contact(
+@@ -98,6 +111,7 @@
+     }
+ 
+     private fun updateContact() {
++
+         viewModelScope.launch(Dispatchers.IO) {
+             val contact = Contact(
+                 id = id.value,
+Index: app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdv.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdv.kt b/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdv.kt
+--- a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdv.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ b/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdv.kt	(revision ee42ca8666fd46e3b837c522fc185f81d45e4e16)
+@@ -16,44 +16,47 @@
+ @HiltViewModel
+ class ViewModelRdv @Inject constructor() : ViewModel() {
+     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
+-    val addRdvFlow = MutableStateFlow<Boolean>(false)
++    val isSateChanged = MutableStateFlow(false)
+     private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
+     val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
+     val index = mutableStateOf(0)
+     val nom: MutableState<String> = mutableStateOf("")
+     val timestamp: MutableState<Long> = mutableStateOf(0L)
+-    val adresse: MutableState<String> = mutableStateOf("")
+-    val ville: MutableState<String> = mutableStateOf("")
+-    val cp: MutableState<String> = mutableStateOf("")
+-    val tel: MutableState<String> = mutableStateOf("")
+-    val mail: MutableState<String> = mutableStateOf("")
++    val time = mutableStateOf("")
+ 
+     init {
++        // init time
++        //init date
++    }
++
++    fun load() {
+         viewModelScope.launch {
+             kotlin.runCatching {
+                 RepositoryRdv.getAllRdv()
+             }.onFailure {
+                 allRdvFlow.value = emptyList()
++                isSateChanged.value=true
+             }.onSuccess {
+                 allRdvFlow.value = it
++                isSateChanged.value=true
+             }
+         }
+     }
+ 
+-    fun GetRdv(id: Int) {
++    fun getRdv(id: Int) {
+         viewModelScope.launch {
+ 
+         }
+     }
+ 
+-    fun AddRdv(rdv: PostRdv) {
++    fun addRdv(rdv: PostRdv) {
+         viewModelScope.launch {
+             kotlin.runCatching {
+                 RepositoryRdv.addRdv(rdv)
+             }.onSuccess {
+-                addRdvFlow.value = true
++                isSateChanged.value = true
+             }.onFailure {
+-                addRdvFlow.value = false
++                isSateChanged.value = false
+             }
+         }
+     }
+Index: app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdvAdd.kt
+===================================================================
+diff --git a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdvAdd.kt b/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdvAdd.kt
+deleted file mode 100644
+--- a/app/src/main/java/com/xenatronics/webagenda/viewmodel/ViewModelRdvAdd.kt	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
++++ /dev/null	(revision f467a8de4459f0e9b802008a61c26dfb101cbcac)
+@@ -1,25 +0,0 @@
+-package com.xenatronics.webagenda.viewmodel
+-
+-import androidx.compose.runtime.MutableState
+-import androidx.compose.runtime.mutableStateOf
+-import androidx.lifecycle.ViewModel
+-import dagger.hilt.android.lifecycle.HiltViewModel
+-import java.text.SimpleDateFormat
+-import java.util.*
+-import javax.inject.Inject
+-
+-@HiltViewModel
+-class ViewModelRdvAdd @Inject constructor():ViewModel() {
+-
+-    val textContactName:MutableState<String> = mutableStateOf("")
+-    val date:MutableState<String> = mutableStateOf("")
+-    val time:MutableState<String> = mutableStateOf("")
+-
+-    init{
+-        val calendar = Calendar.getInstance(Locale.getDefault())
+-        val formatter = SimpleDateFormat("dd LLLL yyyy", Locale.FRANCE)
+-        val formatTime = SimpleDateFormat("HH:mm", Locale.FRANCE)
+-        date.value=formatter.format(calendar.time)
+-        time.value=formatTime.format(calendar.time)
+-    }
+-}
+\ No newline at end of file
