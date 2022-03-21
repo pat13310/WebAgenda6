@@ -77,13 +77,11 @@ fun ListContactScreen(
                     if (action == Action.DELETE) {
                         viewModel.updateFields(contact = contact)
                         viewModel.action.value = action
-                        viewModel.selectedItem.value=contact
                         //on supprime une eventuelle fenetre avant
                         scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                     }
                 },
                 onSelectItem = {
-                    viewModel.selectedItem.value=it
                     viewModel.updateFields(contact = it)
                 }
             )

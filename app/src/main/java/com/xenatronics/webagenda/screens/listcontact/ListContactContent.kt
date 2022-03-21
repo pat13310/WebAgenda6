@@ -13,8 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -94,35 +96,26 @@ fun ListContactContent(
     navController: NavController,
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
-    onSelectItem:(Contact)->Unit,
+    onSelectItem: (Contact) -> Unit,
 ) {
     var selectedItem by viewModel.selectedItem
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts) { item ->
-            val state = rememberDismissState()
-//                confirmStateChange = {
-//                    if (it == DismissValue.DismissedToStart) {
-//                        onSwipToDelete(Action.DELETE, item)
-//                    }
-//                    true
-//                }
-//            )
+            val state = rememberDismissState(
+
+            )
             val dismissDirection = state.dismissDirection
             val isDismissed = state.isDismissed(DismissDirection.EndToStart)
-            //var itemAppeared by rememberSaveable { mutableStateOf(false) }
             val degrees by animateFloatAsState(
                 targetValue = if (state.targetValue == DismissValue.Default) 0f else -45f
             )
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
                 val scope = rememberCoroutineScope()
                 scope.launch {
-                    onSwipToDelete(Action.DELETE,item)
+                    onSwipToDelete(Action.DELETE, item)
                     delay(250L)
                 }
-            }
-            LaunchedEffect(key1 = true) {
-                //itemAppeared = true
             }
             AnimatedVisibility(
                 visible = !isDismissed,// itemAppeared && !isDismissed,
@@ -145,8 +138,8 @@ fun ListContactContent(
                             DismissValue.DismissedToEnd -> Color.Transparent
                             DismissValue.Default -> MaterialTheme.colors.primary
                         }
-                        if (state.dismissDirection==DismissDirection.EndToStart) {
-                            selectedItem=item
+                        if (state.dismissDirection == DismissDirection.EndToStart) {
+                            selectedItem = item
                             onSelectItem(item)
                         }
                         RedBackground(degrees = degrees, color)
