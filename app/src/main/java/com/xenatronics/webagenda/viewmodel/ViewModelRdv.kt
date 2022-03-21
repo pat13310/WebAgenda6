@@ -16,44 +16,47 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelRdv @Inject constructor() : ViewModel() {
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
-    val addRdvFlow = MutableStateFlow<Boolean>(false)
+    val isSateChanged = MutableStateFlow(false)
     private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
     val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
     val index = mutableStateOf(0)
     val nom: MutableState<String> = mutableStateOf("")
     val timestamp: MutableState<Long> = mutableStateOf(0L)
-    val adresse: MutableState<String> = mutableStateOf("")
-    val ville: MutableState<String> = mutableStateOf("")
-    val cp: MutableState<String> = mutableStateOf("")
-    val tel: MutableState<String> = mutableStateOf("")
-    val mail: MutableState<String> = mutableStateOf("")
+    val time = mutableStateOf("")
 
     init {
+        // init time
+        //init date
+    }
+
+    fun load() {
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.getAllRdv()
             }.onFailure {
                 allRdvFlow.value = emptyList()
+                isSateChanged.value=true
             }.onSuccess {
                 allRdvFlow.value = it
+                isSateChanged.value=true
             }
         }
     }
 
-    fun GetRdv(id: Int) {
+    fun getRdv(id: Int) {
         viewModelScope.launch {
 
         }
     }
 
-    fun AddRdv(rdv: PostRdv) {
+    fun addRdv(rdv: PostRdv) {
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.addRdv(rdv)
             }.onSuccess {
-                addRdvFlow.value = true
+                isSateChanged.value = true
             }.onFailure {
-                addRdvFlow.value = false
+                isSateChanged.value = false
             }
         }
     }

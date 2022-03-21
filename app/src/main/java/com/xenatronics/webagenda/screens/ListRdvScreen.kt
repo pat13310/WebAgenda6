@@ -8,7 +8,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.ExpandableCard
@@ -16,18 +15,24 @@ import com.xenatronics.webagenda.components.ListTaskBar
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 @Composable
-fun ListRdvScreen(navController: NavController) {
+fun ListRdvScreen(
+    navController: NavController,
+    viewModel: ViewModelRdv
+) {
     Scaffold(
         topBar = {
-            ListTaskBar("Liste",NavigateToListScreen = {
-                navController.popBackStack() })
+            ListTaskBar("Liste", NavigateToListScreen = {
+                navController.popBackStack()
+            })
         },
         content = {
-            ListRdvContent(navController = navController, viewModel = hiltViewModel())
+            ListRdvContent(
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     )
 }
-
 
 @Composable
 fun ListRdvContent(navController: NavController, viewModel: ViewModelRdv) {
@@ -46,11 +51,10 @@ fun ListRdvContent(navController: NavController, viewModel: ViewModelRdv) {
             items(cards.value) {
                 ExpandableCard(
                     card = it,
-                    onCardArrowClick = { viewModel?.onCardArrowClicked(it.id) },
+                    onCardArrowClick = { viewModel.onCardArrowClicked(it.id) },
                     expanded = expandedCardIds.value.contains(it.id),
                 )
             }
         }
     }
 }
-

@@ -20,18 +20,17 @@ import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
+import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-
 @Composable
 fun UiTimePicker(
-    viewModel: ViewModelRdvAdd,
+    viewModel: ViewModelRdv,
     texte: String = "",
-    modifier: Modifier=Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier.fillMaxWidth(),
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
@@ -43,9 +42,9 @@ fun UiTimePicker(
     val minute = calendar[Calendar.MINUTE]
 
     var time by viewModel.time
-    val timeTmp = remember { mutableStateOf(time)}
+    val timeTmp = remember { mutableStateOf(time) }
     val dlg = showTimeDialog(timeTmp)
-    time=timeTmp.value
+    time = timeTmp.value
 
     Box(
         modifier = modifier
@@ -91,8 +90,9 @@ fun showTimeDialog(time: MutableState<String>): MaterialDialogState {
             negativeButton("Annuler")
         }
     ) {
-        timepicker(title = "Choisir l'heure",
-            is24HourClock=true,
+        timepicker(
+            title = "Choisir l'heure",
+            is24HourClock = true,
             initialTime = LocalTime.parse(time.value)
         )//, initialTime = LocalTime.parse(time.value, formatter))
         {

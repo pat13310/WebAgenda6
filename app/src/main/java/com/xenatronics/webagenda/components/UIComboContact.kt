@@ -18,19 +18,19 @@ import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
+import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UI2ComboContact(
     modifier: Modifier = Modifier.padding(6.dp),
-    viewModel: ViewModelRdvAdd,
+    viewModel: ViewModelRdv,
     navController: NavController,
     options: List<String>
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by viewModel.textContactName
+    var selectedOptionText by viewModel.nom
     Box(
         modifier = Modifier
             .padding(all = 16.dp)

@@ -22,17 +22,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextPassword
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelRegister
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: ViewModelRegister
+) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -53,7 +56,7 @@ fun RegisterScreen(navController: NavController) {
             content = {
                 RegisterContent(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = ViewModelRegister(),
+                    viewModel = viewModel,
                     navController = navController
                 )
             }
@@ -118,8 +121,9 @@ fun RegisterContent(
 
 
 @Composable
-fun AnnotatedRegisterClickableText(modifier: Modifier,
-                           onLink:()->Unit
+fun AnnotatedRegisterClickableText(
+    modifier: Modifier,
+    onLink: () -> Unit
 ) {
     val annotatedText = buildAnnotatedString() {
         withStyle(

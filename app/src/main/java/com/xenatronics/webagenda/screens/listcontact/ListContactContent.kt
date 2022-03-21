@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -18,7 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -43,6 +41,8 @@ fun HandleContactContent(
     contacts: List<Contact>,
     viewModel: ViewModelContact,
     navController: NavController,
+    onSwipToDelete: (Action, Contact) -> Unit,
+    onSelectItem: (Contact) -> Unit,
 ) {
     if (contacts.isEmpty()) {
         ListContactEmptyContent()
@@ -51,12 +51,8 @@ fun HandleContactContent(
             contacts = contacts,
             viewModel = viewModel,
             navController = navController,
-            onSwipToDelete = { action, contact ->
-                if (action == Action.DELETE) {
-                    viewModel.updateFields(contact = contact)
-                    viewModel.action.value = action
-                }
-            },
+            onSwipToDelete = onSwipToDelete,
+            onSelectItem = onSelectItem
         )
     }
 }
@@ -98,6 +94,7 @@ fun ListContactContent(
     navController: NavController,
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
+    onSelectItem:(Contact)->Unit,
 ) {
     var selectedItem by viewModel.selectedItem
 
@@ -141,9 +138,15 @@ fun ListContactContent(
                     directions = setOf(DismissDirection.EndToStart),
                     background = {
                         val color = when (state.targetValue) {
-                            DismissValue.DismissedToStart -> MaterialTheme.colors.primary
+                            DismissValue.DismissedToStart -> {
+                                MaterialTheme.colors.secondaryVariant
+                            }
                             DismissValue.DismissedToEnd -> Color.Transparent
                             DismissValue.Default -> MaterialTheme.colors.primary
+                        }
+                        if (state.dismissDirection==DismissDirection.EndToStart) {
+                            selectedItem=item
+                            onSelectItem(item)
                         }
                         RedBackground(degrees = degrees, color)
                     },
@@ -153,8 +156,7 @@ fun ListContactContent(
                             contact = item,
                             onCardArrowClick = { selectedItem = item },
                             onSelectItem = { contact ->
-                                viewModel.updateFields(contact)
-                                selectedItem = contact
+                                onSelectItem(contact)
                             },
                             onNavigate = { route ->
                                 navController.navigate(route)
@@ -174,8 +176,8 @@ fun RedBackground(degrees: Float, color: Color) {
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxSize()
-            .background(color)
-            .clip(shape = RoundedCornerShape(8.dp)),
+            .background(color),
+        //.clip(shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.CenterEnd
     ) {
         Icon(

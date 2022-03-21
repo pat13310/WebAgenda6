@@ -1,6 +1,5 @@
 package com.xenatronics.webagenda.screens
 
-import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -15,11 +14,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 
@@ -46,8 +45,6 @@ fun NewContactScreen(
                                 viewModel.handleContactAction(Action.UPDATE)
                             }
                             navController.navigate(Screen.ListContactScreen.route)
-//                        val post=PostRequest( viewModel.nom.value, viewModel.timestamp.value)
-//                        viewModel.AddRdv(post)
                         }
                         Action.NO_ACTION -> {
                             navController.popBackStack()
@@ -57,16 +54,14 @@ fun NewContactScreen(
                 })
         },
         content = {
-            ContactContent(viewModel = hiltViewModel(), contact)
+            ContactContent(viewModel = viewModel, contact)
         }
     )
 }
 
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ContactContent(
-
     viewModel: ViewModelContact,
     contact: Contact
 ) {
@@ -142,7 +137,5 @@ fun ContactContent(
             },
             icon = Icons.Default.Email,
         )
-
     }
 }
-

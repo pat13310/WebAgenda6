@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.screens
 
+
 import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -21,20 +22,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-//import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextPassword
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.navigation.Screen
+import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelLogin
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: ViewModelLogin
+) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -55,7 +57,7 @@ fun LoginScreen(navController: NavController) {
             content = {
                 LoginContent(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel =  hiltViewModel(), navController = navController
+                    viewModel = viewModel, navController = navController
                 )
             }
         )
@@ -112,10 +114,11 @@ fun LoginContent(
 }
 
 @Composable
-fun AnnotatedClickableText(modifier: Modifier,
-                           onLink:()->Unit
+fun AnnotatedClickableText(
+    modifier: Modifier,
+    onLink: () -> Unit
 ) {
-    val annotatedText = buildAnnotatedString() {
+    val annotatedText = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
                 color = Color.Black,
@@ -130,10 +133,10 @@ fun AnnotatedClickableText(modifier: Modifier,
         )
         append("  ")
         withStyle(
-                style = SpanStyle(
+            style = SpanStyle(
                 color = Color.Blue,
                 fontWeight = FontWeight.W800
-                            )
+            )
         ) {
             append(stringResource(id = R.string.SignUp))
         }

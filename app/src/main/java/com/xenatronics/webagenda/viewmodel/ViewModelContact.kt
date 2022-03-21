@@ -1,12 +1,12 @@
 package com.xenatronics.webagenda.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.data.PostID
-
 import com.xenatronics.webagenda.repository.RepositoryContact
 import com.xenatronics.webagenda.util.Action
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +35,9 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
 
 
+    private val _isSateChanged = MutableStateFlow(false)
+    val isStateChanged: StateFlow<Boolean> = _isSateChanged
+
     fun load() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
@@ -44,38 +47,48 @@ class ViewModelContact @Inject constructor() : ViewModel() {
                 allContactFlow.value = emptyList()
                 _isLoading.value = false
             }.onSuccess { list ->
-                allContactFlow.value = list//.sortedBy { contact -> contact.nom }
+                allContactFlow.value = list.sortedBy { contact -> contact.nom }
                 _isLoading.value = false
             }
         }
     }
 
     fun handleContactAction(action: Action) {
+        _isSateChanged.value = true
         when (action) {
             Action.ADD -> {
                 addContact()
+                Log.d("Agenda","ajout")
             }
             Action.DELETE -> {
                 deleteContact()
+                Log.d("Agenda","suppression")
             }
             Action.UPDATE -> {
                 updateContact()
+                Log.d("Agenda","mise à jour")
             }
             Action.DELETE_ALL -> {
                 cleanContact()
+                println("efface tout")
+                Log.d("Agenda","efface tout")
             }
             Action.UNDO -> {
                 addContact()
+                Log.d("Agenda","annuler suppression")
             }
             else -> {}
         }
+        _isSateChanged.value = false
     }
+
 
     private fun cleanContact() {
         viewModelScope.launch(Dispatchers.IO) {
             RepositoryContact.clearContact()
         }
     }
+
 
     private fun addContact() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -98,6 +111,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     }
 
     private fun updateContact() {
+
         viewModelScope.launch(Dispatchers.IO) {
             val contact = Contact(
                 id = id.value,

@@ -20,7 +20,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
-import com.xenatronics.webagenda.viewmodel.ViewModelRdvAdd
+import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -29,7 +29,7 @@ import java.util.*
 
 @Composable
 fun UiDatePicker(
-    viewModel: ViewModelRdvAdd,
+    viewModel: ViewModelRdv,
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .background(Color.White),
@@ -39,7 +39,8 @@ fun UiDatePicker(
 ) {
     Locale.setDefault(Locale.FRANCE)
 
-    var date by viewModel.date
+    val timestamp by viewModel.timestamp
+    var date= dateFormatter(timestamp)
     val datetmp = remember { mutableStateOf(date) }
     val dlg = showDialogDate(datetmp)
     date = datetmp.value
@@ -64,7 +65,7 @@ fun UiDatePicker(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = datetmp.value,
+                text = datetmp.value.toString(),
                 color = textColor,
             )
             Icon(
@@ -93,7 +94,7 @@ fun dateFormatter(milliseconds: Long?): String {
 }
 
 @Composable
-fun showDialogDate(date: MutableState<String>): MaterialDialogState {
+fun showDialogDate(date: MutableState<String> ): MaterialDialogState {
     val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy", Locale.FRANCE)
     val dialogState = rememberMaterialDialogState()
     MaterialDialog(

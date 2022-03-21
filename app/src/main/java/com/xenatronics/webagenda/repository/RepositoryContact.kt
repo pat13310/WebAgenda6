@@ -1,13 +1,25 @@
 package com.xenatronics.webagenda.repository
 
-import com.xenatronics.webagenda.data.*
+import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.data.PostID
+import com.xenatronics.webagenda.data.ResponseSimpleContact
 import com.xenatronics.webagenda.network.KtorClient
 import com.xenatronics.webagenda.util.Constants
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.internal.managers.ApplicationComponentManager
+import dagger.hilt.components.SingletonComponent
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-object RepositoryContact {
+@Module
+@InstallIn(SingletonComponent::class)
+object RepositoryContact  {
+    @Provides
     suspend fun getAllContact(): List<Contact> {
         return try {
             KtorClient.httpClient.get { url(Constants.GET_ALL_CONTACT) }
@@ -33,6 +45,7 @@ object RepositoryContact {
             emptyList()
         }
     }
+
 
     suspend fun getContact(id: Int): List<Contact> {
         return try {
