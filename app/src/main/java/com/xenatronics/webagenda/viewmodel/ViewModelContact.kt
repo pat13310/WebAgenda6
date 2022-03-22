@@ -21,6 +21,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
     val id: MutableState<Int> = mutableStateOf(0)
     val nom: MutableState<String> = mutableStateOf("")
     private val adresse: MutableState<String> = mutableStateOf("")

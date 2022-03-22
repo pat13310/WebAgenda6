@@ -1,22 +1,15 @@
 package com.xenatronics.webagenda.screens.listcontact
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -31,7 +24,6 @@ import com.xenatronics.webagenda.components.ExpandableContactCard2
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.ui.theme.medium_gray
 import com.xenatronics.webagenda.util.Action
-import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -40,21 +32,53 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun HandleContactContent(
-    contacts: List<Contact>,
     viewModel: ViewModelContact,
     navController: NavController,
-    onSwipToDelete: (Action, Contact) -> Unit,
-    onSelectItem: (Contact) -> Unit,
+    scaffoldState: ScaffoldState
 ) {
+    val action = viewModel.action
+
+//    LaunchedEffect(key1 = action) {
+//        viewModel.load()
+//    }
+    viewModel.load()
+    val contacts by viewModel.allContactFlow.collectAsState()
+
     if (contacts.isEmpty()) {
         ListContactEmptyContent()
     } else {
+
+        ShowSnackBar(
+            scaffoldState = scaffoldState,
+            action = action.value,
+            onUndoClick = {
+                if (it == Action.UNDO) {
+                    action.value = it
+                    //viewModel.handleContactAction(action = action.value)
+                }
+            },
+            title = viewModel.nom.value,
+            onComplete = {})
+
+        //LaunchedEffect(key1 = action) {
+        viewModel.handleContactAction(action = action.value)
+
+        //}
+        action.value = Action.NO_ACTION
+
+        //val contactList = contacts.toMutableList()
         ListContactContent(
-            contacts = contacts,
+            contacts = contacts.toMutableList(),
             viewModel = viewModel,
             navController = navController,
-            onSwipToDelete = onSwipToDelete,
-            onSelectItem = onSelectItem
+            onSwipToDelete = { act, contact ->
+                if (act == Action.DELETE) {
+                    action.value = act
+                    //on supprime une eventuelle fenetre avant
+                    scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+                    viewModel.updateFields(contact = contact)
+                }
+            },
         )
     }
 }
@@ -88,22 +112,32 @@ fun ListContactEmptyContent() {
 }
 
 
-@ExperimentalMaterialApi
 @SuppressLint("CoroutineCreationDuringComposition")
+@ExperimentalMaterialApi
+
 @Composable
 fun ListContactContent(
-    contacts: List<Contact>,
+    contacts: MutableList<Contact>,
     navController: NavController,
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
-    onSelectItem: (Contact) -> Unit,
 ) {
     var selectedItem by viewModel.selectedItem
 
     LazyColumn(Modifier.fillMaxSize()) {
-        items(contacts) { item ->
+        itemsIndexed(
+            items = contacts,
+            key = { _, item -> item.id }
+        ) { _, item ->
             val state = rememberDismissState(
-
+                confirmStateChange = {
+                    if (it == DismissValue.DismissedToStart) {
+                        selectedItem = item
+                        contacts.remove(item)
+                        onSwipToDelete(Action.DELETE, item)
+                    }
+                    true
+                }
             )
             val dismissDirection = state.dismissDirection
             val isDismissed = state.isDismissed(DismissDirection.EndToStart)
@@ -113,52 +147,42 @@ fun ListContactContent(
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
                 val scope = rememberCoroutineScope()
                 scope.launch {
-                    onSwipToDelete(Action.DELETE, item)
                     delay(250L)
                 }
             }
-            AnimatedVisibility(
-                visible = !isDismissed,// itemAppeared && !isDismissed,
-                enter = expandVertically(
-                    animationSpec = tween(durationMillis = Constants.SHRINK_DELAY)
-                ),
-                exit = shrinkVertically(
-                    animationSpec = tween(durationMillis = Constants.SHRINK_DELAY)
-                )
-            ) {
-                SwipeToDismiss(
-                    state = state,
-                    dismissThresholds = { FractionalThreshold(0.2f) },
-                    directions = setOf(DismissDirection.EndToStart),
-                    background = {
-                        val color = when (state.targetValue) {
-                            DismissValue.DismissedToStart -> {
-                                MaterialTheme.colors.secondaryVariant
-                            }
-                            DismissValue.DismissedToEnd -> Color.Transparent
-                            DismissValue.Default -> MaterialTheme.colors.primary
+            SwipeToDismiss(
+                state = state,
+                dismissThresholds = { FractionalThreshold(0.2f) },
+                directions = setOf(DismissDirection.EndToStart),
+                background = {
+                    val color = when (state.targetValue) {
+                        DismissValue.DismissedToStart -> {
+                            MaterialTheme.colors.secondaryVariant
                         }
-                        if (state.dismissDirection == DismissDirection.EndToStart) {
-                            selectedItem = item
-                            onSelectItem(item)
-                        }
-                        RedBackground(degrees = degrees, color)
-                    },
-                    dismissContent = {
-                        ExpandableContactCard2(
-                            selected = selectedItem == item,
-                            contact = item,
-                            onCardArrowClick = { selectedItem = item },
-                            onSelectItem = { contact ->
-                                onSelectItem(contact)
-                            },
-                            onNavigate = { route ->
-                                navController.navigate(route)
-                            },
-                        )
+                        DismissValue.DismissedToEnd -> Color.Transparent
+                        DismissValue.Default -> MaterialTheme.colors.primary
                     }
-                )
-            }
+                    if (state.dismissDirection == DismissDirection.EndToStart) {
+                        selectedItem = item
+                        viewModel.updateFields(item)
+                    }
+                    RedBackground(degrees = degrees, color)
+                },
+                dismissContent = {
+                    ExpandableContactCard2(
+                        selected = selectedItem == item,
+                        contact = item,
+                        onCardArrowClick = { selectedItem = item },
+                        onSelectItem = {
+                            selectedItem = item
+                            viewModel.updateFields(item)
+                        },
+                        onNavigate = { route ->
+                            navController.navigate(route)
+                        },
+                    )
+                }
+            )
         }
     }
 }
