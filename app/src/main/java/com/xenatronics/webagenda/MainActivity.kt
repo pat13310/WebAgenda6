@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,12 +28,12 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ListContactScreen.route
+                    startDestination = Screen.NewRdvScreen.route
                 ) {
                     composable(Screen.NewRdvScreen.route) {
                         NewRdvScreen(
                             navController = navController,
-                            viewModel = hiltViewModel()
+                            viewModel = viewModel()
                         )
                     }
                     composable(Screen.ListRdvScreen.route) {
@@ -56,7 +57,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Screen.ListContactScreen.route) {
                         val viewModel:ViewModelContact= hiltViewModel()
-                        //viewModel.load()
                         ListContactScreen(
                             navController = navController,
                             viewModel = viewModel

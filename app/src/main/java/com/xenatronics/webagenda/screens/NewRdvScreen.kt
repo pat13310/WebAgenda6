@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.NewTaskBar
-import com.xenatronics.webagenda.components.UI2ComboContact
+import com.xenatronics.webagenda.components.UIComboContact
 import com.xenatronics.webagenda.components.UiDatePicker
 import com.xenatronics.webagenda.components.UiTimePicker
 import com.xenatronics.webagenda.navigation.Screen
@@ -40,8 +40,7 @@ fun NewRdvScreen(
                     })
             },
             content = {
-                DateContent(
-                    modifier = Modifier,
+                NewRdvContent(
                     navController = navController,
                     viewModel = viewModel
                 )
@@ -51,13 +50,12 @@ fun NewRdvScreen(
 }
 
 @Composable
-fun DateContent(
-    modifier: Modifier,
+fun NewRdvContent(
     navController: NavController,
     viewModel: ViewModelRdv
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
@@ -65,7 +63,9 @@ fun DateContent(
         val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
         Spacer(modifier = Modifier.height(12.dp))
 
-        UI2ComboContact(navController = navController, options = options, viewModel = viewModel)
+        UIComboContact( options = options, viewModel = viewModel, onNavigate = { route->
+            navController.navigate(route = route)
+        })
         UiDatePicker(viewModel = viewModel)
         UiTimePicker(viewModel = viewModel)
     }

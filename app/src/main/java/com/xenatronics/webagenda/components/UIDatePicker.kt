@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,15 +14,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -38,25 +39,25 @@ fun UiDatePicker(
     iconColor: Color = MaterialTheme.colors.primary,
 ) {
     Locale.setDefault(Locale.FRANCE)
-
-    val timestamp by viewModel.timestamp
-    var date= dateFormatter(timestamp)
-    val datetmp = remember { mutableStateOf(date) }
-    val dlg = showDialogDate(datetmp)
-    date = datetmp.value
-
+    var date by viewModel.date
+    val dateState = remember { mutableStateOf(date) }
+    val dlg = showDialogDate(dateState)
+    date = dateState.value
+    val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
             .background(Color.White)
             .padding(horizontal = 16.dp, vertical = 16.dp)
-            .height( HEIGHT_COMPONENT)
+            .height(HEIGHT_COMPONENT)
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = MaterialTheme.shapes.large,
+                shape = RoundedCornerShape(Constants.RADIUS_MEDIUM)
             )
             .clickable {
-                dlg.show()
+                scope.launch {
+                    dlg.show()
+                }
             }
     ) {
         Row(
@@ -65,7 +66,7 @@ fun UiDatePicker(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = datetmp.value.toString(),
+                text = dateState.value,
                 color = textColor,
             )
             Icon(
@@ -77,25 +78,10 @@ fun UiDatePicker(
     }
 }
 
-@Preview
-@Composable
-fun DatePreview() {
-    //UiDatePicker()
-}
-
-fun dateFormatter(milliseconds: Long?): String {
-    milliseconds?.let {
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = it
-        return formatter.format(calendar.time)
-    }
-    return ""
-}
 
 @Composable
-fun showDialogDate(date: MutableState<String> ): MaterialDialogState {
-    val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy", Locale.FRANCE)
+fun showDialogDate(date: MutableState<String>): MaterialDialogState {
+    val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy", Locale.getDefault())
     val dialogState = rememberMaterialDialogState()
     MaterialDialog(
         dialogState = dialogState,
@@ -104,8 +90,10 @@ fun showDialogDate(date: MutableState<String> ): MaterialDialogState {
             negativeButton("Annuler")
         }
     ) {
-        datepicker(title = "Choisir une date", initialDate = LocalDate.parse(date.value, formatter))
-        {
+        datepicker(
+            title = "Choisir une date",
+            initialDate = LocalDate.parse(date.value, formatter)
+        ) {
             date.value = it.format(formatter)
         }
     }

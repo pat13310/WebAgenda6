@@ -2,9 +2,11 @@ package com.xenatronics.webagenda.screens.listcontact
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -47,26 +49,20 @@ fun HandleContactContent(
     if (contacts.isEmpty()) {
         ListContactEmptyContent()
     } else {
-
         ShowSnackBar(
             scaffoldState = scaffoldState,
             action = action.value,
             onUndoClick = {
                 if (it == Action.UNDO) {
                     action.value = it
-                    //viewModel.handleContactAction(action = action.value)
                 }
             },
-            title = viewModel.nom.value,
-            onComplete = {})
+            title = viewModel.nom.value,)
+            //onComplete = {})
 
-        //LaunchedEffect(key1 = action) {
         viewModel.handleContactAction(action = action.value)
-
-        //}
         action.value = Action.NO_ACTION
 
-        //val contactList = contacts.toMutableList()
         ListContactContent(
             contacts = contacts.toMutableList(),
             viewModel = viewModel,
@@ -79,6 +75,9 @@ fun HandleContactContent(
                     viewModel.updateFields(contact = contact)
                 }
             },
+            onSelectItem = {contact->
+                viewModel.updateFields(contact = contact)
+            }
         )
     }
 }
@@ -112,6 +111,7 @@ fun ListContactEmptyContent() {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalMaterialApi
 
@@ -121,14 +121,16 @@ fun ListContactContent(
     navController: NavController,
     viewModel: ViewModelContact,
     onSwipToDelete: (Action, Contact) -> Unit,
+    onSelectItem:(Contact)->Unit,
 ) {
     var selectedItem by viewModel.selectedItem
 
     LazyColumn(Modifier.fillMaxSize()) {
-        itemsIndexed(
-            items = contacts,
-            key = { _, item -> item.id }
-        ) { _, item ->
+        items(contacts, key={it.id}){item->
+//        itemsIndexed(
+//            items = contacts,
+//            key = { _, item -> item.id }
+//        ) { _, item ->
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
@@ -151,8 +153,9 @@ fun ListContactContent(
                 }
             }
             SwipeToDismiss(
+                modifier=Modifier.animateItemPlacement(),
                 state = state,
-                dismissThresholds = { FractionalThreshold(0.2f) },
+                dismissThresholds = { FractionalThreshold(0.33f) },
                 directions = setOf(DismissDirection.EndToStart),
                 background = {
                     val color = when (state.targetValue) {
@@ -164,7 +167,7 @@ fun ListContactContent(
                     }
                     if (state.dismissDirection == DismissDirection.EndToStart) {
                         selectedItem = item
-                        viewModel.updateFields(item)
+                        //viewModel.updateFields(item)
                     }
                     RedBackground(degrees = degrees, color)
                 },
@@ -175,7 +178,7 @@ fun ListContactContent(
                         onCardArrowClick = { selectedItem = item },
                         onSelectItem = {
                             selectedItem = item
-                            viewModel.updateFields(item)
+                            onSelectItem(item)
                         },
                         onNavigate = { route ->
                             navController.navigate(route)

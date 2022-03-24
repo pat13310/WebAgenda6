@@ -18,6 +18,7 @@ fun CardArrow(
     onClick: () -> Unit
 ) {
     IconButton(
+        modifier=modifier,
         onClick = onClick,
         content = {
             Icon(

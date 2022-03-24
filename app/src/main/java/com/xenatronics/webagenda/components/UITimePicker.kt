@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,6 +20,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import java.time.LocalTime
@@ -54,7 +56,7 @@ fun UiTimePicker(
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = MaterialTheme.shapes.large,
+                shape = RoundedCornerShape(Constants.RADIUS_MEDIUM),
             )
             .clickable {
                 dlg.show()
@@ -81,7 +83,7 @@ fun UiTimePicker(
 
 @Composable
 fun showTimeDialog(time: MutableState<String>): MaterialDialogState {
-    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRANCE)
+    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
     val dialogState = rememberMaterialDialogState()
     MaterialDialog(
         dialogState = dialogState,

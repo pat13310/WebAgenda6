@@ -71,7 +71,7 @@ fun ShowSnackBar(
     scaffoldState: ScaffoldState,
     onUndoClick: (Action) -> Unit,
     title: String = "",
-    onComplete: (Action) -> Unit
+    //onComplete: (Action) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = action) {
@@ -84,7 +84,7 @@ fun ShowSnackBar(
                 if (snackResult == SnackbarResult.ActionPerformed && action == Action.DELETE)
                     onUndoClick(Action.UNDO)
             }
-            onComplete(Action.NO_ACTION)
+            //onComplete(Action.NO_ACTION)
         }
     }
 }

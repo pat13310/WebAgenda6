@@ -53,7 +53,7 @@ class ViewModelContact @Inject constructor() : ViewModel() {
     }
 
     fun handleContactAction(action: Action) {
-        _isSateChanged.value = true
+        _isSateChanged.value = false
         when (action) {
             Action.ADD -> {
                 addContact()
@@ -76,9 +76,11 @@ class ViewModelContact @Inject constructor() : ViewModel() {
                 addContact()
                 Log.d("Agenda", "annuler suppression")
             }
-            else -> {}
+            else -> {
+                Log.d("Agenda", "aucune action")
+            }
         }
-        _isSateChanged.value = false
+        _isSateChanged.value = true
     }
 
 
