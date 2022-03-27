@@ -1,33 +1,39 @@
 package com.xenatronics.webagenda.components
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.util.Constants
-import com.xenatronics.webagenda.util.Constants.FADE_IN_ANIMATION_DURATION
-import com.xenatronics.webagenda.util.Constants.FADE_OUT_ANIMATION_DURATION
-import java.util.*
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
-fun ExpandableCard(
+fun ExtraCardRdv(
     card: Rdv,
     onCardArrowClick: () -> Unit,
     expanded: Boolean,
+    selected: Boolean,
+    onSelectItem:(Rdv)->Unit,
 ) {
     val transitionState = remember {
         MutableTransitionState(expanded).apply {
@@ -64,14 +70,28 @@ fun ExpandableCard(
     }, label = "") {
         if (expanded) 0f else 180f
     }
+    val cardHeight by transition.animateDp({
+        tween(
+            durationMillis = Constants.EXPAND_ANIMATION_DURATION,
+            easing = FastOutSlowInEasing
+        )
+    }, label = "") {
+        if (expanded) 168.dp else 68.dp
+    }
 
     Card(
         backgroundColor = cardBgColor,
         elevation = cardElevation,
+        border = BorderStroke(
+            width = 1.dp,
+            if (!selected) Color.LightGray else Color.Black
+        ),
         shape = RoundedCornerShape(cardRoundedCorners),
         modifier = Modifier
             .fillMaxWidth()
+            .height(cardHeight)
             .padding(cardPaddingHorizontal, 16.dp, end = cardPaddingHorizontal, bottom = 0.dp)
+            .clickable {onSelectItem(card)}
     ) {
         Column(Modifier.fillMaxSize()) {
             Row(
@@ -82,19 +102,20 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CardArrow(
-                    Modifier.fillMaxWidth(0.1f),
+                    Modifier.weight(1f),
                     degrees = arrowRotationDegree,
                     onClick = onCardArrowClick
                 )
-                CardRdvTitle(title = card.name, date = card.date)
+                CardRdvTitle(
+                    selected=selected,
+                    modifier = Modifier.weight(6f),
+                    title = card.nom,
+                    date = card.date
+                )
             }
         }
         ExpandableRdvContent(
-            adresse = "3 rue des mimosas",
-            cp = "13310",
-            ville = "St martin de crau",
-            visible = expanded,
-            initialVisibility = expanded
+            contact = Contact(),
         )
     }
 }
@@ -103,75 +124,57 @@ fun ExpandableCard(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExpandableRdvContent(
-    adresse: String = "",
-    cp: String = "",
-    ville: String = "",
-    tel: String = "",
-    mail: String = "",
-    visible: Boolean = true,
-    initialVisibility: Boolean = false
+    contact: Contact,
+
 ) {
 
-    val enterFadeIn = remember {
-        fadeIn(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_IN_ANIMATION_DURATION,
-                easing = FastOutLinearInEasing
-            )
-        )
-    }
-    val exitFadeOut = remember {
-        fadeOut(
-            animationSpec = TweenSpec(
-                durationMillis = FADE_OUT_ANIMATION_DURATION,
-                easing = LinearOutSlowInEasing
-            )
-        )
-    }
+    Column(modifier = Modifier.padding(16.dp, 28.dp, 16.dp, 8.dp)) {
 
-    AnimatedVisibility(
-        visible = visible,
-        initiallyVisible = initialVisibility,
-        enter = enterFadeIn,
-        exit = exitFadeOut
-    ) {
-        Column(modifier = Modifier.padding(12.dp, 8.dp, 8.dp, 8.dp)) {
-            Spacer(modifier = Modifier.heightIn(35.dp))
-            Text(
-                text = adresse,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = cp + " " + ville,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = tel,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Text(
-                text = mail,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-        }
+        Text(
+            text = contact.adresse,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(
+            text = contact.cp + " " + contact.ville,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(
+            text = contact.tel,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(
+            text = contact.mail,
+            fontSize = 14.sp,
+            color = Color.DarkGray
+        )
     }
 }
 
+
 @Composable
-fun CardRdvTitle(title: String, date: Int) {
+fun CardRdvTitle(
+    selected: Boolean,
+    modifier: Modifier,
+    title: String,
+    date: Int
+) {
     Text(
+        modifier = modifier,
         text = title,
         fontSize = 15.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Bold,
         textAlign = TextAlign.Left
     )
-    Spacer(modifier = Modifier.width(100.dp))
     Text(
+        modifier = if (selected)Modifier.alpha(1f) else Modifier.alpha(0.90f),
         text = convertTime(date.toLong()),
+        fontWeight = if (selected)FontWeight.Bold else FontWeight.Normal,
         fontSize = 12.sp,
         textAlign = TextAlign.Right
     )

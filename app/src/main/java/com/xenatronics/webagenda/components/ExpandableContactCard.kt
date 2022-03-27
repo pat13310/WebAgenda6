@@ -46,7 +46,6 @@ fun ExpandableContactCard2(
             targetState = !isExpanded
         }
     }
-
     val transition = updateTransition(transitionState, label = "")
     val cardBgColor by transition.animateColor({
         tween(durationMillis = Constants.EXPAND_ANIMATION_DURATION)
@@ -132,7 +131,9 @@ fun ExpandableContactCard2(
                 )
             }
         }
-        ContactExtraContent(onNavigate = onNavigate, contact =contact )
+        ContactExtraContent(onNavigate = onNavigate,
+            contact =contact ,
+            onNew = {})
     }
 }
 
@@ -169,6 +170,7 @@ fun CardContactTitle(
 @Composable
 fun ContactExtraContent(
     onNavigate: (String) -> Unit,
+    onNew:()->Unit,
     contact: Contact,
 ) {
     Column(modifier = Modifier.padding(start=16.dp,top= 42.dp, end =  8.dp, bottom =  10.dp),

@@ -9,6 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UIComboContact
 import com.xenatronics.webagenda.components.UiDatePicker
 import com.xenatronics.webagenda.components.UiTimePicker
+import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
@@ -24,7 +27,8 @@ import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 @Composable
 fun NewRdvScreen(
     navController: NavController,
-    viewModel: ViewModelRdv
+    viewModel: ViewModelRdv,
+    rdv: Rdv
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -60,10 +64,14 @@ fun NewRdvContent(
             .background(Color.White)
     ) {
         //var selectedOptionText by remember { mutableStateOf("") }
+        LaunchedEffect(key1 = true){
+            viewModel.loadContact()
+        }
+        val listContact=viewModel.allContactFlow.collectAsState()
         val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
         Spacer(modifier = Modifier.height(12.dp))
 
-        UIComboContact( options = options, viewModel = viewModel, onNavigate = { route->
+        UIComboContact( options = listContact.value.toList(), viewModel = viewModel, onNavigate = { route->
             navController.navigate(route = route)
         })
         UiDatePicker(viewModel = viewModel)

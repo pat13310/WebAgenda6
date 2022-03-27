@@ -11,11 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
@@ -26,7 +26,7 @@ import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 @Composable
 fun UIComboContact(
     viewModel: ViewModelRdv,
-    options: List<String>,
+    options: List<Contact>,
     onNavigate: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -57,7 +57,6 @@ fun UIComboContact(
                     expanded = true
                 }) {
                 Icon(
-
                     Icons.Default.ArrowDropDown,
                     tint = MaterialTheme.colors.primary,
                     contentDescription = ""
@@ -69,7 +68,7 @@ fun UIComboContact(
                     .background(Color.White)
                     .pointerInput(this) {
 
-                                  },
+                    },
                 text = selectedOptionText,
                 color = MaterialTheme.colors.primary
             )
@@ -95,12 +94,12 @@ fun UIComboContact(
                 options.forEach { selectionOption ->
                     DropdownMenuItem(
                         onClick = {
-                            selectedOptionText = selectionOption
+                            selectedOptionText = selectionOption.nom
                             expanded = false
                         }
                     ) {
                         Text(
-                            text = selectionOption,
+                            text = selectionOption.nom,
                             color = MaterialTheme.colors.primary
                         )
                     }

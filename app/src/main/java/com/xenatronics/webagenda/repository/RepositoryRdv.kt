@@ -39,7 +39,7 @@ object RepositoryRdv {
         }
     }
 
-    suspend fun getRdv(id: Int): List<ResponseRDV> {
+    suspend fun getRdv(id: Int): List<Rdv> {
         return try {
             KtorClient.httpClient.get {
                 url(GET_ALL_RDV)
@@ -126,7 +126,7 @@ object RepositoryRdv {
         }
     }
 
-    suspend fun addRdv(rdv: PostRdv): ResponseSimpleRdv {
+    suspend fun addRdv(rdv:Rdv): ResponseSimpleRdv {
         return try {
             KtorClient.httpClient.post {
                 url(ADD_RDV)
@@ -156,7 +156,7 @@ object RepositoryRdv {
         }
     }
 
-    suspend fun updateRdv(rdv: PostRdv): ResponseSimpleRdv {
+    suspend fun updateRdv(rdv: Rdv): ResponseSimpleRdv {
         return try {
             KtorClient.httpClient.put {
                 url(UPDATE_RDV)

@@ -12,11 +12,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
 import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.screens.*
 import com.xenatronics.webagenda.screens.listcontact.ListContactScreen
+import com.xenatronics.webagenda.screens.listrdv.ListRdvScreen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
-import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,13 +29,20 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.NewRdvScreen.route
+                    startDestination = Screen.ListRdvScreen.route
                 ) {
-                    composable(Screen.NewRdvScreen.route) {
-                        NewRdvScreen(
-                            navController = navController,
-                            viewModel = viewModel()
-                        )
+                    composable(
+                        route = Screen.NewRdvScreen.route + "/{rdv}",
+                        arguments = listOf(navArgument("rdv") { type = NavType.StringType })
+                    ) {backStackEntry->
+                        backStackEntry.arguments?.getString("rdv")?.let{
+                            val rdv=Gson().fromJson(it, Rdv::class.java)
+                            NewRdvScreen(
+                                navController = navController,
+                                viewModel = viewModel(),
+                                rdv=rdv
+                            )
+                        }
                     }
                     composable(Screen.ListRdvScreen.route) {
                         ListRdvScreen(
@@ -46,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         route = Screen.NewContactScreen.route + "/{contact}",
                         arguments = listOf(navArgument("contact") { type = NavType.StringType })
                     ) { backStackEntry ->
-                        backStackEntry.arguments?.getString("contact")?.let() {
+                        backStackEntry.arguments?.getString("contact")?.let {
                             //on convertit la chaine en objet Contact
                             val contact = Gson().fromJson(it, Contact::class.java)
                             NewContactScreen(
@@ -56,10 +64,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     composable(Screen.ListContactScreen.route) {
-                        val viewModel:ViewModelContact= hiltViewModel()
                         ListContactScreen(
                             navController = navController,
-                            viewModel = viewModel
+                            viewModel = hiltViewModel()
                         )
                     }
                     composable(Screen.LoginScreen.route) {

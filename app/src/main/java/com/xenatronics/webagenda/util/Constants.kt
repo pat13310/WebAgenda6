@@ -6,7 +6,7 @@ object Constants {
     const val DELAY_SPLASH=0
     private const val URL_BASE="192.168.1.68"
 
-    private const val URL_RDV="http://$URL_BASE/api/v22/agenda/tasks"
+    private const val URL_RDV="http://$URL_BASE/api/v22/agenda/rdv"
     const val GET_ALL_RDV="$URL_RDV/all"
     const val CLEAR_RDV="$URL_RDV/clear"
     const val ADD_RDV="$URL_RDV/add"

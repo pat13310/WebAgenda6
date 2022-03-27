@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.ExpandableContactCard2
+import com.xenatronics.webagenda.components.SwipeBackground
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.ui.theme.medium_gray
 import com.xenatronics.webagenda.util.Action
@@ -127,10 +128,6 @@ fun ListContactContent(
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts, key={it.id}){item->
-//        itemsIndexed(
-//            items = contacts,
-//            key = { _, item -> item.id }
-//        ) { _, item ->
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
@@ -169,7 +166,7 @@ fun ListContactContent(
                         selectedItem = item
                         //viewModel.updateFields(item)
                     }
-                    RedBackground(degrees = degrees, color)
+                    SwipeBackground(degrees = degrees, color)
                 },
                 dismissContent = {
                     ExpandableContactCard2(
@@ -190,24 +187,3 @@ fun ListContactContent(
     }
 }
 
-
-@Composable
-fun RedBackground(degrees: Float, color: Color) {
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxSize()
-            .background(color),
-        //.clip(shape = RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.CenterEnd
-    ) {
-        Icon(
-            modifier = Modifier
-                .rotate(degrees = degrees)
-                .padding(end = 8.dp),
-            imageVector = Icons.Filled.Delete,
-            contentDescription = stringResource(R.string.delete_item),
-            tint = Color.White
-        )
-    }
-}
