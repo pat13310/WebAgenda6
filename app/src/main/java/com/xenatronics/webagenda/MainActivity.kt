@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                             val rdv=Gson().fromJson(it, Rdv::class.java)
                             NewRdvScreen(
                                 navController = navController,
-                                viewModel = viewModel(),
+                                viewModel = hiltViewModel(),
                                 rdv=rdv
                             )
                         }

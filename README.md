@@ -8,5 +8,6 @@
 **Correction 3:bug uiDatePicker corrigé**
 - amélioration du code et nettoyage
 
-**Correction 4: implémentation liste des rdv
+**Correction 4: implémentation liste des rdv**
+- refonte complète de la liste des rdv
 

@@ -51,12 +51,16 @@ fun NewTaskBar(
 @Composable
 fun ListTaskBar(
     title:String,
-    NavigateToListScreen: (Action) -> Unit
+    NavigateToListScreen: (Action) -> Unit,
+    closeAction:Boolean=true,
+    valideAction:Boolean=true,
+    deleteAction:Boolean=true,
 ) {
     TopAppBar(
         elevation = 2.dp,
         navigationIcon = {
-            CloseAction(onCloseClicked = NavigateToListScreen)
+            if (closeAction)
+                CloseAction(onCloseClicked = NavigateToListScreen)
         },
         title = {
             Text(
@@ -68,8 +72,10 @@ fun ListTaskBar(
         },
         backgroundColor = MaterialTheme.colors.primary,
         actions = {
-            ValidateAction(onValidateClicked = NavigateToListScreen)
-            DeleteAction(onDeleteClicked = NavigateToListScreen)
+            if (valideAction)
+                ValidateAction(onValidateClicked = NavigateToListScreen)
+            if (deleteAction)
+                DeleteAction(onDeleteClicked = NavigateToListScreen)
         }
     )
 }

@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +22,8 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+import com.xenatronics.webagenda.util.calendarSetDate
+import com.xenatronics.webagenda.util.detectMonth
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,9 +43,15 @@ fun UiDatePicker(
 ) {
     Locale.setDefault(Locale.FRANCE)
     var date by viewModel.date
+    var calendar by viewModel.calendar
+
     val dateState = remember { mutableStateOf(date) }
     val dlg = showDialogDate(dateState)
     date = dateState.value
+    calendarSetDate(date = date,calendar=calendar)
+//    val dates=date.split(" ")
+//    calendar.set(dates[2].toInt(),detectMonth(dates[1]),dates[0].toInt())
+//
     val scope = rememberCoroutineScope()
     Box(
         modifier = modifier

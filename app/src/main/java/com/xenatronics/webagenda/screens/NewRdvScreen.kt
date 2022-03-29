@@ -11,6 +11,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,12 +35,15 @@ fun NewRdvScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
+
         Scaffold(
             topBar = {
                 NewTaskBar("Nouveau Rendez-vous",
                     NavigateToListScreen = { action ->
                         if (action == Action.ADD) {
-                            navController.navigate(Screen.NewContactScreen.route)
+                            viewModel.updateFields()
+                            viewModel.handleRdvAction(Action.ADD)
+                            navController.navigate(Screen.ListRdvScreen.route)
                         }
                     })
             },
@@ -68,10 +72,10 @@ fun NewRdvContent(
             viewModel.loadContact()
         }
         val listContact=viewModel.allContactFlow.collectAsState()
-        val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
         Spacer(modifier = Modifier.height(12.dp))
-
-        UIComboContact( options = listContact.value.toList(), viewModel = viewModel, onNavigate = { route->
+        UIComboContact( options = listContact.value.toList(),
+            viewModel = viewModel,
+            onNavigate = { route->
             navController.navigate(route = route)
         })
         UiDatePicker(viewModel = viewModel)

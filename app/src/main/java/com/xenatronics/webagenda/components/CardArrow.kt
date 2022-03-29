@@ -34,5 +34,5 @@ fun CardArrow(
 fun convertTime(timestamp: Long): String {
     val simpleDateFormat =
         SimpleDateFormat("'Le' dd MMMM yyyy 'à' HH:mm", Locale.FRANCE)
-    return simpleDateFormat.format(timestamp * 1000L)
+    return simpleDateFormat.format(timestamp )
 }

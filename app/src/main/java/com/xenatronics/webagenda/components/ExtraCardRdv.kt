@@ -8,9 +8,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,16 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.data.Rdv
+import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ExtraCardRdv(
     card: Rdv,
+    contact: Contact?,
     onCardArrowClick: () -> Unit,
     expanded: Boolean,
     selected: Boolean,
-    onSelectItem:(Rdv)->Unit,
+    onSelectItem: (Rdv) -> Unit,
+    onNavigate:(String)->Unit
 ) {
     val transitionState = remember {
         MutableTransitionState(expanded).apply {
@@ -91,13 +94,13 @@ fun ExtraCardRdv(
             .fillMaxWidth()
             .height(cardHeight)
             .padding(cardPaddingHorizontal, 16.dp, end = cardPaddingHorizontal, bottom = 0.dp)
-            .clickable {onSelectItem(card)}
+            .clickable { onSelectItem(card) }
     ) {
         Column(Modifier.fillMaxSize()) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(start = 0.dp, end = 18.dp),
+                    .padding(start = 7.dp, end = 18.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -107,16 +110,19 @@ fun ExtraCardRdv(
                     onClick = onCardArrowClick
                 )
                 CardRdvTitle(
-                    selected=selected,
+                    selected = selected,
                     modifier = Modifier.weight(6f),
                     title = card.nom,
                     date = card.date
                 )
             }
         }
-        ExpandableRdvContent(
-            contact = Contact(),
-        )
+        if (contact != null) {
+            ExpandableRdvContent(
+                contact = contact,
+                onNavigate=onNavigate
+            )
+        }
     }
 }
 
@@ -125,11 +131,10 @@ fun ExtraCardRdv(
 @Composable
 fun ExpandableRdvContent(
     contact: Contact,
-
+    onNavigate: (String) -> Unit,
 ) {
 
     Column(modifier = Modifier.padding(16.dp, 28.dp, 16.dp, 8.dp)) {
-
         Text(
             text = contact.adresse,
             fontSize = 14.sp,
@@ -148,11 +153,17 @@ fun ExpandableRdvContent(
             color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(3.dp))
-        Text(
-            text = contact.mail,
-            fontSize = 14.sp,
-            color = Color.DarkGray
-        )
+        Row(Modifier.fillMaxWidth()){
+            Text(
+                text = contact.mail,
+                fontSize = 14.sp,
+                color = Color.DarkGray
+            )
+            IconButton(onClick = {onNavigate(Screen.NewRdvScreen.route)}) {
+                Icon(Icons.Filled.Edit, contentDescription = null)
+            }
+        }
+
     }
 }
 
@@ -162,7 +173,7 @@ fun CardRdvTitle(
     selected: Boolean,
     modifier: Modifier,
     title: String,
-    date: Int
+    date: Long
 ) {
     Text(
         modifier = modifier,
@@ -172,9 +183,9 @@ fun CardRdvTitle(
         textAlign = TextAlign.Left
     )
     Text(
-        modifier = if (selected)Modifier.alpha(1f) else Modifier.alpha(0.90f),
-        text = convertTime(date.toLong()),
-        fontWeight = if (selected)FontWeight.Bold else FontWeight.Normal,
+        modifier = if (selected) Modifier.alpha(1f) else Modifier.alpha(0.90f),
+        text = convertTime(date),
+        fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
         fontSize = 12.sp,
         textAlign = TextAlign.Right
     )

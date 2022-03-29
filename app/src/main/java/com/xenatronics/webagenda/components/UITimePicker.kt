@@ -22,6 +22,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
+import com.xenatronics.webagenda.util.calendarSetTime
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -39,15 +40,18 @@ fun UiTimePicker(
 
     ) {
     Locale.setDefault(Locale.FRANCE)
-    val calendar = Calendar.getInstance(Locale.FRANCE)
-    val hour = calendar[Calendar.HOUR]
-    val minute = calendar[Calendar.MINUTE]
 
+    val calendar by viewModel.calendar
     var time by viewModel.time
     val timeTmp = remember { mutableStateOf(time) }
     val dlg = showTimeDialog(timeTmp)
     time = timeTmp.value
-
+    val times=time.split(":")
+    calendarSetTime(time=time, calendar = calendar)
+    /*calendar.set(Calendar.HOUR_OF_DAY, 24)
+    calendar.set(Calendar.HOUR_OF_DAY,times[0].toInt())
+    calendar.set(Calendar.MINUTE,times[1].toInt())
+*/
     Box(
         modifier = modifier
             .background(Color.White)

@@ -10,4 +10,6 @@
     <string name="delete_item">supprimer</string>
     <string name="unhappy">unhappy</string>
     <string name="no_found">Aucun Contact</string>
+    <string name="confirm">Oui</string>
+    <string name="cancel">Non</string>
 </resources>

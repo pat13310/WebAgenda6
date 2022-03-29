@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Rdv(
     val id: Int=0,
-    val nom: String="",
-    val date: Int=0,
-    val id_contact: Int = -1
+    var nom: String="",
+    var date: Long=0,
+    var id_contact: Int = -1
 )
 
 

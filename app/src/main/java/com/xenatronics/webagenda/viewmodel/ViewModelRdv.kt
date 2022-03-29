@@ -3,16 +3,16 @@ package com.xenatronics.webagenda.viewmodel
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.data.PostID
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.repository.RepositoryContact
 import com.xenatronics.webagenda.repository.RepositoryRdv
+import com.xenatronics.webagenda.util.Action
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,25 +20,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewModelRdv @Inject constructor() : ViewModel() {
+    val selectContact = mutableStateOf(Contact())
+    val action = MutableStateFlow<Action>(Action.NO_ACTION)
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
     private val isSateChanged = MutableStateFlow(false)
-    private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
-    val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
     val nom: MutableState<String> = mutableStateOf("")
-    var timestamp= mutableStateOf(0L)
+
+    var timestamp = mutableStateOf(0L)
+    var calendar = mutableStateOf(Calendar.getInstance())
     var time = mutableStateOf("")
     var date = mutableStateOf("")
-    var selectRdv =  mutableStateOf(Rdv())
+    // rdv sélectionné
+    var selectRdv = mutableStateOf(Rdv())
 
 
     init {
         Locale.setDefault(Locale.FRANCE)
         // init time
-        val milliseconds = Date().time
-        date.value=dateFormatter(milliseconds, "dd LLLL yyyy")
+        timestamp.value=calendar.value.timeInMillis
+        date.value = dateFormatter(timestamp.value, "dd LLLL yyyy")
         //init date
-        time.value=dateFormatter(milliseconds,"HH:mm" )
+        time.value = dateFormatter(timestamp.value, "HH:mm")
     }
 
     fun loadRdv() {
@@ -48,10 +51,10 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
                 RepositoryRdv.getAllRdv()
             }.onFailure {
                 allRdvFlow.value = emptyList()
-                isSateChanged.value=true
+                isSateChanged.value = true
             }.onSuccess {
                 allRdvFlow.value = it
-                isSateChanged.value=true
+                isSateChanged.value = true
             }
         }
     }
@@ -71,8 +74,24 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         }
     }
 
+    fun handleRdvAction(action: Action) {
+        when (action) {
+            Action.DELETE -> {
+                allRdvFlow.value.toMutableList().remove(selectRdv.value)
+                deleteRdv(selectRdv.value)
+            }
+            Action.ADD -> {
+                addRdv(selectRdv.value)
+            }
+            Action.DELETE_ALL -> {
+                cleanRdv()
+                allRdvFlow.value.toMutableList().clear()
+            }
+            else -> {}
+        }
+    }
 
-    fun addRdv(rdv: Rdv) {
+    private fun addRdv(rdv: Rdv) {
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.addRdv(rdv)
@@ -84,13 +103,31 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         }
     }
 
-    fun onCardArrowClicked(cardId: Int) {
-        _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
-            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
+    private fun deleteRdv(rdv: Rdv) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                RepositoryRdv.deleteRdv(PostID(rdv.id))
+            }.onSuccess {
+                isSateChanged.value = true
+            }.onFailure {
+                isSateChanged.value = false
+            }
         }
     }
 
-    private fun dateFormatter(milliseconds: Long?, pattern:String="dd/MM/yyyy"): String {
+    private fun cleanRdv() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                RepositoryRdv.clearRdv()
+            }.onSuccess {
+                isSateChanged.value = true
+            }.onFailure {
+                isSateChanged.value = false
+            }
+        }
+    }
+
+    private fun dateFormatter(milliseconds: Long?, pattern: String = "dd/MM/yyyy"): String {
         milliseconds?.let {
             val formatter = SimpleDateFormat(pattern, Locale.getDefault())
             val calendar: Calendar = Calendar.getInstance()
@@ -99,4 +136,29 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         }
         return ""
     }
+
+
+    fun  updateTimeStamp(calendar: Calendar){
+        timestamp.value=calendar.timeInMillis
+    }
+
+    fun updateFields(){
+        selectRdv.value.nom=nom.value
+        selectRdv.value.date= calendar.value.timeInMillis
+        selectRdv.value.id_contact=selectContact.value.id
+    }
+
+    fun getContact(id:Int): Contact? {
+        try {
+            if (allContactFlow.value.isEmpty())
+                return Contact()
+            return  allContactFlow.value.toMutableList().find {it.id==id
+            }
+        }
+        catch (e:ArrayIndexOutOfBoundsException){
+         return  Contact()
+        }
+
+    }
 }
+

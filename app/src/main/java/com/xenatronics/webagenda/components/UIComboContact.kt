@@ -28,6 +28,7 @@ fun UIComboContact(
     viewModel: ViewModelRdv,
     options: List<Contact>,
     onNavigate: (String) -> Unit,
+
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by viewModel.nom
@@ -91,15 +92,16 @@ fun UIComboContact(
                     expanded = false
                 },
             ) {
-                options.forEach { selectionOption ->
+                options.forEach { contact ->
                     DropdownMenuItem(
                         onClick = {
-                            selectedOptionText = selectionOption.nom
+                            viewModel.selectContact.value=contact
+                            selectedOptionText = contact.nom
                             expanded = false
                         }
                     ) {
                         Text(
-                            text = selectionOption.nom,
+                            text = contact.nom,
                             color = MaterialTheme.colors.primary
                         )
                     }
