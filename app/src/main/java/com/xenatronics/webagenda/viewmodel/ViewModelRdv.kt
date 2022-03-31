@@ -11,41 +11,45 @@ import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.repository.RepositoryContact
 import com.xenatronics.webagenda.repository.RepositoryRdv
 import com.xenatronics.webagenda.util.Action
+import com.xenatronics.webagenda.util.getDateFormatter
+import com.xenatronics.webagenda.util.getTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class ViewModelRdv @Inject constructor() : ViewModel() {
-    val selectContact = mutableStateOf(Contact())
-    val action = MutableStateFlow<Action>(Action.NO_ACTION)
+    val action = mutableStateOf(Action.NO_ACTION)
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
     private val isSateChanged = MutableStateFlow(false)
     val nom: MutableState<String> = mutableStateOf("")
-
     var timestamp = mutableStateOf(0L)
+
     var calendar = mutableStateOf(Calendar.getInstance())
     var time = mutableStateOf("")
     var date = mutableStateOf("")
+
     // rdv sélectionné
     var selectRdv = mutableStateOf(Rdv())
+
+    //contact actif
+    val selectContact = mutableStateOf(Contact())
 
 
     init {
         Locale.setDefault(Locale.FRANCE)
         // init time
-        timestamp.value=calendar.value.timeInMillis
-        date.value = dateFormatter(timestamp.value, "dd LLLL yyyy")
+        timestamp.value = calendar.value.timeInMillis
+        date.value = getDateFormatter(timestamp.value)
         //init date
-        time.value = dateFormatter(timestamp.value, "HH:mm")
+        time.value = getTimeFormatter(timestamp.value)
     }
 
     fun loadRdv() {
-        Log.d("rdv", "load")
+        Log.d("Rdv", "load rdv")
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.getAllRdv()
@@ -83,6 +87,9 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
             Action.ADD -> {
                 addRdv(selectRdv.value)
             }
+            Action.UPDATE -> {
+                updateRdv(selectRdv.value)
+            }
             Action.DELETE_ALL -> {
                 cleanRdv()
                 allRdvFlow.value.toMutableList().clear()
@@ -95,6 +102,18 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             kotlin.runCatching {
                 RepositoryRdv.addRdv(rdv)
+            }.onSuccess {
+                isSateChanged.value = true
+            }.onFailure {
+                isSateChanged.value = false
+            }
+        }
+    }
+
+    private fun updateRdv(rdv: Rdv) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                RepositoryRdv.updateRdv(rdv)
             }.onSuccess {
                 isSateChanged.value = true
             }.onFailure {
@@ -127,38 +146,27 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         }
     }
 
-    private fun dateFormatter(milliseconds: Long?, pattern: String = "dd/MM/yyyy"): String {
-        milliseconds?.let {
-            val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.timeInMillis = it
-            return formatter.format(calendar.time)
-        }
-        return ""
+    fun updateTimeStamp(calendar: Calendar) {
+        timestamp.value = calendar.timeInMillis
     }
 
-
-    fun  updateTimeStamp(calendar: Calendar){
-        timestamp.value=calendar.timeInMillis
+    fun updateFields() {
+        selectRdv.value.nom = nom.value
+        selectRdv.value.date = calendar.value.timeInMillis
+        selectRdv.value.id_contact = selectContact.value.id
     }
 
-    fun updateFields(){
-        selectRdv.value.nom=nom.value
-        selectRdv.value.date= calendar.value.timeInMillis
-        selectRdv.value.id_contact=selectContact.value.id
-    }
-
-    fun getContact(id:Int): Contact? {
+    fun getContact(id: Int): Contact? {
         try {
             if (allContactFlow.value.isEmpty())
                 return Contact()
-            return  allContactFlow.value.toMutableList().find {it.id==id
+            return allContactFlow.value.toMutableList().find {
+                it.id == id
             }
         }
-        catch (e:ArrayIndexOutOfBoundsException){
-         return  Contact()
+        catch (e: ArrayIndexOutOfBoundsException) {
+            return Contact()
         }
-
     }
 }
 

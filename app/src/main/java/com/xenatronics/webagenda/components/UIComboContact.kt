@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
@@ -28,10 +30,13 @@ fun UIComboContact(
     viewModel: ViewModelRdv,
     options: List<Contact>,
     onNavigate: (String) -> Unit,
-
+    onText: (String) -> Unit,
+    text: String,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by viewModel.nom
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val textOption= remember {  mutableStateOf("")}
+    if (text.isNotEmpty())
+        textOption.value=text
 
     Box(
         modifier = Modifier
@@ -70,7 +75,7 @@ fun UIComboContact(
                     .pointerInput(this) {
 
                     },
-                text = selectedOptionText,
+                text = textOption.value,
                 color = MaterialTheme.colors.primary
             )
             IconButton(
@@ -95,8 +100,9 @@ fun UIComboContact(
                 options.forEach { contact ->
                     DropdownMenuItem(
                         onClick = {
-                            viewModel.selectContact.value=contact
-                            selectedOptionText = contact.nom
+                            viewModel.selectContact.value = contact
+                            onText(contact.nom)
+                            textOption.value=contact.nom
                             expanded = false
                         }
                     ) {
@@ -110,4 +116,3 @@ fun UIComboContact(
         }
     }
 }
-

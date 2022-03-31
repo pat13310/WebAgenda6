@@ -5,10 +5,7 @@ import android.content.pm.ActivityInfo
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.xenatronics.webagenda.components.ListTaskBar
@@ -45,14 +42,17 @@ fun ListRdvScreen(
             },
         )
     }
+
     viewModel.handleRdvAction(action.value)
     action.value = Action.NO_ACTION
+    val items= viewModel.allRdvFlow.collectAsState()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     // on convertit l'objet rdv en chaine String
+                    //action.value=Action.ADD
                     val rdv = Gson().toJson(Rdv())
                     navController.navigate(Screen.NewRdvScreen.route + "/$rdv")
                 },
@@ -68,13 +68,12 @@ fun ListRdvScreen(
             ListTaskBar("Vos rendez-vous",
                 closeAction = false,
                 valideAction = false,
-                deleteAction = viewModel.allRdvFlow.value.isNotEmpty(),
+                deleteAction = items.value.count()>0,
                 NavigateToListScreen = { action ->
                     if (action == Action.DELETE) {
                         if (selectedItem.id > 0)
                             isOpen.value = true
                     }
-
                 })
         },
         content = {
@@ -82,7 +81,10 @@ fun ListRdvScreen(
                 navController = navController,
                 viewModel = viewModel,
                 onNavigate = { route ->
-                    navController.navigate(route)
+                    val rdvSelected by viewModel.selectRdv
+                    //viewModel.updateFields()
+                    val rdv = Gson().toJson(rdvSelected)// rajouter paramètre rdv
+                    navController.navigate("$route/$rdv")
                 }
             )
         }

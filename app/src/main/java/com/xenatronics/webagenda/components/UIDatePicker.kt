@@ -1,6 +1,5 @@
 package com.xenatronics.webagenda.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,10 +20,11 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.calendarSetDate
-import com.xenatronics.webagenda.util.detectMonth
+import com.xenatronics.webagenda.util.getDateFormatter
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,25 +34,27 @@ import java.util.*
 
 @Composable
 fun UiDatePicker(
+    rdv: Rdv,
+    text: String,
     viewModel: ViewModelRdv,
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .background(Color.White),
+    modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
 ) {
     Locale.setDefault(Locale.FRANCE)
-    var date by viewModel.date
-    var calendar by viewModel.calendar
-
-    val dateState = remember { mutableStateOf(date) }
+    val calendar by viewModel.calendar
+    val dateState = rememberSaveable { mutableStateOf(getDateFormatter(calendar.timeInMillis)) }
+    LaunchedEffect(true) {
+        if (rdv.id>0) {
+            dateState.value = text
+        }
+    }
     val dlg = showDialogDate(dateState)
-    date = dateState.value
-    calendarSetDate(date = date,calendar=calendar)
-//    val dates=date.split(" ")
-//    calendar.set(dates[2].toInt(),detectMonth(dates[1]),dates[0].toInt())
-//
+    calendarSetDate(date = dateState.value, calendar = calendar)
+    rdv.date = calendar.timeInMillis
+    viewModel.selectRdv.value = rdv.copy()
+
     val scope = rememberCoroutineScope()
     Box(
         modifier = modifier

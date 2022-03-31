@@ -1,6 +1,5 @@
 package com.xenatronics.webagenda.components
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,9 +20,11 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.util.Constants
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.calendarSetTime
+import com.xenatronics.webagenda.util.getTimeFormatter
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -31,27 +33,27 @@ import java.util.*
 
 @Composable
 fun UiTimePicker(
+    rdv: Rdv,
+    text:String,
     viewModel: ViewModelRdv,
-    texte: String = "",
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
     iconColor: Color = MaterialTheme.colors.primary,
-
-    ) {
+) {
     Locale.setDefault(Locale.FRANCE)
-
     val calendar by viewModel.calendar
-    var time by viewModel.time
-    val timeTmp = remember { mutableStateOf(time) }
+    val timeTmp = rememberSaveable{ mutableStateOf(getTimeFormatter(calendar.timeInMillis)) }
+    LaunchedEffect(true){
+        if (rdv.id>0){
+            timeTmp.value=text
+        }
+    }
     val dlg = showTimeDialog(timeTmp)
-    time = timeTmp.value
-    val times=time.split(":")
-    calendarSetTime(time=time, calendar = calendar)
-    /*calendar.set(Calendar.HOUR_OF_DAY, 24)
-    calendar.set(Calendar.HOUR_OF_DAY,times[0].toInt())
-    calendar.set(Calendar.MINUTE,times[1].toInt())
-*/
+    calendarSetTime(time = timeTmp.value, calendar = calendar)
+    rdv.date=calendar.timeInMillis
+    viewModel.selectRdv.value=rdv.copy()
+
     Box(
         modifier = modifier
             .background(Color.White)
@@ -100,7 +102,7 @@ fun showTimeDialog(time: MutableState<String>): MaterialDialogState {
             title = "Choisir l'heure",
             is24HourClock = true,
             initialTime = LocalTime.parse(time.value)
-        )//, initialTime = LocalTime.parse(time.value, formatter))
+        )
         {
             time.value = it.format(formatter)
         }

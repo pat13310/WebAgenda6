@@ -13,3 +13,10 @@
 
 **Correction 5: implémentation du nouveau rdv**
 - refonte UIDatePicker et UITimePicker
+
+**Correction 6: fonctions de date évoluée**
+
+**Correction 7: fonction de date évolution pour prise en charge d'une date ou heure en entrée**
+- modification des composants UIDatePicker et UITimePicker
+- implémentation (suite) de NewRdvScreen et ListRdvScreen
+- composant TopBar amélioré et nettoyge du code

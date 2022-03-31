@@ -1,5 +1,8 @@
 package com.xenatronics.webagenda.util
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun detectMonth(month: String): Int {
@@ -20,7 +23,7 @@ fun detectMonth(month: String): Int {
     }
 }
 
-fun calendarSetTime(time:String,calendar:Calendar){
+fun calendarSetTime(time: String, calendar:Calendar){
     val times=time.split(":")
     calendar.set(Calendar.HOUR_OF_DAY, 24)
     calendar.set(Calendar.HOUR_OF_DAY,times[0].toInt())
@@ -30,4 +33,24 @@ fun calendarSetTime(time:String,calendar:Calendar){
 fun calendarSetDate(date:String,calendar:Calendar){
     val dates=date.split(" ")
     calendar.set(dates[2].toInt(),detectMonth(dates[1]),dates[0].toInt())
+    Log.d("Rdv : calendarSetDate", calendar.timeInMillis.toString())
+}
+
+
+private fun dateFormatter(milliseconds: Long?, pattern: String = "dd/MM/yyyy"): String {
+    milliseconds?.let {
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.timeInMillis = it
+        return formatter.format(calendar.time)
+    }
+    return ""
+}
+
+fun getTimeFormatter(time: Long):String{
+    return dateFormatter(time,"HH:mm")
+}
+
+fun getDateFormatter(date: Long):String{
+    return dateFormatter(date,"dd LLLL yyyy")
 }

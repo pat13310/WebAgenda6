@@ -21,7 +21,7 @@ object Constants {
     const val DELETE_CONTACT="$URL_CONTACT/delete"
     const val GET_CONTACT="$URL_CONTACT/get"
 
-    const val EXPAND_ANIMATION_DURATION = 300
+    const val EXPAND_ANIMATION_DURATION = 240
     const val FADE_OUT_ANIMATION_DURATION = 100
     const val FADE_IN_ANIMATION_DURATION = 200
     val HEIGHT_COMPONENT=57.dp

@@ -1,10 +1,8 @@
 package com.xenatronics.webagenda.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -23,6 +21,8 @@ import com.xenatronics.webagenda.components.UiTimePicker
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Action
+import com.xenatronics.webagenda.util.getDateFormatter
+import com.xenatronics.webagenda.util.getTimeFormatter
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 @Composable
@@ -35,14 +35,17 @@ fun NewRdvScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-
         Scaffold(
             topBar = {
-                NewTaskBar("Nouveau Rendez-vous",
-                    NavigateToListScreen = { action ->
-                        if (action == Action.ADD) {
+                NewTaskBar(if (rdv.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
+                    NavigateToListScreen = {
+                        if (rdv.id==0) {
                             viewModel.updateFields()
                             viewModel.handleRdvAction(Action.ADD)
+                            navController.navigate(Screen.ListRdvScreen.route)
+                        }
+                        else{
+                            viewModel.handleRdvAction(Action.UPDATE)
                             navController.navigate(Screen.ListRdvScreen.route)
                         }
                     })
@@ -50,7 +53,8 @@ fun NewRdvScreen(
             content = {
                 NewRdvContent(
                     navController = navController,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    rdv = rdv
                 )
             }
         )
@@ -60,25 +64,47 @@ fun NewRdvScreen(
 @Composable
 fun NewRdvContent(
     navController: NavController,
-    viewModel: ViewModelRdv
+    viewModel: ViewModelRdv,
+    rdv: Rdv,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        //var selectedOptionText by remember { mutableStateOf("") }
-        LaunchedEffect(key1 = true){
+        LaunchedEffect(key1 = true) {
             viewModel.loadContact()
         }
-        val listContact=viewModel.allContactFlow.collectAsState()
+        val listContact = viewModel.allContactFlow.collectAsState()
+        val timestamp=rdv.date
         Spacer(modifier = Modifier.height(12.dp))
-        UIComboContact( options = listContact.value.toList(),
+        UIComboContact(
+            options = listContact.value.toList().sortedBy { contact ->  contact.nom },
             viewModel = viewModel,
-            onNavigate = { route->
-            navController.navigate(route = route)
-        })
-        UiDatePicker(viewModel = viewModel)
-        UiTimePicker(viewModel = viewModel)
+            text = rdv.nom,
+            onText = {
+                rdv.nom = it
+                viewModel.nom.value=it
+            },
+            onNavigate = { route ->
+                navController.navigate(route = route)
+            }
+        )
+        UiDatePicker(
+            viewModel = viewModel,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+            rdv=rdv,
+            text= getDateFormatter(timestamp)
+        )
+        UiTimePicker(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+            viewModel = viewModel,
+            rdv=rdv,
+            text= getTimeFormatter(timestamp)
+        )
     }
 }

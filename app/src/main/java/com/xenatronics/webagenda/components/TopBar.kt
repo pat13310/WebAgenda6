@@ -101,7 +101,7 @@ fun ValidateAction(
     IconButton(onClick = { onValidateClicked(Action.ADD) }) {
         Icon(
             imageVector = Icons.Filled.Check,
-            contentDescription = stringResource(id = R.string.back),
+            contentDescription = stringResource(id = R.string.valide),
             tint = Color.White
         )
     }

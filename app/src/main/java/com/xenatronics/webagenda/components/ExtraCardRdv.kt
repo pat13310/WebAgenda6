@@ -134,7 +134,7 @@ fun ExpandableRdvContent(
     onNavigate: (String) -> Unit,
 ) {
 
-    Column(modifier = Modifier.padding(16.dp, 28.dp, 16.dp, 8.dp)) {
+    Column(modifier = Modifier.padding(start = 16.dp,top= 28.dp, end=8.dp, bottom = 6.dp)) {
         Text(
             text = contact.adresse,
             fontSize = 14.sp,
@@ -153,13 +153,18 @@ fun ExpandableRdvContent(
             color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(3.dp))
-        Row(Modifier.fillMaxWidth()){
+        Row(
+            Modifier
+                .fillMaxWidth()){
             Text(
+                modifier= Modifier.weight(6f),
                 text = contact.mail,
                 fontSize = 14.sp,
                 color = Color.DarkGray
             )
-            IconButton(onClick = {onNavigate(Screen.NewRdvScreen.route)}) {
+            IconButton(
+                modifier= Modifier.weight(1f),
+                onClick = {onNavigate(Screen.NewRdvScreen.route)}) {
                 Icon(Icons.Filled.Edit, contentDescription = null)
             }
         }
