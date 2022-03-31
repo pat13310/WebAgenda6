@@ -1,6 +1,7 @@
 package com.xenatronics.webagenda.screens.listcontact
 
 import android.content.pm.ActivityInfo
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,7 +16,10 @@ import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+
+
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @Composable
 fun ListContactScreen(
     navController: NavController,

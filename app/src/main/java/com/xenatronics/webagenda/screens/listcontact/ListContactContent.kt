@@ -32,6 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun HandleContactContent(
@@ -112,7 +113,9 @@ fun ListContactEmptyContent() {
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
+
+
+@ExperimentalFoundationApi
 @SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalMaterialApi
 

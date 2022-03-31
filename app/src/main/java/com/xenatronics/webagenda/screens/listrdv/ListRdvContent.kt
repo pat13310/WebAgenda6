@@ -12,7 +12,6 @@ import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 @Composable
 fun ListRdvContent(
-    navController: NavController,
     onNavigate:(String)->Unit,
     viewModel: ViewModelRdv) {
     viewModel.loadRdv()

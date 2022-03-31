@@ -57,7 +57,7 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
                 allRdvFlow.value = emptyList()
                 isSateChanged.value = true
             }.onSuccess {
-                allRdvFlow.value = it
+                allRdvFlow.value = it.sortedBy { rdv ->  rdv.date}
                 isSateChanged.value = true
             }
         }

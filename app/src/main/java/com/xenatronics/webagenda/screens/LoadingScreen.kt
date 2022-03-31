@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.ListTaskBar
 
 @Composable
-fun LoadingScreen(navController: NavController, title: String = "") {
+fun LoadingScreen( title: String = "") {
     Scaffold(
         topBar = {
             ListTaskBar(title = title, NavigateToListScreen = {

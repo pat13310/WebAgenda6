@@ -55,7 +55,7 @@ fun UiDatePicker(
     rdv.date = calendar.timeInMillis
     viewModel.selectRdv.value = rdv.copy()
 
-    val scope = rememberCoroutineScope()
+   // val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
             .background(Color.White)
@@ -67,9 +67,9 @@ fun UiDatePicker(
                 shape = RoundedCornerShape(Constants.RADIUS_MEDIUM)
             )
             .clickable {
-                scope.launch {
+                //scope.launch {
                     dlg.show()
-                }
+                //}
             }
     ) {
         Row(

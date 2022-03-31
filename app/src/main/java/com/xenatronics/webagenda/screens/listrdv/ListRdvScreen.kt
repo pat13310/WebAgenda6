@@ -78,11 +78,9 @@ fun ListRdvScreen(
         },
         content = {
             ListRdvContent(
-                navController = navController,
                 viewModel = viewModel,
                 onNavigate = { route ->
                     val rdvSelected by viewModel.selectRdv
-                    //viewModel.updateFields()
                     val rdv = Gson().toJson(rdvSelected)// rajouter paramètre rdv
                     navController.navigate("$route/$rdv")
                 }

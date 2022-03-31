@@ -3,6 +3,9 @@ package com.xenatronics.webagenda
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -20,8 +23,12 @@ import com.xenatronics.webagenda.screens.listrdv.ListRdvScreen
 import com.xenatronics.webagenda.ui.theme.WebAgendaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

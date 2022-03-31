@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,7 @@ import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelRegister
 
+@ExperimentalComposeUiApi
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -64,6 +66,7 @@ fun RegisterScreen(
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun RegisterContent(
     modifier: Modifier,

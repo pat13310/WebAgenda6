@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.xenatronics.webagenda"
-        minSdk 26
+        minSdk 21
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -105,4 +105,6 @@ android {
 //        correctErrorTypes = true
 //    }
     buildToolsVersion '31.0.0'
+
+
 }

@@ -127,14 +127,13 @@ fun ExtraCardRdv(
 }
 
 
-@OptIn(ExperimentalAnimationApi::class)
+
 @Composable
 fun ExpandableRdvContent(
     contact: Contact,
     onNavigate: (String) -> Unit,
 ) {
-
-    Column(modifier = Modifier.padding(start = 16.dp,top= 28.dp, end=8.dp, bottom = 6.dp)) {
+    Column(modifier = Modifier.padding(start = 16.dp,top= 38.dp, end=8.dp, bottom = 6.dp)) {
         Text(
             text = contact.adresse,
             fontSize = 14.sp,

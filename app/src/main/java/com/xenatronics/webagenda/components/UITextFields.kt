@@ -29,7 +29,8 @@ import com.xenatronics.webagenda.util.Constants.RADIUS_SMALL
 import com.xenatronics.webagenda.util.Constants.TOP_SPACE
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+
+@ExperimentalComposeUiApi
 @Composable
 fun UITextStandard(
     label: String = "",
@@ -79,7 +80,8 @@ fun UITextStandard(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+
+@ExperimentalComposeUiApi
 @Composable
 fun UITextPassword(
     label: String = "Mot de passe",

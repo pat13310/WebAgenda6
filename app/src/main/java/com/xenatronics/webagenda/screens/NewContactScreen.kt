@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.viewmodel.ViewModelContact
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun NewContactScreen(
     navController: NavController,
@@ -54,15 +56,15 @@ fun NewContactScreen(
                 })
         },
         content = {
-            ContactContent(viewModel = viewModel, contact)
+            ContactContent( contact)
         }
     )
 }
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun ContactContent(
-    viewModel: ViewModelContact,
     contact: Contact
 ) {
     Column(

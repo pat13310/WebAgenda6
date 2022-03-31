@@ -24,7 +24,7 @@ import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun UIComboContact(
     viewModel: ViewModelRdv,

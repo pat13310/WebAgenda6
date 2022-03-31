@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.annotation.RequiresPermission
 
+@RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
 fun checkInternetAvailable(context:Context):Boolean{
     val connectManager=context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-        val activenetwork=connectManager.activeNetwork?:return false
-        val capabilities=connectManager.getNetworkCapabilities(activenetwork)?:return false
+        val activeNetwork=connectManager.activeNetwork?:return false
+        val capabilities=connectManager.getNetworkCapabilities(activeNetwork)?:return false
         return when{
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)->true

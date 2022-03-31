@@ -1,7 +1,7 @@
 package com.xenatronics.webagenda.components
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.*
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -131,9 +131,10 @@ fun ExpandableContactCard2(
                 )
             }
         }
-        ContactExtraContent(onNavigate = onNavigate,
-            contact =contact ,
-            onNew = {})
+        ContactExtraContent(
+            onNavigate = onNavigate,
+            contact = contact,
+        )
     }
 }
 
@@ -170,12 +171,13 @@ fun CardContactTitle(
 @Composable
 fun ContactExtraContent(
     onNavigate: (String) -> Unit,
-    onNew:()->Unit,
+
     contact: Contact,
 ) {
-    Column(modifier = Modifier.padding(start=16.dp,top= 42.dp, end =  8.dp, bottom =  10.dp),
+    Column(
+        modifier = Modifier.padding(start = 16.dp, top = 42.dp, end = 8.dp, bottom = 10.dp),
 
-    ) {
+        ) {
         Text(
             text = contact.adresse,
             fontSize = 14.sp,
