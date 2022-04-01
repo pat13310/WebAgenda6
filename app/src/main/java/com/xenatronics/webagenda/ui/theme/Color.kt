@@ -10,3 +10,4 @@ val Purple900 = Color(0xFF220070)
 val Teal200 = Color(0xFF03DAC5)
 
 val medium_gray= Color(0xFF777979)
+val dark_gray= Color(0xFF222424)

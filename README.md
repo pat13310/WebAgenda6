@@ -20,3 +20,5 @@
 - modification des composants UIDatePicker et UITimePicker
 - implémentation (suite) de NewRdvScreen et ListRdvScreen
 - composant TopBar amélioré et nettoyge du code
+
+**Correction 8: Intégration de layoutConstraint dans les screen login, register, new contact**

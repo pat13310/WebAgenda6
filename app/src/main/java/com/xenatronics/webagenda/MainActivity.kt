@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ListRdvScreen.route
+                    startDestination = Screen.ListContactScreen.route
                 ) {
                     composable(
                         route = Screen.NewRdvScreen.route + "/{rdv}",
@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                             //on convertit la chaine en objet Contact
                             val contact = Gson().fromJson(it, Contact::class.java)
                             NewContactScreen(
+                                viewModel= hiltViewModel(),
                                 navController = navController,
                                 contact = contact
                             )
@@ -95,6 +96,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }

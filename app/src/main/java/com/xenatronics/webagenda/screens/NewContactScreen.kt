@@ -11,8 +11,12 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.NewTaskBar
@@ -29,7 +33,7 @@ import com.xenatronics.webagenda.viewmodel.ViewModelContact
 fun NewContactScreen(
     navController: NavController,
     contact: Contact,
-    viewModel: ViewModelContact = hiltViewModel()
+    viewModel: ViewModelContact
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Scaffold(
@@ -56,7 +60,7 @@ fun NewContactScreen(
                 })
         },
         content = {
-            ContactContent( contact)
+            ContactContent2(contact)
         }
     )
 }
@@ -64,80 +68,131 @@ fun NewContactScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun ContactContent(
+fun ContactContent2(
     contact: Contact
 ) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 0.dp, top = 5.dp, start = 8.dp, end = 8.dp)
-    ) {
-        var nom by remember { mutableStateOf(contact.nom) }
-        var adresse by remember { mutableStateOf(contact.adresse) }
-        var cp by remember { mutableStateOf(contact.cp) }
-        var ville by remember { mutableStateOf(contact.ville) }
-        var tel by remember { mutableStateOf(contact.tel) }
-        var mail by remember { mutableStateOf(contact.mail) }
+    BoxWithConstraints {
+        val constraint = decoupledConstraints(0.dp)
 
-        UITextStandard(
-            label = "Rendez-vous",
-            value = nom,
-            onTextChanged = {
-                nom = it
-                contact.nom = it
-            },
-            icon = Icons.Default.Person
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        UITextStandard(
-            label = "Adresse",
-            value = adresse,
-            onTextChanged = {
-                adresse = it
-                contact.adresse = it
-            }
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        UITextStandard(
-            label = "Ville",
-            value = ville,
-            onTextChanged = {
-                ville = it
-                contact.ville = it
-            }
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        UITextStandard(
-            label = "Code Postal",
-            value = cp,
-            onTextChanged = {
-                cp = it
-                contact.cp = it
-            },
-            icon = Icons.Default.Place,
-            keyboardType = KeyboardType.Number
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        UITextStandard(
-            label = "Téléphone",
-            value = tel,
-            onTextChanged = {
-                tel = it
-                contact.tel = it
-            },
-            icon = Icons.Default.Phone,
-            keyboardType = KeyboardType.Phone,
-            focusNext = false
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        UITextStandard(
-            label = "Adresse Mail",
-            value = mail,
-            onTextChanged = {
-                mail = it
-                contact.mail = it
-            },
-            icon = Icons.Default.Email,
-        )
+        ConstraintLayout(constraint) {
+            var nom by remember { mutableStateOf(contact.nom) }
+            var adresse by remember { mutableStateOf(contact.adresse) }
+            var cp by remember { mutableStateOf(contact.cp) }
+            var ville by remember { mutableStateOf(contact.ville) }
+            var tel by remember { mutableStateOf(contact.tel) }
+            var mail by remember { mutableStateOf(contact.mail) }
+
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textNom"),
+                label = "Rendez-vous",
+                value = nom,
+                onTextChanged = {
+                    nom = it
+                    contact.nom = it
+                },
+                icon = Icons.Default.Person
+            )
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textAdresse"),
+                label = "Adresse",
+                value = adresse,
+                onTextChanged = {
+                    adresse = it
+                    contact.adresse = it
+                }
+            )
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textVille"),
+                label = "Ville",
+                value = ville,
+                onTextChanged = {
+                    ville = it
+                    contact.ville = it
+                }
+            )
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textCP"),
+                label = "Code Postal",
+                value = cp,
+                onTextChanged = {
+                    cp = it
+                    contact.cp = it
+                },
+                icon = Icons.Default.Place,
+                keyboardType = KeyboardType.Number
+            )
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textTel"),
+                label = "Téléphone",
+                value = tel,
+                onTextChanged = {
+                    tel = it
+                    contact.tel = it
+                },
+                icon = Icons.Default.Phone,
+                keyboardType = KeyboardType.Phone,
+            )
+            UITextStandard(
+                modifier = Modifier.fillMaxWidth(0.92f)
+                    .layoutId("textMail"),
+                label = "Adresse Mail",
+                value = mail,
+                onTextChanged = {
+                    mail = it
+                    contact.mail = it
+                },
+                icon = Icons.Default.Email,
+                focusNext = false
+            )
+        }
+    }
+}
+
+
+private fun decoupledConstraints(margin: Dp, hMargin:Dp=16.dp): ConstraintSet {
+    return ConstraintSet {
+
+        val textNom = createRefFor("textNom")
+        val textAdresse = createRefFor("textAdresse")
+        val textVille = createRefFor("textVille")
+        val textCP = createRefFor("textCP")
+        val textTel = createRefFor("textTel")
+        val textMail = createRefFor("textMail")
+
+        constrain(textNom) {
+            top.linkTo(parent.top, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
+        constrain(textAdresse) {
+            top.linkTo(textNom.bottom, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
+        constrain(textVille) {
+            top.linkTo(textAdresse.bottom, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
+        constrain(textCP) {
+            top.linkTo(textVille.bottom, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
+        constrain(textTel) {
+            top.linkTo(textCP.bottom, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
+        constrain(textMail) {
+            top.linkTo(textTel.bottom, margin = margin)
+            start.linkTo(parent.start, margin = hMargin)
+            end.linkTo(parent.end, margin = hMargin)
+        }
     }
 }

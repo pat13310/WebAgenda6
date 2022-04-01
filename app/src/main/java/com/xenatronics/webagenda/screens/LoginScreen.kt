@@ -2,7 +2,7 @@ package com.xenatronics.webagenda.screens
 
 
 import android.content.pm.ActivityInfo
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
@@ -17,12 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.NewTaskBar
@@ -57,8 +62,11 @@ fun LoginScreen(
                 )
             },
             content = {
-                LoginContent(
-                    modifier = Modifier.fillMaxSize(),
+                LoginContent2(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+
                     viewModel = viewModel, navController = navController
                 )
             }
@@ -68,7 +76,7 @@ fun LoginScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun LoginContent(
+fun LoginContent2(
     modifier: Modifier,
     viewModel: ViewModelLogin,
     navController: NavController,
@@ -76,45 +84,48 @@ fun LoginContent(
     var nom by viewModel.nom
     var password by viewModel.password
 
-    Box(
-        modifier = Modifier
-            .padding(
-                top = 120.dp,
-                start = 0.dp,
-                end = 0.dp,
-                bottom = 50.dp,
-            ),
-        contentAlignment = Alignment.Center
-    )
-    {
-        Column(
-            modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
+
+    BoxWithConstraints{
+        val constraint = decoupledConstraints(16.dp)
+        ConstraintLayout(constraint) {
+            Image(
+                painter = painterResource(id = R.drawable.login),
+                contentDescription = null,
+                modifier=Modifier
+                    .fillMaxWidth()
+                    .layoutId("image")
+            )
             UITextStandard(
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .layoutId("textLogin"),
                 label = "Login",
                 icon = Icons.Default.Person,
                 value = nom,
                 onTextChanged = {
                     nom = it
-                })
-            Spacer(modifier = Modifier.height(18.dp))
+                }
+            )
             UITextPassword(
+                modifier =
+                Modifier
+                    .fillMaxWidth(0.92f)
+                    .layoutId("textPassword"),
                 value = password,
                 onTextChanged = {
                     password = it
                 }
             )
+            AnnotatedClickableText(
+                modifier = Modifier.layoutId("textLink"),
+                onLink = {
+                    navController.navigate(Screen.RegisterScreen.route)
+                }
+            )
         }
-        AnnotatedClickableText(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            onLink = {
-                navController.navigate(Screen.RegisterScreen.route)
-            }
-        )
     }
 }
+
 
 @Composable
 fun AnnotatedClickableText(
@@ -151,11 +162,38 @@ fun AnnotatedClickableText(
             annotatedText.getStringAnnotations(
                 tag = "ACTION", start = offset,
                 end = offset
-            )
-                .firstOrNull()?.let {
-                    onLink()
-                    Log.d("Clicked URL", it.item)
-                }
+            ).firstOrNull()?.let {
+                onLink()
+            }
         }
     )
+}
+
+private fun decoupledConstraints(margin: Dp): ConstraintSet {
+    return ConstraintSet {
+        val image = createRefFor("image")
+        val textLogin = createRefFor("textLogin")
+        val textPassword = createRefFor("textPassword")
+        val textLink = createRefFor("textLink")
+        constrain(image) {
+            top.linkTo(parent.top, 0.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textLogin) {
+            top.linkTo(image.bottom, margin = 0.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textPassword) {
+            top.linkTo(textLogin.bottom, margin = margin)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textLink) {
+            top.linkTo(textPassword.bottom, margin = 70.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+    }
 }

@@ -1,8 +1,10 @@
 package com.xenatronics.webagenda.screens
 
 import android.content.pm.ActivityInfo
-import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -12,16 +14,20 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.components.NewTaskBar
@@ -56,7 +62,7 @@ fun RegisterScreen(
                 )
             },
             content = {
-                RegisterContent(
+                RegisterContent2(
                     modifier = Modifier.fillMaxSize(),
                     viewModel = viewModel,
                     navController = navController
@@ -68,57 +74,62 @@ fun RegisterScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun RegisterContent(
+fun RegisterContent2(
     modifier: Modifier,
     viewModel: ViewModelRegister,
     navController: NavController
 ) {
-
     var nom by viewModel.nom
     var mail by viewModel.mail
     var password by viewModel.password
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .padding(
-                top = 120.dp,
-                start = 2.dp,
-                end = 2.dp,
-                bottom = 50.dp,
-            )
-    ) {
-        Column(
-            modifier
-                .fillMaxSize()
-                .padding(16.dp)
+    BoxWithConstraints {
+        val constraint = decoupledConstraints(16.dp)
+        ConstraintLayout(
+            constraint
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.register),
+                contentDescription = null,
+                Modifier
+                    .fillMaxWidth()
+                    .layoutId("image")
+            )
             UITextStandard(
-                label = "nom de famille",
+                modifier = Modifier
+                    .layoutId("textNom")
+                    .fillMaxWidth(0.92f),
+                label = "Nom de famille",
                 icon = Icons.Default.Person,
                 value = nom,
                 onTextChanged = {
                     nom = it
                 })
-            Spacer(modifier = Modifier.height(16.dp))
             UITextStandard(
-                label = "adresse mail",
+                modifier = Modifier
+                    .layoutId("textMail")
+                    .fillMaxWidth(0.92f),
+                label = "Adresse mail",
                 icon = Icons.Default.Person,
                 value = mail,
                 onTextChanged = {
                     mail = it
                 })
-            Spacer(modifier = Modifier.height(16.dp))
             UITextPassword(
+                modifier = Modifier
+                    .layoutId("textPassword")
+                    .fillMaxWidth(0.92f),
                 value = password,
                 onTextChanged = {
                     password = it
                 }
             )
+            AnnotatedRegisterClickableText(
+                modifier = Modifier.layoutId("textLink"),
+                onLink = {
+                    navController.navigate(Screen.LoginScreen.route)
+                })
         }
-        AnnotatedRegisterClickableText(modifier = Modifier.align(Alignment.BottomCenter), onLink = {
-            navController.navigate(Screen.LoginScreen.route)
-        })
     }
 }
 
@@ -161,8 +172,43 @@ fun AnnotatedRegisterClickableText(
             )
                 .firstOrNull()?.let {
                     onLink()
-                    Log.d("Clicked URL", it.item)
+                    // Log.d("Clicked URL", it.item)
                 }
         }
     )
+}
+
+private fun decoupledConstraints(margin: Dp): ConstraintSet {
+    return ConstraintSet {
+        val image = createRefFor("image")
+        val textMail = createRefFor("textMail")
+        val textNom = createRefFor("textNom")
+        val textPassword = createRefFor("textPassword")
+        val textLink = createRefFor("textLink")
+        constrain(image) {
+            top.linkTo(parent.top, 0.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textNom) {
+            top.linkTo(image.bottom, margin = 0.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textMail) {
+            top.linkTo(textNom.bottom, margin = margin)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textPassword) {
+            top.linkTo(textMail.bottom, margin = margin)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+        constrain(textLink) {
+            top.linkTo(textPassword.bottom, margin = 20.dp)
+            start.linkTo(parent.start, margin = margin)
+            end.linkTo(parent.end, margin = margin)
+        }
+    }
 }

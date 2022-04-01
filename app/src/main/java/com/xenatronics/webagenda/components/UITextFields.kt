@@ -29,10 +29,10 @@ import com.xenatronics.webagenda.util.Constants.RADIUS_SMALL
 import com.xenatronics.webagenda.util.Constants.TOP_SPACE
 
 
-
 @ExperimentalComposeUiApi
 @Composable
 fun UITextStandard(
+    modifier:Modifier,
     label: String = "",
     value: String,
     onTextChanged: (String) -> Unit,
@@ -40,7 +40,8 @@ fun UITextStandard(
     keyboardType: KeyboardType = KeyboardType.Text,
     maxLength: Int = 35,
     padding: Dp = TOP_SPACE,
-    focusNext:Boolean=true
+    focusNext:Boolean=true,
+
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -49,7 +50,7 @@ fun UITextStandard(
             textColor = MaterialTheme.colors.primary,
             leadingIconColor = MaterialTheme.colors.primary,
             trailingIconColor = MaterialTheme.colors.primary,
-            unfocusedBorderColor = MaterialTheme.colors.primary
+            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = 0.50f)
         ),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
         keyboardActions = KeyboardActions(onDone = {
@@ -72,8 +73,8 @@ fun UITextStandard(
             }
         },
         placeholder = { Text(text = label) },
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
+        shape =  RoundedCornerShape(RADIUS_SMALL),
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = padding)
             .height(Constants.HEIGHT_COMPONENT),
@@ -84,6 +85,7 @@ fun UITextStandard(
 @ExperimentalComposeUiApi
 @Composable
 fun UITextPassword(
+    modifier:Modifier,
     label: String = "Mot de passe",
     value: String,
     onTextChanged: (String) -> Unit,
@@ -98,7 +100,7 @@ fun UITextPassword(
             textColor = MaterialTheme.colors.primary,
             leadingIconColor = MaterialTheme.colors.primary,
             trailingIconColor = MaterialTheme.colors.primary,
-            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = 0.28f)
+            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = 0.50f)
         ),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
         keyboardActions = KeyboardActions(onDone = {
@@ -126,7 +128,7 @@ fun UITextPassword(
         },
         placeholder = { Text(text = label) },
         shape = RoundedCornerShape(RADIUS_SMALL),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = TOP_SPACE)
             .height(Constants.HEIGHT_COMPONENT),
