@@ -22,3 +22,6 @@
 - composant TopBar amélioré et nettoyge du code
 
 **Correction 8: Intégration de layoutConstraint dans les screen login, register, new contact**
+
+**Correction 9: Aspect visuel login, register, newRdv retravaillé**
+- composant UIDatePicker, UIDatePicker et UIComboContact avec intégration du LayoutConstraint

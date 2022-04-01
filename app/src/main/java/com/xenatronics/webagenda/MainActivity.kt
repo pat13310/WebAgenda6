@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ListContactScreen.route
+                    startDestination = Screen.ListRdvScreen.route
                 ) {
                     composable(
                         route = Screen.NewRdvScreen.route + "/{rdv}",

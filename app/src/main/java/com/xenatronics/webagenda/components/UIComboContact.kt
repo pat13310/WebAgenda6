@@ -17,16 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
 import com.xenatronics.webagenda.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.util.Constants.RADIUS_MEDIUM
 import com.xenatronics.webagenda.viewmodel.ViewModelRdv
 
 
-
 @Composable
 fun UIComboContact(
+    modifier: Modifier,
     viewModel: ViewModelRdv,
     options: List<Contact>,
     onNavigate: (String) -> Unit,
@@ -34,13 +33,11 @@ fun UIComboContact(
     text: String,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    val textOption= remember {  mutableStateOf("")}
+    val textOption = remember { mutableStateOf("") }
     if (text.isNotEmpty())
-        textOption.value=text
-
+        textOption.value = text
     Box(
-        modifier = Modifier
-            .padding(all = 16.dp)
+        modifier = modifier
             .fillMaxWidth()
             .height(HEIGHT_COMPONENT)
     ) {
@@ -102,7 +99,7 @@ fun UIComboContact(
                         onClick = {
                             viewModel.selectContact.value = contact
                             onText(contact.nom)
-                            textOption.value=contact.nom
+                            textOption.value = contact.nom
                             expanded = false
                         }
                     ) {

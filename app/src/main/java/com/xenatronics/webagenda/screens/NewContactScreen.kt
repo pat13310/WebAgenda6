@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.components.NewTaskBar
 import com.xenatronics.webagenda.components.UITextStandard
@@ -32,8 +31,8 @@ import com.xenatronics.webagenda.viewmodel.ViewModelContact
 @Composable
 fun NewContactScreen(
     navController: NavController,
-    contact: Contact,
-    viewModel: ViewModelContact
+    viewModel: ViewModelContact,
+    contact: Contact
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Scaffold(
@@ -60,7 +59,7 @@ fun NewContactScreen(
                 })
         },
         content = {
-            ContactContent2(contact)
+            ContactContent(contact)
         }
     )
 }
@@ -68,7 +67,7 @@ fun NewContactScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun ContactContent2(
+fun ContactContent(
     contact: Contact
 ) {
     BoxWithConstraints {
@@ -83,7 +82,8 @@ fun ContactContent2(
             var mail by remember { mutableStateOf(contact.mail) }
 
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textNom"),
                 label = "Rendez-vous",
                 value = nom,
@@ -196,3 +196,4 @@ private fun decoupledConstraints(margin: Dp, hMargin:Dp=16.dp): ConstraintSet {
         }
     }
 }
+
