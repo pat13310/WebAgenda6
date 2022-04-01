@@ -41,7 +41,6 @@ fun UITextStandard(
     maxLength: Int = 35,
     padding: Dp = TOP_SPACE,
     focusNext:Boolean=true,
-
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
