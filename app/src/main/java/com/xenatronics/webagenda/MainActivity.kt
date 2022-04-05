@@ -1,13 +1,14 @@
 package com.xenatronics.webagenda
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -36,18 +38,18 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ListRdvScreen.route
+                    startDestination = Screen.SplashScreen.route
                 ) {
                     composable(
                         route = Screen.NewRdvScreen.route + "/{rdv}",
                         arguments = listOf(navArgument("rdv") { type = NavType.StringType })
-                    ) {backStackEntry->
-                        backStackEntry.arguments?.getString("rdv")?.let{
-                            val rdv=Gson().fromJson(it, Rdv::class.java)
+                    ) { backStackEntry ->
+                        backStackEntry.arguments?.getString("rdv")?.let {
+                            val rdv = Gson().fromJson(it, Rdv::class.java)
                             NewRdvScreen(
                                 navController = navController,
                                 viewModel = hiltViewModel(),
-                                rdv=rdv
+                                rdv = rdv
                             )
                         }
                     }
@@ -65,7 +67,7 @@ class MainActivity : ComponentActivity() {
                             //on convertit la chaine en objet Contact
                             val contact = Gson().fromJson(it, Contact::class.java)
                             NewContactScreen(
-                                viewModel= hiltViewModel(),
+                                viewModel = hiltViewModel(),
                                 navController = navController,
                                 contact = contact
                             )

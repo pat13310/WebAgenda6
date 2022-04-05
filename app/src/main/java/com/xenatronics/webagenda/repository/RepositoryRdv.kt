@@ -1,11 +1,13 @@
 package com.xenatronics.webagenda.repository
 
 import com.xenatronics.webagenda.data.*
+
 import com.xenatronics.webagenda.network.KtorClient
 import com.xenatronics.webagenda.util.Constants.ADD_RDV
 import com.xenatronics.webagenda.util.Constants.CLEAR_RDV
 import com.xenatronics.webagenda.util.Constants.DEL_RDV
 import com.xenatronics.webagenda.util.Constants.GET_ALL_RDV
+import com.xenatronics.webagenda.util.Constants.GET_RDV
 import com.xenatronics.webagenda.util.Constants.UPDATE_RDV
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -42,7 +44,7 @@ object RepositoryRdv {
     suspend fun getRdv(id: Int): List<Rdv> {
         return try {
             KtorClient.httpClient.get {
-                url(GET_ALL_RDV)
+                url(GET_RDV)
                 parameter(key = "id", value = id)
             }
         }
@@ -68,7 +70,7 @@ object RepositoryRdv {
         }
     }
 
-    suspend fun clearRdv(): ResponseSimpleRdv {
+    suspend fun clearRdv(): ResponseSimple {
         return try {
             KtorClient.httpClient.get {
                 url(CLEAR_RDV)
@@ -77,26 +79,26 @@ object RepositoryRdv {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun deleteRdv(id: PostID): ResponseSimpleRdv {
+    suspend fun deleteRdv(id: PostID): ResponseSimple {
         return try {
             KtorClient.httpClient.delete {
                 url(DEL_RDV)
@@ -107,26 +109,26 @@ object RepositoryRdv {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun addRdv(rdv:Rdv): ResponseSimpleRdv {
+    suspend fun addRdv(rdv:Rdv): ResponseSimple {
         return try {
             KtorClient.httpClient.post {
                 url(ADD_RDV)
@@ -137,26 +139,26 @@ object RepositoryRdv {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun updateRdv(rdv: Rdv): ResponseSimpleRdv {
+    suspend fun updateRdv(rdv: Rdv): ResponseSimple {
         return try {
             KtorClient.httpClient.put {
                 url(UPDATE_RDV)
@@ -167,22 +169,22 @@ object RepositoryRdv {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleRdv("")
+            ResponseSimple("")
         }
     }
 }

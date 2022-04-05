@@ -18,11 +18,6 @@ data class Contact(
 )
 
 
-@Keep
-@Serializable
-data class ResponseSimpleContact(
-    val Status: String=""
-)
 
 @Keep
 @Serializable

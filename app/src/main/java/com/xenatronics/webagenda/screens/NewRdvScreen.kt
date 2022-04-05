@@ -89,10 +89,10 @@ fun NewRdvContent2(
             }
             val listContact = viewModel.allContactFlow.collectAsState()
             val timestamp = rdv.date
-            Image(painterResource(id = R.drawable.newrdv ), contentDescription = "",
+            Image(painterResource(id = R.drawable.rdv2 ), contentDescription = "",
                 Modifier
-                    .padding(vertical = 8.dp)
-                    .scale(1.2f)
+                    .padding(vertical = 20.dp)
+                    .scale(1.5f)
                     .layoutId("image"))
             UIComboContact(
                 modifier = Modifier

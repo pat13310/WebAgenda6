@@ -60,13 +60,14 @@ android {
         implementation 'androidx.leanback:leanback:1.0.0'
 
         debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-
+        //Ktor client
         implementation "io.ktor:ktor-client-core:$ktor_version"
         implementation "io.ktor:ktor-client-android:$ktor_version"
         implementation "io.ktor:ktor-client-serialization:$ktor_version"
         implementation "io.ktor:ktor-client-logging:$ktor_version"
         implementation "ch.qos.logback:logback-classic:1.2.3"
         implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2'
+        implementation "io.ktor:ktor-client-auth:$ktor_version"
         // layout
         implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
 
@@ -80,9 +81,9 @@ android {
         // swipe refresh (rafraichissement manuel)
         //implementation "com.google.accompanist:accompanist-swiperefresh:0.24.4-alpha"
 
-      /*  implementation "androidx.activity:activity-compose:1.4.0"
-        implementation "androidx.compose.foundation:foundation:1.1.1"
-*/
+        /*  implementation "androidx.activity:activity-compose:1.4.0"
+          implementation "androidx.compose.foundation:foundation:1.1.1"
+  */
         // material dialog
         implementation "io.github.vanpra.compose-material-dialogs:core:0.7.0"
         // material date time
@@ -107,4 +108,8 @@ android {
     buildToolsVersion '31.0.0'
 
 
+}
+
+dependencies {
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 }

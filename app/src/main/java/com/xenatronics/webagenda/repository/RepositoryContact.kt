@@ -2,15 +2,13 @@ package com.xenatronics.webagenda.repository
 
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.data.PostID
-import com.xenatronics.webagenda.data.ResponseSimpleContact
+import com.xenatronics.webagenda.data.ResponseSimple
+
 import com.xenatronics.webagenda.network.KtorClient
 import com.xenatronics.webagenda.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.internal.managers.ApplicationComponentManager
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -46,7 +44,6 @@ object RepositoryContact  {
         }
     }
 
-
     suspend fun getContact(id: Int): List<Contact> {
         return try {
             KtorClient.httpClient.get {
@@ -76,7 +73,7 @@ object RepositoryContact  {
         }
     }
 
-    suspend fun addContact(contact: Contact): ResponseSimpleContact {
+    suspend fun addContact(contact: Contact): ResponseSimple {
         return try {
             KtorClient.httpClient.post() {
                 url(Constants.ADD_CONTACT)
@@ -87,26 +84,26 @@ object RepositoryContact  {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // 3xx --
             println(e.message)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun updateContact(contact: Contact): ResponseSimpleContact {
+    suspend fun updateContact(contact: Contact): ResponseSimple {
         return try {
             KtorClient.httpClient.put() {
                 url(Constants.UPDATE_CONTACT)
@@ -117,26 +114,26 @@ object RepositoryContact  {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun deleteContact(postId: PostID): ResponseSimpleContact {
+    suspend fun deleteContact(postId: PostID): ResponseSimple {
         return try {
             KtorClient.httpClient.delete() {
                 url(Constants.DELETE_CONTACT)
@@ -147,26 +144,26 @@ object RepositoryContact  {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
     }
 
-    suspend fun clearContact(): ResponseSimpleContact {
+    suspend fun clearContact(): ResponseSimple {
         return try {
             KtorClient.httpClient.get {
                 url(Constants.CLEAR_CONTACT)
@@ -175,22 +172,22 @@ object RepositoryContact  {
         catch (e: RedirectResponseException) {
             // 3xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ClientRequestException) {
             // 4xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: ServerResponseException) {
             // 5xx --
             println(e.response.status.description)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
         catch (e: Exception) {
             // xxx --
             println(e.message)
-            ResponseSimpleContact("")
+            ResponseSimple("")
         }
     }
 }
