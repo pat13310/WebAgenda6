@@ -78,6 +78,7 @@ class ViewModelRdv @Inject constructor() : ViewModel() {
         }
     }
 
+
     fun handleRdvAction(action: Action) {
         when (action) {
             Action.DELETE -> {

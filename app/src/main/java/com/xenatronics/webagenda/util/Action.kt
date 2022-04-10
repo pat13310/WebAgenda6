@@ -1,5 +1,7 @@
 package com.xenatronics.webagenda.util
 
+import androidx.compose.runtime.State
+
 enum class Action {
     ADD,
     UPDATE,
@@ -19,7 +21,7 @@ enum class MessageLogin{
     OK
 }
 
-enum class StatusLogin{
+enum class StatusLogin {
     Ok,
     Failure,
     None

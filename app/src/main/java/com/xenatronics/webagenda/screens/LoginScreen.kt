@@ -2,20 +2,17 @@ package com.xenatronics.webagenda.screens
 
 
 import android.content.pm.ActivityInfo
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +34,6 @@ import com.xenatronics.webagenda.components.UITextPassword
 import com.xenatronics.webagenda.components.UITextStandard
 import com.xenatronics.webagenda.data.User
 import com.xenatronics.webagenda.navigation.Screen
-import com.xenatronics.webagenda.repository.RepositoryLogin
 import com.xenatronics.webagenda.util.Action
 import com.xenatronics.webagenda.util.LockScreenOrientation
 import com.xenatronics.webagenda.util.StatusLogin
@@ -46,9 +42,11 @@ import com.xenatronics.webagenda.viewmodel.ViewModelLogin
 @ExperimentalComposeUiApi
 @Composable
 fun LoginScreen(
+    onValidate: (User) -> Unit,
     navController: NavController,
     viewModel: ViewModelLogin
 ) {
+
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -62,22 +60,17 @@ fun LoginScreen(
                         if (action == Action.ADD) {
                             val name by viewModel.nom
                             val password by viewModel.password
-                            val status = viewModel.stateLogin.value
-                            viewModel.login(User(name = name, password = password))
-                            if (status==StatusLogin.Ok){
-                                Log.d("Login","OK")
-                                navController.navigate(Screen.ListRdvScreen.route)
-                            }
+                            onValidate(User(name = name, password = password))
                         }
                     },
                     noBack = true
                 )
             },
             content = {
-                LoginContent2(
+                LoginContent(
                     modifier = Modifier
                         .fillMaxSize(),
-                    viewModel = viewModel, navController = navController
+                    viewModel = viewModel, navController = navController,
                 )
             }
         )
@@ -86,21 +79,29 @@ fun LoginScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun LoginContent2(
+fun LoginContent(
     modifier: Modifier,
     viewModel: ViewModelLogin,
     navController: NavController,
 ) {
     var nom by viewModel.nom
     var password by viewModel.password
+    val status by viewModel.stateLogin
 
-    BoxWithConstraints{
+    LaunchedEffect(status)
+    {
+        if (status == StatusLogin.Ok) {
+            viewModel.goToRdvList(navController = navController)
+        }
+    }
+
+    BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
         ConstraintLayout(constraint) {
             Image(
                 painter = painterResource(id = R.drawable.login),
                 contentDescription = null,
-                modifier= Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .layoutId("image")
             )
@@ -206,3 +207,5 @@ private fun decoupledConstraints(margin: Dp): ConstraintSet {
         }
     }
 }
+
+

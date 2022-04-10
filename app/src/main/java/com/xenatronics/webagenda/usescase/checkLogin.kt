@@ -1,4 +1,4 @@
-package com.xenatronics.usescase
+package com.xenatronics.webagenda.usescase
 
 import com.xenatronics.webagenda.data.User
 import com.xenatronics.webagenda.util.MessageLogin

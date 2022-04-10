@@ -120,7 +120,8 @@ fun ExtraCardRdv(
         if (contact != null) {
             ExpandableRdvContent(
                 contact = contact,
-                onNavigate=onNavigate
+                onNavigate=onNavigate,
+                expanded=expanded,
             )
         }
     }
@@ -132,6 +133,7 @@ fun ExtraCardRdv(
 fun ExpandableRdvContent(
     contact: Contact,
     onNavigate: (String) -> Unit,
+    expanded: Boolean,
 ) {
     Column(modifier = Modifier.padding(start = 16.dp,top= 38.dp, end=8.dp, bottom = 6.dp)) {
         Text(
@@ -161,13 +163,14 @@ fun ExpandableRdvContent(
                 fontSize = 14.sp,
                 color = Color.DarkGray
             )
-            IconButton(
-                modifier= Modifier.weight(1f),
-                onClick = {onNavigate(Screen.NewRdvScreen.route)}) {
-                Icon(Icons.Filled.Edit, contentDescription = null)
+            if (expanded) {
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { onNavigate(Screen.NewRdvScreen.route) }) {
+                    Icon(Icons.Filled.Edit, contentDescription = null)
+                }
             }
         }
-
     }
 }
 

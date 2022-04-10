@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.xenatronics.webagenda.components.ListTaskBar
+import com.xenatronics.webagenda.components.MenuOption
 import com.xenatronics.webagenda.components.UIAlertDialog
 import com.xenatronics.webagenda.data.Rdv
 import com.xenatronics.webagenda.navigation.Screen
@@ -45,7 +46,7 @@ fun ListRdvScreen(
 
     viewModel.handleRdvAction(action.value)
     action.value = Action.NO_ACTION
-    val items= viewModel.allRdvFlow.collectAsState()
+    val items = viewModel.allRdvFlow.collectAsState()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -65,16 +66,25 @@ fun ListRdvScreen(
             }
         },
         topBar = {
-            ListTaskBar("Vos rendez-vous",
-                closeAction = false,
-                valideAction = false,
-                deleteAction = items.value.count()>0,
-                NavigateToListScreen = { action ->
-                    if (action == Action.DELETE) {
-                        if (selectedItem.id > 0)
-                            isOpen.value = true
-                    }
-                })
+            // MenuOptions
+            MenuOption(title = "Vos rendez-vous",
+                onDelete = {
+                    if (selectedItem.id > 0)
+                        isOpen.value = true
+                },
+                onDeleteAll = { },
+                onLogout = {}
+            )
+//            ListTaskBar("Vos rendez-vous",
+//                closeAction = false,
+//                valideAction = false,
+//                deleteAction = items.value.count() > 0,
+//                NavigateToListScreen = { action ->
+//                    if (action == Action.DELETE) {
+//                        if (selectedItem.id > 0)
+//                            isOpen.value = true
+//                    }
+//                })
         },
         content = {
             ListRdvContent(

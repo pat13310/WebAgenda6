@@ -13,4 +13,6 @@
     <string name="confirm">Oui</string>
     <string name="cancel">Non</string>
     <string name="valide">valide</string>
+    <string name="GoogleConnect">Se connecter avec Google</string>
+    <string name="CreateAccount">Création du compte ...</string>
 </resources>
