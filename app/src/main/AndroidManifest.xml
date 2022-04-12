@@ -24,7 +24,7 @@
         android:theme="@style/Theme.WebAgenda"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.WebAgenda">
 
