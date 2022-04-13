@@ -38,7 +38,7 @@ fun SplashScreen(navController: NavController) {
 }
 
 @Composable
-fun SplashContent(alpha: Float) {
+fun SplashContent(alpha: Float=1f) {
     Box(
         Modifier
             .fillMaxSize()

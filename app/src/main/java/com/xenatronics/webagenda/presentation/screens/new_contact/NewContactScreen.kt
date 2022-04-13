@@ -24,7 +24,7 @@ import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelContact
+import com.xenatronics.webagenda.presentation.screens.listcontact.ViewModelContact
 
 
 @ExperimentalComposeUiApi
@@ -44,6 +44,7 @@ fun NewContactScreen(
                             // new contact
                             if (contact.id == 0) {
                                 viewModel.updateFields(contact = contact)
+
                                 viewModel.handleContactAction(Action.ADD)
                             } else { // update contact
                                 viewModel.updateFields(contact = contact)

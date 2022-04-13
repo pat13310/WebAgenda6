@@ -15,13 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun MenuOption(
+fun TopBarWithMenuOption(
     title: String,
     onDelete: () -> Unit,
     onDeleteAll: () -> Unit,
     onLogout: () -> Unit,
 ) {
-    val context = LocalContext.current
+    //val context = LocalContext.current
     val isExpanded = remember {
         mutableStateOf(false)
     }

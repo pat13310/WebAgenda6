@@ -23,7 +23,6 @@ import com.xenatronics.webagenda.presentation.components.SwipeBackground
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.presentation.ui.theme.medium_gray
 import com.xenatronics.webagenda.common.util.Action
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelContact
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

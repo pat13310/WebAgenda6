@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.viewmodel
+package com.xenatronics.webagenda.presentation.screens.register
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

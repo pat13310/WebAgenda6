@@ -25,7 +25,8 @@ import com.xenatronics.webagenda.presentation.screens.*
 import com.xenatronics.webagenda.presentation.screens.listcontact.ListContactScreen
 import com.xenatronics.webagenda.presentation.screens.listrdv.ListRdvScreen
 import com.xenatronics.webagenda.presentation.ui.theme.WebAgendaTheme
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelLogin
+import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
+import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi

@@ -37,7 +37,7 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
 import com.xenatronics.webagenda.common.util.StatusLogin
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelLogin
+import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi
@@ -49,7 +49,7 @@ fun LoginScreen(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {

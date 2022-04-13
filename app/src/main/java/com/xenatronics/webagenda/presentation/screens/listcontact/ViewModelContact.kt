@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.viewmodel
+package com.xenatronics.webagenda.presentation.screens.listcontact
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.PostID
-import com.xenatronics.webagenda.data.repository.RepositoryContact
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.domain.usecase.Contact.UseCaseContact
 import dagger.hilt.android.lifecycle.HiltViewModel

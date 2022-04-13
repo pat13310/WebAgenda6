@@ -20,13 +20,14 @@ import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.Constants.RADIUS_MEDIUM
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelRdv
+import com.xenatronics.webagenda.presentation.screens.listrdv.ViewModelRdv
+import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
 
 
 @Composable
 fun UIComboContact(
     modifier: Modifier,
-    viewModel: ViewModelRdv,
+    viewModel: ViewModelNewRdv,
     options: List<Contact>,
     onNavigate: (String) -> Unit,
     onText: (String) -> Unit,

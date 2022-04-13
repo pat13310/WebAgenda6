@@ -13,7 +13,6 @@ import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelContact
 import kotlinx.coroutines.launch
 
 

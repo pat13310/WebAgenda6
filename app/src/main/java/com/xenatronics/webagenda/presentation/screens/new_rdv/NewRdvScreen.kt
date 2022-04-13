@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.screens
+package com.xenatronics.webagenda.presentation.screens.new_rdv
 
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -24,25 +24,43 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.common.events.NewRdvEvent
+import com.xenatronics.webagenda.common.events.UIEvent
+import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UIComboContact
 import com.xenatronics.webagenda.presentation.components.UiDatePicker
 import com.xenatronics.webagenda.presentation.components.UiTimePicker
 import com.xenatronics.webagenda.domain.model.Rdv
-import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
 import com.xenatronics.webagenda.common.util.getDateFormatter
 import com.xenatronics.webagenda.common.util.getTimeFormatter
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelRdv
+import kotlinx.coroutines.flow.collect
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewRdvScreen(
     navController: NavController,
-    viewModel: ViewModelRdv,
+    viewModel: ViewModelNewRdv,
     rdv: Rdv
 ) {
+    LaunchedEffect(key1 = Unit){
+            viewModel.uiEvent.collect {
+                event->
+                when(event){
+                    is UIEvent.Navigate->{
+                        navController.navigate(event.route)
+                    }
+                    is UIEvent.ShowSnackBar->{
+
+                    }
+                    is UIEvent.PopBackStack->{
+
+                    }
+                }
+            }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -52,18 +70,22 @@ fun NewRdvScreen(
             topBar = {
                 NewTaskBar(if (rdv.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
                     NavigateToListScreen = {
-                        if (rdv.id == 0) {
-                            viewModel.updateFields()
-                            viewModel.handleRdvAction(Action.ADD)
-                            navController.navigate(Screen.ListRdvScreen.route)
-                        } else {
-                            viewModel.handleRdvAction(Action.UPDATE)
-                            navController.navigate(Screen.ListRdvScreen.route)
+                        if (it==Action.ADD) {
+                            if (rdv.id == 0) {
+                                viewModel.updateFields()
+                                viewModel.OnEvent(NewRdvEvent.OnNew)
+                            } else {
+                                viewModel.OnEvent(NewRdvEvent.OnUpdate)
+                            }
+                        }
+                        else
+                        {
+                            viewModel.OnEvent(NewRdvEvent.OnBack)
                         }
                     })
             },
             content = {
-                NewRdvContent2(
+                NewRdvContent(
                     navController = navController,
                     viewModel = viewModel,
                     rdv = rdv
@@ -75,15 +97,14 @@ fun NewRdvScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewRdvContent2(
+fun NewRdvContent(
     navController: NavController,
-    viewModel: ViewModelRdv,
+    viewModel: ViewModelNewRdv,
     rdv: Rdv,
 ) {
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
         ConstraintLayout( constraint) {
-
             LaunchedEffect(key1 = true) {
                 viewModel.loadContact()
             }

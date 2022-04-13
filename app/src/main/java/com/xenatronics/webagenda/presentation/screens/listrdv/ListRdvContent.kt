@@ -7,17 +7,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.xenatronics.webagenda.presentation.components.ExtraCardRdv
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelRdv
 
 @Composable
 fun ListRdvContent(
     onNavigate:(String)->Unit,
-    viewModel: ViewModelRdv) {
+    viewModel: ViewModelRdv
+) {
     viewModel.loadRdv()
     viewModel.loadContact()
     val cards = viewModel.allRdvFlow.collectAsState()
 
     var selectedRdv by viewModel.selectRdv
+
 
     LazyColumn(
         modifier = Modifier

@@ -28,7 +28,8 @@ import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.calendarSetTime
 import com.xenatronics.webagenda.common.util.getTimeFormatter
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelRdv
+import com.xenatronics.webagenda.presentation.screens.listrdv.ViewModelRdv
+import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -39,7 +40,7 @@ import java.util.*
 fun UiTimePicker(
     rdv: Rdv,
     text:String,
-    viewModel: ViewModelRdv,
+    viewModel: ViewModelNewRdv,
     modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,

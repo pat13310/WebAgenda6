@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.viewmodel
+package com.xenatronics.webagenda.presentation.screens.login
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

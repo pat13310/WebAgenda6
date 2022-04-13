@@ -6,15 +6,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.google.gson.Gson
-import com.xenatronics.webagenda.presentation.components.MenuOption
-import com.xenatronics.webagenda.presentation.components.UIAlertDialog
-import com.xenatronics.webagenda.domain.model.Rdv
-import com.xenatronics.webagenda.common.navigation.Screen
+import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.common.events.ListRdvEvent
+import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.viewmodel.ViewModelRdv
+import com.xenatronics.webagenda.presentation.components.TopBarWithMenuOption
+import com.xenatronics.webagenda.presentation.components.UIAlertDialog
+import kotlinx.coroutines.flow.collect
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -24,37 +25,62 @@ fun ListRdvScreen(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
-    val isOpen = remember { mutableStateOf(false) }
+    val showDialogDelete = remember { mutableStateOf(false) }
     val selectedItem by viewModel.selectRdv
-    val action = viewModel.action
 
-    if (isOpen.value) {
+    var title by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
+    var action by remember { mutableStateOf(Action.NO_ACTION) }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UIEvent.Navigate -> {
+                    navController.navigate(event.route)
+                }
+                is UIEvent.ShowSnackBar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(event.message, event.action)
+                }
+                is UIEvent.ShowAlertDialog -> {
+                    title = event.title
+                    message = event.message
+                    action = event.action
+                    showDialogDelete.value = true
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    if (showDialogDelete.value) {
         UIAlertDialog(
-            title = "Suppression",
-            message = "Voulez-vous supprimer le rendez-vous avec ${selectedItem.nom}?",
+            title = title,
+            message = message,
             onValidate = {
-                isOpen.value = false
-                action.value = Action.DELETE
+                when (action) {
+                    Action.DELETE -> {
+                        viewModel.OnEvent(ListRdvEvent.OnDelete)
+                    }
+                    Action.DELETE_ALL -> {
+                        viewModel.OnEvent(ListRdvEvent.OnClean)
+                    }
+                    else -> Unit
+                }
+                showDialogDelete.value = false
             },
             onCancel = {
-                isOpen.value = false
-                action.value = Action.NO_ACTION
+                showDialogDelete.value = false
+                viewModel.OnEvent(ListRdvEvent.OnNothing)
             },
         )
     }
 
-    viewModel.handleRdvAction(action.value)
-    action.value = Action.NO_ACTION
-    val items = viewModel.allRdvFlow.collectAsState()
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // on convertit l'objet rdv en chaine String
-                    //action.value=Action.ADD
-                    val rdv = Gson().toJson(Rdv())
-                    navController.navigate(Screen.NewRdvScreen.route + "/$rdv")
+                    viewModel.OnEvent(ListRdvEvent.OnNew)
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -65,37 +91,29 @@ fun ListRdvScreen(
             }
         },
         topBar = {
-            // MenuOptions
-            MenuOption(title = "Vos rendez-vous",
+            // TopBar with MenuOptions
+            TopBarWithMenuOption(title = stringResource(id = R.string.rdv),
                 onDelete = {
-                    if (selectedItem.id > 0)
-                        isOpen.value = true
+                    if (selectedItem.id > 0) {
+                        viewModel.OnEvent(ListRdvEvent.OnQueryDelete)
+                    }
                 },
-                onDeleteAll = { },
-                onLogout = {}
+                onDeleteAll = {
+                    viewModel.OnEvent(ListRdvEvent.OnQueryClean)
+                },
+                onLogout = {
+                    viewModel.OnEvent(ListRdvEvent.OnLogout)
+                }
             )
-//            ListTaskBar("Vos rendez-vous",
-//                closeAction = false,
-//                valideAction = false,
-//                deleteAction = items.value.count() > 0,
-//                NavigateToListScreen = { action ->
-//                    if (action == Action.DELETE) {
-//                        if (selectedItem.id > 0)
-//                            isOpen.value = true
-//                    }
-//                })
         },
         content = {
             ListRdvContent(
                 viewModel = viewModel,
-                onNavigate = { route ->
-                    val rdvSelected by viewModel.selectRdv
-                    val rdv = Gson().toJson(rdvSelected)// rajouter paramètre rdv
-                    navController.navigate("$route/$rdv")
+                onNavigate = {
+                    viewModel.OnEvent(ListRdvEvent.OnEdit)
                 }
             )
         }
     )
 }
-
 
