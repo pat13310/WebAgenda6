@@ -5,16 +5,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import com.google.gson.Gson
-import com.xenatronics.webagenda.presentation.components.ListTaskBar
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.common.events.ListContactEvent
+import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import kotlinx.coroutines.launch
-
+import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.presentation.components.ListTaskBar
+import kotlinx.coroutines.flow.collect
 
 
 @ExperimentalFoundationApi
@@ -26,9 +28,24 @@ fun ListContactScreen(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
-    //}
-    //on appelle cette fonction quand l'action change
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UIEvent.ShowSnackBar -> {
+                    val result =
+                        scaffoldState.snackbarHostState.showSnackbar(event.message, event.action)
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.OnEvent(ListContactEvent.OnUndo)
+                    }
+                }
+                is UIEvent.Navigate -> {
+                    navController.navigate(event.route)
+                }
+                else -> Unit
+            }
+        }
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -48,71 +65,26 @@ fun ListContactScreen(
         },
         topBar = {
             ListTaskBar("Vos contacts", NavigateToListScreen = { action ->
-                if (viewModel.selectedItem.value.id > 0) {
+                if (viewModel.selectedContact.value.id > 0) {
                     if (action == Action.DELETE) {
-                        viewModel.action.value = action
+                        viewModel.OnEvent(ListContactEvent.OnQueryDelete)
                     }
                     if (action == Action.ADD) {
-                        navController.navigate(Screen.NewRdvScreen.route)
+                        viewModel.OnEvent((ListContactEvent.OnValidate))
+                        //navController.navigate(Screen.ListRdvScreen.route)
                     }
                 }
             })
         },
         content = {
-            HandleContactContent(
+            ListContactContent(
                 viewModel = viewModel,
                 navController = navController,
-                scaffoldState=scaffoldState,
+
             )
         }
     )
 }
 
-@Composable
-fun ShowSnackBar(
-    action: Action,
-    scaffoldState: ScaffoldState,
-    onUndoClick: (Action) -> Unit,
-    title: String = "",
-    //onComplete: (Action) -> Unit
-) {
-    val scope = rememberCoroutineScope()
-    LaunchedEffect(key1 = action) {
-        if (action == Action.DELETE) {
-            scope.launch {
-                val snackResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = translateMessage(action, title),
-                    actionLabel = setActionLabel(action = action)
-                )
-                if (snackResult == SnackbarResult.ActionPerformed && action == Action.DELETE)
-                    onUndoClick(Action.UNDO)
-            }
-            //onComplete(Action.NO_ACTION)
-        }
-    }
-}
 
-fun setActionLabel(action: Action): String {
-    return when (action) {
-        Action.DELETE -> {
-            "Rétablir"
-        }
-        Action.UNDO -> {
-            ""
-        }
-        else -> {
-            "Ok"
-        }
-    }
-}
 
-fun translateMessage(
-    action: Action,
-    title: String
-): String {
-
-    return when (action) {
-        Action.DELETE -> "Suppression de $title"
-        else -> ""
-    }
-}

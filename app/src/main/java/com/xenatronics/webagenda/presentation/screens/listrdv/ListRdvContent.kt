@@ -16,26 +16,24 @@ fun ListRdvContent(
     viewModel.loadRdv()
     viewModel.loadContact()
     val cards = viewModel.allRdvFlow.collectAsState()
-
     var selectedRdv by viewModel.selectRdv
-
 
     LazyColumn(
         modifier = Modifier
             .fillMaxHeight(0.9f)
             .fillMaxWidth()
     ) {
-        items(cards.value.toMutableList()) {
+        items(cards.value.toMutableList()) {item->
             var expanded by remember { mutableStateOf(false) }
             ExtraCardRdv(
-                card = it,
-                contact = viewModel.getContact(it.id_contact),
+                card = item,
+                contact = viewModel.getContact(item.id_contact),
                 onCardArrowClick = {
-                    selectedRdv = it
+                    selectedRdv = item
                     expanded=!expanded
                 },
                 expanded = expanded,
-                selected = it == selectedRdv,
+                selected = item == selectedRdv,
                 onSelectItem = {rdv-> selectedRdv = rdv },
                 onNavigate=onNavigate,
             )

@@ -26,6 +26,7 @@ import com.xenatronics.webagenda.presentation.screens.listcontact.ListContactScr
 import com.xenatronics.webagenda.presentation.screens.listrdv.ListRdvScreen
 import com.xenatronics.webagenda.presentation.ui.theme.WebAgendaTheme
 import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
+import com.xenatronics.webagenda.presentation.screens.new_contact.NewContactScreen
 import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.SplashScreen.route
+                    startDestination = Screen.ListContactScreen.route
                 ) {
                     addSplash(navController = navController)
                     addLogin(navController = navController)
@@ -137,6 +138,7 @@ fun NavGraphBuilder.addNewContact(navController: NavController) {
         backStackEntry.arguments?.getString("contact")?.let {
             //on convertit la chaine en objet Contact
             val contact = Gson().fromJson(it, Contact::class.java)
+
             NewContactScreen(
                 viewModel = hiltViewModel(),
                 navController = navController,

@@ -32,7 +32,7 @@ import com.xenatronics.webagenda.common.util.Constants
 
 @SuppressLint("UnusedTransitionTargetStateParameter", "UnrememberedMutableState")
 @Composable
-fun ExpandableContactCard2(
+fun ExpandableContactCard(
     contact: Contact,
     onCardArrowClick: () -> Unit,
     onSelectItem: (Contact) -> Unit,

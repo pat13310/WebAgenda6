@@ -1,6 +1,4 @@
-package com.xenatronics.webagenda.domain.usecase.Contact
-
-import com.xenatronics.webagenda.domain.usecase.Contact.*
+package com.xenatronics.webagenda.domain.usecase.contact
 
 class UseCaseContact(
     val addContact: AddContact,

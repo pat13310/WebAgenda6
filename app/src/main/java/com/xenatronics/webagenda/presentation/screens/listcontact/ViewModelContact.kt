@@ -1,17 +1,22 @@
 package com.xenatronics.webagenda.presentation.screens.listcontact
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.common.events.ListContactEvent
+import com.xenatronics.webagenda.common.events.UIEvent
+import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
-import com.xenatronics.webagenda.domain.usecase.Contact.UseCaseContact
+import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,114 +25,101 @@ class ViewModelContact @Inject constructor(
     private val useCaseContact: UseCaseContact
 ) : ViewModel() {
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
 
     val id: MutableState<Int> = mutableStateOf(0)
     val nom: MutableState<String> = mutableStateOf("")
-    private val adresse: MutableState<String> = mutableStateOf("")
-    private val ville: MutableState<String> = mutableStateOf("")
-    private val cp: MutableState<String> = mutableStateOf("")
-    private val tel: MutableState<String> = mutableStateOf("")
-    private val mail: MutableState<String> = mutableStateOf("")
     val action = mutableStateOf(Action.NO_ACTION)
-    val selectedItem = mutableStateOf(Contact())
+    val selectedContact = mutableStateOf(Contact())
+    private val _uiEvent = Channel<UIEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
-
-    private val _isSateChanged = MutableStateFlow(false)
-    val isStateChanged: StateFlow<Boolean> = _isSateChanged
-
-    fun load() {
+    /*private val _isDelete:MutableState<Boolean> = mutableStateOf(false)
+    val isDelete:State<Boolean> = _isDelete
+*/
+    fun loadContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("Agenda", "Load")
-            _isLoading.value = true
             kotlin.runCatching {
                 useCaseContact.getAllContact()
             }.onFailure {
                 allContactFlow.value = emptyList()
-                _isLoading.value = false
             }.onSuccess { list ->
                 allContactFlow.value = list.sortedBy { contact -> contact.nom }
-                _isLoading.value = false
             }
         }
     }
 
-    fun handleContactAction(action: Action) {
-        _isSateChanged.value = false
-        when (action) {
-            Action.ADD -> {
+    private fun sendUIEvent(event: UIEvent) {
+        viewModelScope.launch {
+            _uiEvent.send(event)
+        }
+    }
+
+    fun OnEvent(event: ListContactEvent) {
+        when (event) {
+            is ListContactEvent.OnValidate->{
+                sendUIEvent(UIEvent.Navigate(Screen.NewContactScreen.route+"/{$selectedContact}"))
+            }
+            is ListContactEvent.OnAdd -> {
                 addContact()
             }
-            Action.DELETE -> {
+            is ListContactEvent.OnQueryDelete -> {
+                //_isDelete.value=true
+                //allContactFlow.update {allContactFlow.value.toList()  }
+                deleteContact()
+                sendUIEvent(
+                    UIEvent.ShowSnackBar(
+                        action = "Rétablir",
+                        message = "Suppression de ${selectedContact.value.nom}"
+                    )
+                )
+            }
+            is ListContactEvent.OnDelete -> {
+                allContactFlow.update {allContactFlow.value.toList()  }
+                //allContactFlow.value.toMutableList().remove(selectedContact)
                 deleteContact()
             }
-            Action.UPDATE -> {
-                updateContact()
-            }
-            Action.DELETE_ALL -> {
-                cleanContact()
-            }
-            Action.UNDO -> {
+            is ListContactEvent.OnUndo -> {
                 addContact()
             }
-            else -> {
-                Log.d("Agenda", "aucune action")
-            }
+            else -> Unit
         }
-        _isSateChanged.value = true
     }
-
 
     private fun cleanContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseContact.cleanContact()
+            kotlin.runCatching {
+                useCaseContact.cleanContact()
+            }.onSuccess {
+
+            }.onFailure {
+
+            }
         }
     }
 
-
     private fun addContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            val contact = Contact(
-                nom = nom.value,
-                adresse = adresse.value,
-                cp = cp.value,
-                ville = ville.value,
-                tel = tel.value,
-                mail = mail.value
-            )
-            useCaseContact.addContact(contact = contact)
+            kotlin.runCatching {
+                useCaseContact.addContact(contact = selectedContact.value)
+            }.onSuccess {
+                loadContact()
+            }.onFailure {
+
+            }
         }
     }
 
     private fun deleteContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            useCaseContact.deleteContact(id.value)
+            kotlin.runCatching {
+                //allContactFlow.value.toMutableList().remove(selectedContact.value)
+                useCaseContact.deleteContact(selectedContact.value.id)
+            }.onSuccess {
+                loadContact()
+            }.onFailure {
+
+            }
         }
     }
 
-    private fun updateContact() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val contact = Contact(
-                id = id.value,
-                nom = nom.value,
-                adresse = adresse.value,
-                cp = cp.value,
-                ville = ville.value,
-                tel = tel.value,
-                mail = mail.value
-            )
-            useCaseContact.updateContact(contact = contact)
-        }
-    }
-
-    fun updateFields(contact: Contact) {
-        id.value = contact.id
-        nom.value = contact.nom
-        adresse.value = contact.adresse
-        cp.value = contact.cp
-        ville.value = contact.ville
-        tel.value = contact.tel
-        mail.value = contact.mail
-    }
 }

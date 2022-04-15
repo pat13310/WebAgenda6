@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.domain.usecase.Rdv
+package com.xenatronics.webagenda.domain.usecase.rdv
 
 data class UseCaseRdv(
     val addRdv: AddRdv,

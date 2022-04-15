@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.domain.usecase.Login
+package com.xenatronics.webagenda.domain.usecase.login
 
 data class UseCaseLogin(
     val login:Login,

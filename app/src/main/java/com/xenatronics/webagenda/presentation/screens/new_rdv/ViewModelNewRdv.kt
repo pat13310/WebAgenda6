@@ -12,8 +12,8 @@ import com.xenatronics.webagenda.common.util.getDateFormatter
 import com.xenatronics.webagenda.common.util.getTimeFormatter
 import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
-import com.xenatronics.webagenda.domain.usecase.Contact.UseCaseContact
-import com.xenatronics.webagenda.domain.usecase.Rdv.UseCaseRdv
+import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
+import com.xenatronics.webagenda.domain.usecase.rdv.UseCaseRdv
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

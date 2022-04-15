@@ -11,7 +11,7 @@ import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.MessageLogin
 import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.domain.model.User
-import com.xenatronics.webagenda.domain.usecase.Login.UseCaseLogin
+import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
 import com.xenatronics.webagenda.domain.usecase.checkLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

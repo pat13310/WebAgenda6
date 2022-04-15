@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.screens
+package com.xenatronics.webagenda.presentation.screens.new_contact
 
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.*
@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -18,23 +19,40 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
+import com.xenatronics.webagenda.common.events.NewContactEvent
+import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UITextStandard
 import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.screens.listcontact.ViewModelContact
+import kotlinx.coroutines.flow.collect
 
 
 @ExperimentalComposeUiApi
 @Composable
 fun NewContactScreen(
     navController: NavController,
-    viewModel: ViewModelContact,
+    viewModel: ViewModelNewContact,
     contact: Contact
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
+
+    val scaffoldState = rememberScaffoldState()
+    LaunchedEffect(key1 = Unit ){
+        viewModel.uiEvent.collect { event->
+            when(event){
+                is UIEvent.Navigate->{
+                    navController.navigate(event.route)
+                }
+                is UIEvent.ShowSnackBar->{
+                    scaffoldState.snackbarHostState.showSnackbar(event.message, actionLabel = event.action)
+                }
+                else -> Unit
+            }
+        }
+    }
     Scaffold(
         topBar = {
             NewTaskBar(if (contact.id == 0) "Nouveau Contact" else "Modifier un Contact",
@@ -43,17 +61,21 @@ fun NewContactScreen(
                         Action.ADD -> {
                             // new contact
                             if (contact.id == 0) {
-                                viewModel.updateFields(contact = contact)
-
-                                viewModel.handleContactAction(Action.ADD)
+                                viewModel.setCurrent(contact)
+                                viewModel.OnEvent(NewContactEvent.OnNew)
+                                //viewModel.updateFields(contact = contact)
+                                //viewModel.handleContactAction(Action.ADD)
                             } else { // update contact
-                                viewModel.updateFields(contact = contact)
-                                viewModel.handleContactAction(Action.UPDATE)
+                                viewModel.setCurrent(contact)
+                                viewModel.OnEvent(NewContactEvent.OnUpdate)
+                                //viewModel.updateFields(contact = contact)
+                                //viewModel.handleContactAction(Action.UPDATE)
                             }
-                            navController.navigate(Screen.ListContactScreen.route)
+                            //navController.navigate(Screen.ListContactScreen.route)
                         }
                         Action.NO_ACTION -> {
-                            navController.popBackStack()
+                            viewModel.OnEvent(NewContactEvent.OnBack)
+                            //navController.popBackStack()
                         }
                         else -> {}
                     }
@@ -95,7 +117,8 @@ fun ContactContent(
                 icon = Icons.Default.Person
             )
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textAdresse"),
                 label = "Adresse",
                 value = adresse,
@@ -105,7 +128,8 @@ fun ContactContent(
                 }
             )
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textVille"),
                 label = "Ville",
                 value = ville,
@@ -115,7 +139,8 @@ fun ContactContent(
                 }
             )
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textCP"),
                 label = "Code Postal",
                 value = cp,
@@ -127,7 +152,8 @@ fun ContactContent(
                 keyboardType = KeyboardType.Number
             )
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textTel"),
                 label = "Téléphone",
                 value = tel,
@@ -139,7 +165,8 @@ fun ContactContent(
                 keyboardType = KeyboardType.Phone,
             )
             UITextStandard(
-                modifier = Modifier.fillMaxWidth(0.92f)
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
                     .layoutId("textMail"),
                 label = "Adresse Mail",
                 value = mail,

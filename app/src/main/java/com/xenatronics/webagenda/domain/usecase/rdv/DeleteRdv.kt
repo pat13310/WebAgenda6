@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.domain.usecase.Rdv
+package com.xenatronics.webagenda.domain.usecase.rdv
 
 import com.xenatronics.webagenda.data.repository.RepositoryRdv
 import com.xenatronics.webagenda.domain.model.ResponseSimple

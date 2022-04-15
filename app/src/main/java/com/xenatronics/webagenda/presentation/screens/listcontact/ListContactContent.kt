@@ -3,135 +3,52 @@ package com.xenatronics.webagenda.presentation.screens.listcontact
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.xenatronics.webagenda.R
-import com.xenatronics.webagenda.presentation.components.ExpandableContactCard2
-import com.xenatronics.webagenda.presentation.components.SwipeBackground
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.presentation.ui.theme.medium_gray
+import com.xenatronics.webagenda.common.events.ListContactEvent
 import com.xenatronics.webagenda.common.util.Action
+import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.presentation.components.ExpandableContactCard
+import com.xenatronics.webagenda.presentation.components.SwipeBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
-@Composable
-fun HandleContactContent(
-    viewModel: ViewModelContact,
-    navController: NavController,
-    scaffoldState: ScaffoldState
-) {
-    val action = viewModel.action
 
-//    LaunchedEffect(key1 = action) {
-//        viewModel.load()
-//    }
-    viewModel.load()
-    val contacts by viewModel.allContactFlow.collectAsState()
-
-    if (contacts.isEmpty()) {
-        ListContactEmptyContent()
-    } else {
-        ShowSnackBar(
-            scaffoldState = scaffoldState,
-            action = action.value,
-            onUndoClick = {
-                if (it == Action.UNDO) {
-                    action.value = it
-                }
-            },
-            title = viewModel.nom.value,)
-            //onComplete = {})
-
-        viewModel.handleContactAction(action = action.value)
-        action.value = Action.NO_ACTION
-
-        ListContactContent(
-            contacts = contacts.toMutableList(),
-            viewModel = viewModel,
-            navController = navController,
-            onSwipToDelete = { act, contact ->
-                if (act == Action.DELETE) {
-                    action.value = act
-                    //on supprime une eventuelle fenetre avant
-                    scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
-                    viewModel.updateFields(contact = contact)
-                }
-            },
-            onSelectItem = {contact->
-                viewModel.updateFields(contact = contact)
-            }
-        )
-    }
-}
-
-
-@Composable
-fun ListContactEmptyContent() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Icon(
-            modifier = Modifier.size(120.dp),
-            painter = painterResource(
-                id = R.drawable.ic_unhappy
-            ),
-            contentDescription = stringResource(id = R.string.unhappy),
-            tint = medium_gray
-        )
-        Text(
-            text = stringResource(id = R.string.no_found),
-            color = medium_gray,
-            fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.h6.fontSize
-        )
-    }
-}
-
-
-
-
-@ExperimentalFoundationApi
 @SuppressLint("CoroutineCreationDuringComposition")
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 
 @Composable
 fun ListContactContent(
-    contacts: MutableList<Contact>,
     navController: NavController,
     viewModel: ViewModelContact,
-    onSwipToDelete: (Action, Contact) -> Unit,
-    onSelectItem:(Contact)->Unit,
 ) {
-    var selectedItem by viewModel.selectedItem
+
+    val contacts = viewModel.allContactFlow.collectAsState()
+    var selectedItem by viewModel.selectedContact
+    val isDeleted= remember {mutableStateOf(false)   }
+
+    viewModel.loadContact()
+
 
     LazyColumn(Modifier.fillMaxSize()) {
-        items(contacts, key={it.id}){item->
+        items(contacts.value.toMutableList()) { item ->
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        selectedItem = item
-                        contacts.remove(item)
-                        onSwipToDelete(Action.DELETE, item)
+                        //contacts.value.toMutableList().remove(selectedItem)
+                        viewModel.OnEvent(ListContactEvent.OnQueryDelete)
+                        //selectedItem = item
+                        viewModel.selectedContact.value=item
+                        //viewModel.isDelete=true
+                        //isDeleted.value=true
                     }
                     true
                 }
@@ -148,7 +65,7 @@ fun ListContactContent(
                 }
             }
             SwipeToDismiss(
-                modifier=Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItemPlacement(),
                 state = state,
                 dismissThresholds = { FractionalThreshold(0.33f) },
                 directions = setOf(DismissDirection.EndToStart),
@@ -162,18 +79,17 @@ fun ListContactContent(
                     }
                     if (state.dismissDirection == DismissDirection.EndToStart) {
                         selectedItem = item
-                        //viewModel.updateFields(item)
                     }
                     SwipeBackground(degrees = degrees, color)
                 },
                 dismissContent = {
-                    ExpandableContactCard2(
+                    ExpandableContactCard(
                         selected = selectedItem == item,
                         contact = item,
                         onCardArrowClick = { selectedItem = item },
                         onSelectItem = {
                             selectedItem = item
-                            onSelectItem(item)
+                           // onSelectItem(item)
                         },
                         onNavigate = { route ->
                             navController.navigate(route)
@@ -184,4 +100,3 @@ fun ListContactContent(
         }
     }
 }
-
