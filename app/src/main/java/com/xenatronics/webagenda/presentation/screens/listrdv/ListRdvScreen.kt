@@ -59,10 +59,10 @@ fun ListRdvScreen(
             onValidate = {
                 when (action) {
                     Action.DELETE -> {
-                        viewModel.OnEvent(ListRdvEvent.OnDelete)
+                        viewModel.onEvent(ListRdvEvent.OnDelete)
                     }
                     Action.DELETE_ALL -> {
-                        viewModel.OnEvent(ListRdvEvent.OnClean)
+                        viewModel.onEvent(ListRdvEvent.OnClean)
                     }
                     else -> Unit
                 }
@@ -70,7 +70,7 @@ fun ListRdvScreen(
             },
             onCancel = {
                 showDialogDelete.value = false
-                viewModel.OnEvent(ListRdvEvent.OnNothing)
+                viewModel.onEvent(ListRdvEvent.OnNothing)
             },
         )
     }
@@ -80,7 +80,7 @@ fun ListRdvScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    viewModel.OnEvent(ListRdvEvent.OnNew)
+                    viewModel.onEvent(ListRdvEvent.OnNew)
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -95,14 +95,14 @@ fun ListRdvScreen(
             TopBarWithMenuOption(title = stringResource(id = R.string.rdv),
                 onDelete = {
                     if (selectedItem.id > 0) {
-                        viewModel.OnEvent(ListRdvEvent.OnQueryDelete)
+                        viewModel.onEvent(ListRdvEvent.OnQueryDelete)
                     }
                 },
                 onDeleteAll = {
-                    viewModel.OnEvent(ListRdvEvent.OnQueryClean)
+                    viewModel.onEvent(ListRdvEvent.OnQueryClean)
                 },
                 onLogout = {
-                    viewModel.OnEvent(ListRdvEvent.OnLogout)
+                    viewModel.onEvent(ListRdvEvent.OnLogout)
                 }
             )
         },
@@ -110,7 +110,7 @@ fun ListRdvScreen(
             ListRdvContent(
                 viewModel = viewModel,
                 onNavigate = {
-                    viewModel.OnEvent(ListRdvEvent.OnEdit)
+                    viewModel.onEvent(ListRdvEvent.OnEdit)
                 }
             )
         }

@@ -1,18 +1,19 @@
 package com.xenatronics.webagenda.presentation.screens.login
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.xenatronics.webagenda.common.events.LoginEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.MessageLogin
 import com.xenatronics.webagenda.common.util.StatusLogin
-import com.xenatronics.webagenda.domain.model.User
-import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
+import com.xenatronics.webagenda.domain.model.Credentials
 import com.xenatronics.webagenda.domain.usecase.checkLogin
+import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -21,24 +22,40 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewModelLogin @Inject constructor(
-    private val useCase: UseCaseLogin
-) : ViewModel() {
+    private val useCase: UseCaseLogin,
+
+    ) : ViewModel() {
     val nom = mutableStateOf("")
     val password = mutableStateOf("")
     private val _stateLogin = mutableStateOf(StatusLogin.None)
     val stateLogin: State<StatusLogin> get() = _stateLogin
     private val token = mutableStateOf("")
+
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun OnEvent(event: LoginEvent) {
+    var state by mutableStateOf(LoginState())
+
+    fun onEvent(event: LoginEvent) {
 
         when (event) {
-            is LoginEvent.OnCheck -> {
-                // verifie nom et password
-                val res = checkLogin(User(nom.value, password.value))
+            is LoginEvent.onNavigateListRdv -> {
+                sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
+            }
+            is LoginEvent.onNavigateRegister -> {
+                sendUIEvent(UIEvent.Navigate(Screen.RegisterScreen.route))
+            }
+            is LoginEvent.EmailChanged -> {
+                state = state.copy(email = event.email)
+            }
+            is LoginEvent.PasswordChanged -> {
+                state = state.copy(password = event.password)
+            }
+
+            is LoginEvent.OnSubmit -> {
+                val res = checkLogin(Credentials(state.email, state.password))
                 if (res == MessageLogin.OK) {
-                    login(User(nom.value, password.value))
+                    login(Credentials(state.email, state.password))
                 } else {
                     var errorMessage = ""
                     when (res) {
@@ -60,7 +77,6 @@ class ViewModelLogin @Inject constructor(
             is LoginEvent.OnFailed -> {
                 sendUIEvent(UIEvent.ShowSnackBar("Ok", event.error))
             }
-            else -> Unit
         }
     }
 
@@ -70,28 +86,22 @@ class ViewModelLogin @Inject constructor(
         }
     }
 
-    private fun login(user: User) {
+    private fun login(user: Credentials) {
         viewModelScope.launch {
             kotlin.runCatching {
                 useCase.login(user)
             }.onSuccess {
                 if (it.Status.contains("incorrect")) {
-                    OnEvent(LoginEvent.OnFailed(it.Status))
+                    onEvent(LoginEvent.OnFailed(it.Status))
                 }
                 if (it.Status.contains("-")) {
-                    OnEvent(LoginEvent.OnSucces)
+                    onEvent(LoginEvent.OnSucces)
                     token.value = it.Status
                 }
             }.onFailure {
                 token.value = ""
-                OnEvent(LoginEvent.OnFailed("erreur internet"))
+                onEvent(LoginEvent.OnFailed("erreur internet"))
             }
-        }
-    }
-
-    fun goToRdvList(navController: NavController) {
-        viewModelScope.launch {
-            navController.navigate(Screen.ListRdvScreen.route)
         }
     }
 }

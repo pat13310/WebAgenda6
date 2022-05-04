@@ -1,16 +1,12 @@
 package com.xenatronics.webagenda.data.repository
 
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.data.PostID
+import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.domain.model.PostID
 import com.xenatronics.webagenda.domain.model.ResponseSimple
 
 import com.xenatronics.webagenda.data.network.KtorClient
 import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.domain.repository.RepositoryBaseContact
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -100,7 +96,7 @@ class RepositoryContact @Inject constructor() :RepositoryBaseContact {
             ResponseSimple("")
         }
         catch (e: Exception) {
-            // 3xx --
+            // xxx --
             println(e.message)
             ResponseSimple("")
         }

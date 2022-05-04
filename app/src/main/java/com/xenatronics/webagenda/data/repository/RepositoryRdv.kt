@@ -6,7 +6,7 @@ import com.xenatronics.webagenda.common.util.Constants.DEL_RDV
 import com.xenatronics.webagenda.common.util.Constants.GET_ALL_RDV
 import com.xenatronics.webagenda.common.util.Constants.GET_RDV
 import com.xenatronics.webagenda.common.util.Constants.UPDATE_RDV
-import com.xenatronics.webagenda.data.PostID
+import com.xenatronics.webagenda.domain.model.PostID
 import com.xenatronics.webagenda.data.network.KtorClient
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.model.ResponseSimple
@@ -40,7 +40,7 @@ class RepositoryRdv @Inject constructor() : RepositoryBaseRdv {
             emptyList()
         }
         catch (e: Exception) {
-            // 3xx --
+            // xxx --
             println(e.message)
             emptyList()
         }

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.gson.Gson
 import com.xenatronics.webagenda.R
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Constants
 
@@ -131,10 +131,12 @@ fun ExpandableContactCard(
                 )
             }
         }
-        ContactExtraContent(
-            onNavigate = onNavigate,
-            contact = contact,
-        )
+        if (isExpanded) {
+            ContactExtraContent(
+                onNavigate = onNavigate,
+                contact = contact,
+            )
+        }
     }
 }
 

@@ -2,7 +2,9 @@ package com.xenatronics.webagenda.presentation.screens.listrdv
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -10,7 +12,7 @@ import com.xenatronics.webagenda.common.events.ListRdvEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import com.xenatronics.webagenda.domain.usecase.rdv.UseCaseRdv
@@ -19,6 +21,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,22 +31,22 @@ class ViewModelRdv @Inject constructor(
 ) : ViewModel() {
     val action = mutableStateOf(Action.NO_ACTION)
     val allRdvFlow = MutableStateFlow<List<Rdv>>(emptyList())
-    val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
+    private val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
     private val isSateChanged = MutableStateFlow(false)
     val nom: MutableState<String> = mutableStateOf("")
-    //var timestamp = mutableStateOf(0L)
 
-    //private var calendar = mutableStateOf(Calendar.getInstance())
     var date = mutableStateOf("")
 
-    // rdv sélectionné
+    // rdv selected
     var selectRdv = mutableStateOf(Rdv())
+    //var selectedContact= mutableStateOf(Contact())
+    var state by mutableStateOf(ListRdvState())
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     fun loadRdv() {
-        Log.d("Rdv", "load rdv")
+        //Log.d("Rdv", "load rdv")
         viewModelScope.launch {
             kotlin.runCatching {
                 useCase.getAllRdv()
@@ -71,14 +74,19 @@ class ViewModelRdv @Inject constructor(
         }
     }
 
+    fun setSelect(rdv: Rdv){
+        selectRdv.value=rdv
+    }
+
     private fun sendUIEvent(event: UIEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
 
-    fun OnEvent(event: ListRdvEvent) {
+    fun onEvent(event: ListRdvEvent) {
         when (event) {
+
             ListRdvEvent.OnLogout->{
                 sendUIEvent(UIEvent.Navigate(Screen.LoginScreen.route))
             }
@@ -180,15 +188,31 @@ class ViewModelRdv @Inject constructor(
     }
 
     fun getContact(id: Int): Contact? {
-        try {
+//        viewModelScope.launch {
+//         kotlin.runCatching {
+//             useCaseContact.getContact(id = id)
+//         }.onSuccess {
+//             it.map {contact->
+//                 selectedContact.value=contact
+//             }
+//         }.onFailure {
+//
+//         }
+//        }
+//        return selectedContact.value
+       try {
             if (allContactFlow.value.isEmpty())
-                return Contact()
-            return allContactFlow.value.toMutableList().find {
-                it.id == id
+                return null
+
+            return allContactFlow.value.toList().find {
+                it.id == id && it.id>0
             }
         }
+       catch (e:Exception){
+           return null
+       }
         catch (e: ArrayIndexOutOfBoundsException) {
-            return Contact()
+            return null
         }
     }
 }

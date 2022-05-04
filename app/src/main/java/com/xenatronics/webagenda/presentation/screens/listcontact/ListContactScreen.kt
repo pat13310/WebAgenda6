@@ -14,7 +14,7 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.presentation.components.ListTaskBar
 import kotlinx.coroutines.flow.collect
 
@@ -71,7 +71,6 @@ fun ListContactScreen(
                     }
                     if (action == Action.ADD) {
                         viewModel.OnEvent((ListContactEvent.OnValidate))
-                        //navController.navigate(Screen.ListRdvScreen.route)
                     }
                 }
             })

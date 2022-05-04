@@ -1,6 +1,6 @@
 package com.xenatronics.webagenda.domain.usecase.contact
 
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.data.repository.RepositoryContact
 
 class GetAllContact(val repository:RepositoryContact){

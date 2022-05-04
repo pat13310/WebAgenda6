@@ -12,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.common.events.ListContactEvent
-import com.xenatronics.webagenda.common.util.Action
-import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.presentation.components.ExpandableContactCard
 import com.xenatronics.webagenda.presentation.components.SwipeBackground
 import kotlinx.coroutines.delay
@@ -33,7 +31,7 @@ fun ListContactContent(
 
     val contacts = viewModel.allContactFlow.collectAsState()
     var selectedItem by viewModel.selectedContact
-    val isDeleted= remember {mutableStateOf(false)   }
+    //val isDeleted= remember {mutableStateOf(false)   }
 
     viewModel.loadContact()
 

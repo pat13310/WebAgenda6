@@ -1,5 +1,8 @@
 package com.xenatronics.webagenda.common.events
 
+import android.app.Person
+import com.xenatronics.webagenda.domain.model.Contact
+
 sealed class ListRdvEvent {
     object OnAdd : ListRdvEvent()
     object OnDelete : ListRdvEvent()
@@ -20,4 +23,7 @@ sealed class NewRdvEvent {
     object OnNew : NewRdvEvent()
     object OnUpdate : NewRdvEvent()
     object OnBack : NewRdvEvent()
+    data class ChangedContact(val contact: Contact):NewRdvEvent()
+    data class ChangedDate(val date:String):NewRdvEvent()
+    data class ChangedTime(val time:String):NewRdvEvent()
 }

@@ -3,7 +3,7 @@ package com.xenatronics.webagenda.data.repository
 import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.data.network.KtorClient
 import com.xenatronics.webagenda.domain.model.ResponseSimple
-import com.xenatronics.webagenda.domain.model.User
+import com.xenatronics.webagenda.domain.model.Credentials
 import com.xenatronics.webagenda.domain.repository.RepositoryBaseLogin
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class RepositoryLogin @Inject constructor() : RepositoryBaseLogin {
 
-    override suspend fun Login(user: User): ResponseSimple {
+    override suspend fun Login(user: Credentials): ResponseSimple {
         return try {
             KtorClient.httpClient.post {
                 url(Constants.LOGIN)
@@ -44,14 +44,13 @@ class RepositoryLogin @Inject constructor() : RepositoryBaseLogin {
         }
     }
 
-    override suspend fun Register(user: User): ResponseSimple {
+
+    override suspend fun Register(user: Credentials): ResponseSimple {
         return try {
             KtorClient.httpClient.post {
                 url(Constants.REGISTER)
                 body = user
                 contentType(ContentType.Application.Json)
-//                parameter(key="name", value=user.name)
-//                parameter(key="password", value=user.password)
             }
         }
         catch (e: RedirectResponseException) {
@@ -77,7 +76,7 @@ class RepositoryLogin @Inject constructor() : RepositoryBaseLogin {
     }
 
 
-    override suspend fun Logout(user: User): ResponseSimple {
+    override suspend fun Logout(user: Credentials): ResponseSimple {
         return try {
             KtorClient.httpClient.post {
                 url(Constants.LOGOUT)
@@ -106,5 +105,5 @@ class RepositoryLogin @Inject constructor() : RepositoryBaseLogin {
             ResponseSimple()
         }
     }
-
 }
+

@@ -34,7 +34,7 @@ fun ListRdvContent(
                 },
                 expanded = expanded,
                 selected = item == selectedRdv,
-                onSelectItem = {rdv-> selectedRdv = rdv },
+                onSelectItem = {rdv-> viewModel.setSelect(rdv) },
                 onNavigate=onNavigate,
             )
         }

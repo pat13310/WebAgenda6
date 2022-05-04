@@ -1,8 +1,6 @@
 package com.xenatronics.webagenda.presentation.screens
 
 import android.content.pm.ActivityInfo
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,23 +12,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.presentation.ui.theme.dark_gray
-import com.xenatronics.webagenda.common.util.Constants.DELAY_SPLASH
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
+import com.xenatronics.webagenda.presentation.ui.theme.dark_gray
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(navController: NavController) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-    var startAnimation by remember { mutableStateOf(false) }
-    val alphaAnim = animateFloatAsState(
+    //var startAnimation by remember { mutableStateOf(false) }
+    /*val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = DELAY_SPLASH),
-    )
-    SplashContent(alpha = alphaAnim.value)
+    )*/
+    SplashContent()
     LaunchedEffect(key1 = true) {
-        startAnimation = true
+        //startAnimation = true
         delay(1500)
         navController.popBackStack()
         navController.navigate(Screen.LoginScreen.route)
@@ -38,7 +35,7 @@ fun SplashScreen(navController: NavController) {
 }
 
 @Composable
-fun SplashContent(alpha: Float=1f) {
+fun SplashContent() {
     Box(
         Modifier
             .fillMaxSize()
@@ -47,7 +44,7 @@ fun SplashContent(alpha: Float=1f) {
     ) {
         Image(
             //ha = alpha),
-            painterResource( id = R.drawable.logo ),
+            painterResource(id = R.drawable.logo),
             contentDescription = ""
         )
 

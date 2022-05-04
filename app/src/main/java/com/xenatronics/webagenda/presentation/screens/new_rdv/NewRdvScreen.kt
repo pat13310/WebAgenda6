@@ -27,14 +27,13 @@ import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.util.Action
+import com.xenatronics.webagenda.common.util.LockScreenOrientation
+import com.xenatronics.webagenda.common.util.getDateFormatter
+import com.xenatronics.webagenda.common.util.getTimeFormatter
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UIComboContact
 import com.xenatronics.webagenda.presentation.components.UiDatePicker
 import com.xenatronics.webagenda.presentation.components.UiTimePicker
-import com.xenatronics.webagenda.domain.model.Rdv
-import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.common.util.getDateFormatter
-import com.xenatronics.webagenda.common.util.getTimeFormatter
 import kotlinx.coroutines.flow.collect
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -42,23 +41,24 @@ import kotlinx.coroutines.flow.collect
 fun NewRdvScreen(
     navController: NavController,
     viewModel: ViewModelNewRdv,
-    rdv: Rdv
-) {
-    LaunchedEffect(key1 = Unit){
-            viewModel.uiEvent.collect {
-                event->
-                when(event){
-                    is UIEvent.Navigate->{
-                        navController.navigate(event.route)
-                    }
-                    is UIEvent.ShowSnackBar->{
 
-                    }
-                    is UIEvent.PopBackStack->{
-
-                    }
+    ) {
+    val state = viewModel.state
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UIEvent.Navigate -> {
+                    navController.navigate(event.route)
                 }
+                is UIEvent.ShowSnackBar -> {
+
+                }
+                is UIEvent.PopBackStack -> {
+
+                }
+                else -> Unit
             }
+        }
     }
 
     Surface(
@@ -68,19 +68,18 @@ fun NewRdvScreen(
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         Scaffold(
             topBar = {
-                NewTaskBar(if (rdv.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
+                NewTaskBar(if (state.rdv?.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
                     NavigateToListScreen = {
-                        if (it==Action.ADD) {
-                            if (rdv.id == 0) {
-                                viewModel.updateFields()
-                                viewModel.OnEvent(NewRdvEvent.OnNew)
+                        if (it == Action.ADD) {
+                            if (state.rdv?.id == 0) {
+                                //viewModel.setSelectRdv(state.rdv)
+                                viewModel.onEvent(NewRdvEvent.OnNew)
                             } else {
-                                viewModel.OnEvent(NewRdvEvent.OnUpdate)
+                                //viewModel.setSelectRdv(state.rdv!!)
+                                viewModel.onEvent(NewRdvEvent.OnUpdate)
                             }
-                        }
-                        else
-                        {
-                            viewModel.OnEvent(NewRdvEvent.OnBack)
+                        } else {
+                            viewModel.onEvent(NewRdvEvent.OnBack)
                         }
                     })
             },
@@ -88,8 +87,8 @@ fun NewRdvScreen(
                 NewRdvContent(
                     navController = navController,
                     viewModel = viewModel,
-                    rdv = rdv
-                )
+
+                    )
             }
         )
     }
@@ -100,42 +99,51 @@ fun NewRdvScreen(
 fun NewRdvContent(
     navController: NavController,
     viewModel: ViewModelNewRdv,
-    rdv: Rdv,
 ) {
+    val state = viewModel.state
+    val rdv = state.rdv
+    //viewModel.setSelectRdv(rdv)
+
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
-        ConstraintLayout( constraint) {
+        ConstraintLayout(constraint) {
             LaunchedEffect(key1 = true) {
                 viewModel.loadContact()
             }
             val listContact = viewModel.allContactFlow.collectAsState()
-            val timestamp = rdv.date
-            Image(painterResource(id = R.drawable.rdv2 ), contentDescription = "",
+            val timestamp = rdv?.date ?: 0
+
+            Image(
+                painterResource(id = R.drawable.rdv2), contentDescription = "",
                 Modifier
                     .padding(vertical = 20.dp)
                     .scale(1.5f)
-                    .layoutId("image"))
-            UIComboContact(
-                modifier = Modifier
-                    .fillMaxWidth(0.92f)
-                    .layoutId("textRdv"),
-                options = listContact.value.toList().sortedBy { contact -> contact.nom },
-                viewModel = viewModel,
-                text = rdv.nom,
-                onText = {
-                    rdv.nom = it
-                    viewModel.nom.value = it
-                },
-                onNavigate = { route ->
-                    navController.navigate(route = route)
-                }
+                    .layoutId("image")
             )
+            if (rdv != null) {
+                UIComboContact(
+                    modifier = Modifier
+                        .fillMaxWidth(0.92f)
+                        .layoutId("textRdv"),
+                    options = listContact.value.toList().sortedBy { contact -> contact.nom },
+                    viewModel = viewModel,
+                    text = rdv.nom,
+                    onContact = { contact ->
+                        //rdv.nom = contact.nom
+                        viewModel.onEvent(NewRdvEvent.ChangedContact(contact))
+                        viewModel.setSelectContact(contact = contact)
+                    },
+                    onNavigate = { route ->
+                        navController.navigate(route = route)
+                    }
+                )
+            }
             UiDatePicker(
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
                     .layoutId("textDate"),
                 viewModel = viewModel,
-                rdv = rdv,
+                rdv = rdv!!,
                 text = getDateFormatter(timestamp)
             )
             UiTimePicker(

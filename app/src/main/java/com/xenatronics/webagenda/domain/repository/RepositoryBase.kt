@@ -1,9 +1,9 @@
 package com.xenatronics.webagenda.domain.repository
 
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.model.ResponseSimple
-import com.xenatronics.webagenda.domain.model.User
+import com.xenatronics.webagenda.domain.model.Credentials
 
 interface RepositoryBaseContact {
     suspend fun GetAll():List<Contact>
@@ -24,7 +24,7 @@ interface RepositoryBaseRdv {
 }
 
 interface RepositoryBaseLogin{
-    suspend fun Login(user: User):ResponseSimple
-    suspend fun Logout(user: User):ResponseSimple
-    suspend fun Register(user: User):ResponseSimple
+    suspend fun Login(user: Credentials):ResponseSimple
+    suspend fun Logout(user: Credentials):ResponseSimple
+    suspend fun Register(user: Credentials):ResponseSimple
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.common.events.NewContactEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

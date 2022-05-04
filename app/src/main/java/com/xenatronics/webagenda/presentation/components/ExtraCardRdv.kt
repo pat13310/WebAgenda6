@@ -21,10 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Constants
+import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.domain.model.Rdv
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
@@ -35,7 +35,7 @@ fun ExtraCardRdv(
     expanded: Boolean,
     selected: Boolean,
     onSelectItem: (Rdv) -> Unit,
-    onNavigate:(String)->Unit
+    onNavigate: (String) -> Unit
 ) {
     val transitionState = remember {
         MutableTransitionState(expanded).apply {
@@ -78,9 +78,8 @@ fun ExtraCardRdv(
             easing = FastOutSlowInEasing
         )
     }, label = "") {
-        if (expanded) 168.dp else 68.dp
+        if (expanded) 180.dp else 68.dp
     }
-
     Card(
         backgroundColor = cardBgColor,
         elevation = cardElevation,
@@ -119,56 +118,55 @@ fun ExtraCardRdv(
         if (contact != null) {
             ExpandableRdvContent(
                 contact = contact,
-                onNavigate=onNavigate,
-                expanded=expanded,
+                onNavigate = onNavigate,
+                //expanded = expanded,
             )
         }
     }
 }
 
 
-
 @Composable
 fun ExpandableRdvContent(
-    contact: Contact,
+    contact: Contact?,
     onNavigate: (String) -> Unit,
-    expanded: Boolean,
+    //expanded: Boolean,
 ) {
-    Column(modifier = Modifier.padding(start = 16.dp,top= 38.dp, end=8.dp, bottom = 6.dp)) {
+    Column(modifier = Modifier.padding(start = 16.dp, top = 44.dp, end = 8.dp, bottom = 6.dp)) {
         Text(
-            text = contact.adresse,
+            text = contact?.adresse ?:"",
             fontSize = 14.sp,
             color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(3.dp))
         Text(
-            text = contact.cp + " " + contact.ville,
+            text = contact?.cp + " " + contact?.ville,
             fontSize = 14.sp,
             color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(3.dp))
         Text(
-            text = contact.tel,
+            text = contact?.tel?:"",
             fontSize = 14.sp,
             color = Color.DarkGray
         )
         Spacer(modifier = Modifier.height(3.dp))
         Row(
             Modifier
-                .fillMaxWidth()){
+                .fillMaxWidth()
+        ) {
             Text(
-                modifier= Modifier.weight(6f),
-                text = contact.mail,
+                modifier = Modifier.weight(5f),
+                text = contact?.mail?:"",
                 fontSize = 14.sp,
                 color = Color.DarkGray
             )
-            if (expanded) {
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { onNavigate(Screen.NewRdvScreen.route) }) {
-                    Icon(Icons.Filled.Edit, contentDescription = null)
-                }
+            IconButton(
+                modifier = Modifier.weight(1f),
+                onClick = { onNavigate(Screen.NewRdvScreen.route) }) {
+                Icon(Icons.Filled.Edit, contentDescription = null)
             }
+
         }
     }
 }

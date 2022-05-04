@@ -1,7 +1,8 @@
 package com.xenatronics.webagenda.presentation.screens.new_contact
 
 import android.content.pm.ActivityInfo
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -21,11 +22,11 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.common.events.NewContactEvent
 import com.xenatronics.webagenda.common.events.UIEvent
-import com.xenatronics.webagenda.presentation.components.NewTaskBar
-import com.xenatronics.webagenda.presentation.components.UITextStandard
-import com.xenatronics.webagenda.data.Contact
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
+import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.presentation.components.NewTaskBar
+import com.xenatronics.webagenda.presentation.components.UITextStandard
 import kotlinx.coroutines.flow.collect
 
 
@@ -40,14 +41,17 @@ fun NewContactScreen(
 
 
     val scaffoldState = rememberScaffoldState()
-    LaunchedEffect(key1 = Unit ){
-        viewModel.uiEvent.collect { event->
-            when(event){
-                is UIEvent.Navigate->{
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UIEvent.Navigate -> {
                     navController.navigate(event.route)
                 }
-                is UIEvent.ShowSnackBar->{
-                    scaffoldState.snackbarHostState.showSnackbar(event.message, actionLabel = event.action)
+                is UIEvent.ShowSnackBar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        event.message,
+                        actionLabel = event.action
+                    )
                 }
                 else -> Unit
             }
@@ -63,21 +67,15 @@ fun NewContactScreen(
                             if (contact.id == 0) {
                                 viewModel.setCurrent(contact)
                                 viewModel.OnEvent(NewContactEvent.OnNew)
-                                //viewModel.updateFields(contact = contact)
-                                //viewModel.handleContactAction(Action.ADD)
                             } else { // update contact
                                 viewModel.setCurrent(contact)
                                 viewModel.OnEvent(NewContactEvent.OnUpdate)
-                                //viewModel.updateFields(contact = contact)
-                                //viewModel.handleContactAction(Action.UPDATE)
                             }
-                            //navController.navigate(Screen.ListContactScreen.route)
                         }
                         Action.NO_ACTION -> {
                             viewModel.OnEvent(NewContactEvent.OnBack)
-                            //navController.popBackStack()
                         }
-                        else -> {}
+                        else -> Unit
                     }
                 })
         },
@@ -182,7 +180,7 @@ fun ContactContent(
 }
 
 
-private fun decoupledConstraints(margin: Dp, hMargin:Dp=16.dp): ConstraintSet {
+private fun decoupledConstraints(margin: Dp, hMargin: Dp = 16.dp): ConstraintSet {
     return ConstraintSet {
 
         val textNom = createRefFor("textNom")

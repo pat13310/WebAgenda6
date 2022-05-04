@@ -16,11 +16,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.R
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.Constants.RADIUS_MEDIUM
-import com.xenatronics.webagenda.presentation.screens.listrdv.ViewModelRdv
 import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
 
 
@@ -30,7 +29,7 @@ fun UIComboContact(
     viewModel: ViewModelNewRdv,
     options: List<Contact>,
     onNavigate: (String) -> Unit,
-    onText: (String) -> Unit,
+    onContact: (Contact) -> Unit,
     text: String,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -99,7 +98,7 @@ fun UIComboContact(
                     DropdownMenuItem(
                         onClick = {
                             viewModel.selectContact.value = contact
-                            onText(contact.nom)
+                            onContact(contact)
                             textOption.value = contact.nom
                             expanded = false
                         }

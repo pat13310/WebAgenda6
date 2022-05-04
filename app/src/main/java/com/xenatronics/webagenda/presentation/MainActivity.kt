@@ -18,16 +18,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
-import com.xenatronics.webagenda.data.Contact
-import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.presentation.screens.*
+import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.domain.model.Rdv
+import com.xenatronics.webagenda.presentation.screens.LoginScreen
+import com.xenatronics.webagenda.presentation.screens.RegisterScreen
+import com.xenatronics.webagenda.presentation.screens.SplashScreen
 import com.xenatronics.webagenda.presentation.screens.listcontact.ListContactScreen
 import com.xenatronics.webagenda.presentation.screens.listrdv.ListRdvScreen
-import com.xenatronics.webagenda.presentation.ui.theme.WebAgendaTheme
 import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import com.xenatronics.webagenda.presentation.screens.new_contact.NewContactScreen
 import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvScreen
+import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
+import com.xenatronics.webagenda.presentation.ui.theme.WebAgendaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
@@ -44,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ListContactScreen.route
+                    startDestination = Screen.LoginScreen.route
                 ) {
                     addSplash(navController = navController)
                     addLogin(navController = navController)
@@ -64,13 +67,12 @@ fun NavGraphBuilder.addLogin(navController: NavController) {
     composable(Screen.LoginScreen.route) {
         val viewModel: ViewModelLogin = hiltViewModel()
         val keyboardController = LocalSoftwareKeyboardController.current
-
         LoginScreen(
             navController = navController,
             viewModel = viewModel,
-            onEvent = {event->
+            onEvent = { event ->
                 keyboardController?.hide()
-                viewModel.OnEvent(event)
+                viewModel.onEvent(event)
             }
         )
     }
@@ -120,10 +122,11 @@ fun NavGraphBuilder.addNewRdv(navController: NavController) {
     ) { backStackEntry ->
         backStackEntry.arguments?.getString("rdv")?.let {
             val rdv = Gson().fromJson(it, Rdv::class.java)
+            val viewModel:ViewModelNewRdv = hiltViewModel()
+            viewModel.setSelectRdv(rdv)
             NewRdvScreen(
                 navController = navController,
-                viewModel = hiltViewModel(),
-                rdv = rdv
+                viewModel = viewModel,
             )
         }
     }

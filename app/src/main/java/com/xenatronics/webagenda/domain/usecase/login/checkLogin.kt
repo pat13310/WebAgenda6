@@ -1,9 +1,9 @@
 package com.xenatronics.webagenda.domain.usecase
 
-import com.xenatronics.webagenda.domain.model.User
+import com.xenatronics.webagenda.domain.model.Credentials
 import com.xenatronics.webagenda.common.util.MessageLogin
 
-fun checkLogin(user: User): MessageLogin {
+fun checkLogin(user: Credentials): MessageLogin {
     var result = checkLoginFieldsEmpty(user)
     if (result!=MessageLogin.OK)
         return result
@@ -12,7 +12,7 @@ fun checkLogin(user: User): MessageLogin {
     return result
 }
 
-fun checkRegister(user: User): MessageLogin {
+fun checkRegister(user: Credentials): MessageLogin {
     var result = checkRegisterFieldsEmpty(user)
     if (result!=MessageLogin.OK)
         return result
@@ -21,7 +21,7 @@ fun checkRegister(user: User): MessageLogin {
     return result
 }
 
-fun checkRegisterFieldsEmpty(user: User): MessageLogin {
+fun checkRegisterFieldsEmpty(user: Credentials): MessageLogin {
     if (user.mail.isBlank())
         return MessageLogin.NOM_EMPTY
     if (user.password.isBlank())
@@ -31,7 +31,7 @@ fun checkRegisterFieldsEmpty(user: User): MessageLogin {
     return MessageLogin.OK
 }
 
-private fun checkLoginFieldsEmpty(user: User): MessageLogin {
+private fun checkLoginFieldsEmpty(user: Credentials): MessageLogin {
     if (user.name.isBlank())
         return MessageLogin.NOM_EMPTY
     if (user.password.isBlank())
@@ -39,7 +39,7 @@ private fun checkLoginFieldsEmpty(user: User): MessageLogin {
     return MessageLogin.OK
 }
 
-private fun checkMail(user: User): MessageLogin {
+private fun checkMail(user: Credentials): MessageLogin {
     if (!user.mail.contains("."))
         return MessageLogin.MAIL_INCORRECT
     if (!user.mail.contains("@"))

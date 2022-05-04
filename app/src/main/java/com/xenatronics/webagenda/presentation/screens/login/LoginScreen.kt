@@ -12,7 +12,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,14 +31,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.common.events.LoginEvent
+import com.xenatronics.webagenda.common.events.UIEvent
+import com.xenatronics.webagenda.common.util.LockScreenOrientation
+import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UITextPassword
 import com.xenatronics.webagenda.presentation.components.UITextStandard
-import com.xenatronics.webagenda.common.events.LoginEvent
-import com.xenatronics.webagenda.common.events.UIEvent
-import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import kotlinx.coroutines.flow.collect
 
@@ -49,7 +50,6 @@ fun LoginScreen(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
-    //val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -77,16 +77,14 @@ fun LoginScreen(
                 NewTaskBar(
                     "Connexion",
                     NavigateToListScreen = {
-
-                        onEvent(LoginEvent.OnCheck)
+                        onEvent(LoginEvent.OnSubmit)
                     },
                     noBack = true
                 )
             },
             content = {
                 LoginContent(
-                    modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel, navController = navController,
+                    viewModel = viewModel,
                 )
             }
         )
@@ -96,18 +94,16 @@ fun LoginScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun LoginContent(
-    modifier: Modifier = Modifier,
     viewModel: ViewModelLogin,
-    navController: NavController,
 ) {
-    var nom by viewModel.nom
-    var password by viewModel.password
+    val state = viewModel.state
     val status by viewModel.stateLogin
 
     LaunchedEffect(status)
     {
         if (status == StatusLogin.Ok) {
-            viewModel.goToRdvList(navController = navController)
+            viewModel.onEvent(LoginEvent.onNavigateListRdv)
+            //viewModel.goToRdvList(navController = navController)
         }
     }
 
@@ -127,9 +123,9 @@ fun LoginContent(
                     .layoutId("textLogin"),
                 label = "Login",
                 icon = Icons.Default.Person,
-                value = nom,
+                value = state.email,//nom,
                 onTextChanged = {
-                    nom = it
+                    viewModel.onEvent(LoginEvent.EmailChanged(it))
                 }
             )
             UITextPassword(
@@ -137,15 +133,15 @@ fun LoginContent(
                 Modifier
                     .fillMaxWidth(0.92f)
                     .layoutId("textPassword"),
-                value = password,
+                value = state.password,//password,
                 onTextChanged = {
-                    password = it
+                    viewModel.onEvent(LoginEvent.PasswordChanged(it))
                 }
             )
             AnnotatedClickableText(
                 modifier = Modifier.layoutId("textLink"),
                 onLink = {
-                    navController.navigate(Screen.RegisterScreen.route)
+                    viewModel.onEvent(LoginEvent.onNavigateRegister)
                 }
             )
         }

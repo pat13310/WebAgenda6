@@ -1,11 +1,11 @@
 package com.xenatronics.webagenda.common.events
 
-import com.xenatronics.webagenda.common.util.StatusLogin
-
 sealed class LoginEvent {
-    data class OnStatus(val statusLogin: StatusLogin) : LoginEvent()
-    object OnValidate: LoginEvent()
-    object OnCheck:LoginEvent()
+    object OnSubmit : LoginEvent()
     object OnSucces : LoginEvent()
-    data class OnFailed(val error:String) : LoginEvent()
+    data class OnFailed(val error: String) : LoginEvent()
+    data class EmailChanged(val email: String) : LoginEvent()
+    data class PasswordChanged(val password: String) : LoginEvent()
+    object onNavigateRegister:LoginEvent()
+    object onNavigateListRdv:LoginEvent()
 }

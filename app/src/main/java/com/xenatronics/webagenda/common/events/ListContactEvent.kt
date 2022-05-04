@@ -17,3 +17,5 @@ sealed class NewContactEvent {
         object OnUpdate : NewContactEvent()
         object OnBack : NewContactEvent()
 }
+
+

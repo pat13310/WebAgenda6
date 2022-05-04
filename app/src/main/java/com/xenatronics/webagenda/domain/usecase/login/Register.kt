@@ -2,8 +2,8 @@ package com.xenatronics.webagenda.domain.usecase.login
 
 import com.xenatronics.webagenda.data.repository.RepositoryLogin
 import com.xenatronics.webagenda.domain.model.ResponseSimple
-import com.xenatronics.webagenda.domain.model.User
+import com.xenatronics.webagenda.domain.model.Credentials
 
 class Register(val repository: RepositoryLogin) {
-    suspend operator fun invoke(user: User):ResponseSimple = repository.Register(user)
+    suspend operator fun invoke(user: Credentials):ResponseSimple = repository.Register(user)
 }

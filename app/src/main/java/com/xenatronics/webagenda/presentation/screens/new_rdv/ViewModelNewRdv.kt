@@ -2,7 +2,9 @@ package com.xenatronics.webagenda.presentation.screens.new_rdv
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.common.events.NewRdvEvent
@@ -10,7 +12,7 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.getDateFormatter
 import com.xenatronics.webagenda.common.util.getTimeFormatter
-import com.xenatronics.webagenda.data.Contact
+import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import com.xenatronics.webagenda.domain.usecase.rdv.UseCaseRdv
@@ -25,15 +27,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelNewRdv @Inject constructor(
     private val useCase: UseCaseRdv,
-    private val useCaseContact: UseCaseContact
-) : ViewModel() {
-    val nom: MutableState<String> = mutableStateOf("")
-    var timestamp = mutableStateOf(0L)
-    var calendar = mutableStateOf(Calendar.getInstance())
-    var time = mutableStateOf("")
-    var date = mutableStateOf("")
+    private val useCaseContact: UseCaseContact,
 
-    // rdv sélectionné
+    ) : ViewModel() {
+    val nom: MutableState<String> = mutableStateOf("")
+    private var timestamp = mutableStateOf(0L)
+    var calendar = mutableStateOf(Calendar.getInstance())
+    private var time = mutableStateOf("")
+    var date = mutableStateOf("")
+    // selected items
     var selectRdv = mutableStateOf(Rdv())
     val selectContact = mutableStateOf(Contact())
 
@@ -42,22 +44,33 @@ class ViewModelNewRdv @Inject constructor(
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    var state by mutableStateOf(NewRdvState())
+
     init {
         timeSetup()
     }
 
-    fun timeSetup(){
+    private fun timeSetup() {
         Locale.setDefault(Locale.FRANCE)
         // init time
         timestamp.value = calendar.value.timeInMillis
+        state.dateString= getDateFormatter(timestamp.value)
         date.value = getDateFormatter(timestamp.value)
         //init date
+        state.timeString= getTimeFormatter(timestamp.value)
         time.value = getTimeFormatter(timestamp.value)
     }
-    fun updateFields() {
-        selectRdv.value.nom = nom.value
-        selectRdv.value.date = calendar.value.timeInMillis
-        selectRdv.value.id_contact = selectContact.value.id
+
+    fun setSelectRdv(rdv: Rdv) {
+        //selectRdv.value = rdv
+        state.rdv=rdv
+    }
+
+    fun setSelectContact(contact: Contact) {
+        //selectContact.value = contact
+        //selectRdv.value.id_contact = selectContact.value.id
+        //selectRdv.value.nom = selectContact.value.nom
+        state.contact=contact
     }
 
     private fun sendUIEvent(event: UIEvent) {
@@ -66,18 +79,30 @@ class ViewModelNewRdv @Inject constructor(
         }
     }
 
-    fun OnEvent(event: NewRdvEvent) {
+    fun onEvent(event: NewRdvEvent) {
         when (event) {
+            is NewRdvEvent.ChangedDate->{
+                state= state.copy(dateString = event.date)
+            }
+            is NewRdvEvent.ChangedTime->{
+                state= state.copy(timeString = event.time)
+            }
+            is NewRdvEvent.ChangedContact->{
+                state.rdv?.nom = event.contact.nom
+                state= state.copy(contact = event.contact)
+                //setSelectContact(state.contact!!)
+            }
             is NewRdvEvent.OnNew -> {
-                addRdv(selectRdv.value)
+                addRdv(state.rdv!!)
+                //addRdv(selectRdv.value)
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
             is NewRdvEvent.OnUpdate -> {
-                updateRdv(selectRdv.value)
+                updateRdv(state.rdv!!)
+                //updateRdv(selectRdv.value)
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
-            is NewRdvEvent.OnBack ->{
-
+            is NewRdvEvent.OnBack -> {
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
         }

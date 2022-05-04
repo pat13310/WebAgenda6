@@ -11,9 +11,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +30,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.common.events.RegisterEvent
+import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UITextPassword
 import com.xenatronics.webagenda.presentation.components.UITextStandard
@@ -37,6 +39,7 @@ import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
 import com.xenatronics.webagenda.presentation.screens.register.ViewModelRegister
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi
 @Composable
@@ -44,12 +47,32 @@ fun RegisterScreen(
     navController: NavController,
     viewModel: ViewModelRegister
 ) {
+    val scaffoldState = rememberScaffoldState()
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UIEvent.ShowSnackBar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.action
+                    )
+                }
+                is UIEvent.Navigate -> {
+                    navController.navigate(event.route)
+                }
+                else -> Unit
+            }
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 NewTaskBar(
                     "Inscription",
@@ -62,8 +85,8 @@ fun RegisterScreen(
                 )
             },
             content = {
-                RegisterContent2(
-                    modifier = Modifier.fillMaxSize(),
+                RegisterContent(
+                    //modifier = Modifier.fillMaxSize(),
                     viewModel = viewModel,
                     navController = navController
                 )
@@ -74,14 +97,12 @@ fun RegisterScreen(
 
 @ExperimentalComposeUiApi
 @Composable
-fun RegisterContent2(
-    modifier: Modifier,
+fun RegisterContent(
+    //modifier: Modifier=Modifier,
     viewModel: ViewModelRegister,
     navController: NavController
 ) {
-    var nom by viewModel.nom
-    var mail by viewModel.mail
-    var password by viewModel.password
+    val state = viewModel.state
 
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
@@ -99,35 +120,36 @@ fun RegisterContent2(
                 modifier = Modifier
                     .layoutId("textNom")
                     .fillMaxWidth(0.92f),
-                label = "Nom de famille",
+                label = "Adresse mail",
                 icon = Icons.Default.Person,
-                value = nom,
+                value = state.email,
                 onTextChanged = {
-                    nom = it
+                    viewModel.onEvent(RegisterEvent.EmailChanged(it))
                 })
             UITextStandard(
                 modifier = Modifier
                     .layoutId("textMail")
                     .fillMaxWidth(0.92f),
-                label = "Adresse mail",
+                label = "Répéter adresse mail",
                 icon = Icons.Default.Person,
-                value = mail,
+                value = state.email,
                 onTextChanged = {
-                    mail = it
+                    viewModel.onEvent((RegisterEvent.RepeatEmailChanged(it)))
                 })
             UITextPassword(
                 modifier = Modifier
                     .layoutId("textPassword")
                     .fillMaxWidth(0.92f),
-                value = password,
+                value = state.password,
                 onTextChanged = {
-                    password = it
+                    viewModel.onEvent(RegisterEvent.PasswordChanged(it))
                 }
             )
             AnnotatedRegisterClickableText(
                 modifier = Modifier.layoutId("textLink"),
                 onLink = {
-                    navController.navigate(Screen.LoginScreen.route)
+                    viewModel.onEvent(RegisterEvent.OnNavigateLogin)
+                    //navController.navigate(Screen.LoginScreen.route)
                 })
         }
     }

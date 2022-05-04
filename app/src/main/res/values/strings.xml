@@ -16,4 +16,5 @@
     <string name="GoogleConnect">Se connecter avec Google</string>
     <string name="CreateAccount">Création du compte ...</string>
     <string name="rdv">Vos rendez-vous</string>
+    <string name="FailedInternet">Erreur Internet</string>
 </resources>
