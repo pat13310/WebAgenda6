@@ -25,7 +25,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelNewRdv @Inject constructor(
+class NewRdvViewModel @Inject constructor(
     private val useCase: UseCaseRdv,
     private val useCaseContact: UseCaseContact,
 
@@ -35,16 +35,17 @@ class ViewModelNewRdv @Inject constructor(
     var calendar = mutableStateOf(Calendar.getInstance())
     private var time = mutableStateOf("")
     var date = mutableStateOf("")
+
     // selected items
-    var selectRdv = mutableStateOf(Rdv())
-    val selectContact = mutableStateOf(Contact())
+    //var selectRdv = mutableStateOf(Rdv())
+    //val selectContact = mutableStateOf(Contact())
+
+    var newRdvState by mutableStateOf(NewRdvState())
 
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
-
     private val _uiEvent = Channel<UIEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
 
-    var state by mutableStateOf(NewRdvState())
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
         timeSetup()
@@ -54,23 +55,21 @@ class ViewModelNewRdv @Inject constructor(
         Locale.setDefault(Locale.FRANCE)
         // init time
         timestamp.value = calendar.value.timeInMillis
-        state.dateString= getDateFormatter(timestamp.value)
+        newRdvState.dateString = getDateFormatter(timestamp.value)
         date.value = getDateFormatter(timestamp.value)
         //init date
-        state.timeString= getTimeFormatter(timestamp.value)
+        newRdvState.timeString = getTimeFormatter(timestamp.value)
         time.value = getTimeFormatter(timestamp.value)
     }
 
     fun setSelectRdv(rdv: Rdv) {
         //selectRdv.value = rdv
-        state.rdv=rdv
+        newRdvState = newRdvState.copy(rdv = rdv)
     }
 
     fun setSelectContact(contact: Contact) {
         //selectContact.value = contact
-        //selectRdv.value.id_contact = selectContact.value.id
-        //selectRdv.value.nom = selectContact.value.nom
-        state.contact=contact
+        newRdvState = newRdvState.copy(contact = contact)
     }
 
     private fun sendUIEvent(event: UIEvent) {
@@ -81,24 +80,26 @@ class ViewModelNewRdv @Inject constructor(
 
     fun onEvent(event: NewRdvEvent) {
         when (event) {
-            is NewRdvEvent.ChangedDate->{
-                state= state.copy(dateString = event.date)
+            is NewRdvEvent.ChangedDate -> {
+                newRdvState = newRdvState.copy(dateString = event.date)
             }
-            is NewRdvEvent.ChangedTime->{
-                state= state.copy(timeString = event.time)
+            is NewRdvEvent.ChangedTime -> {
+                newRdvState = newRdvState.copy(timeString = event.time)
             }
-            is NewRdvEvent.ChangedContact->{
-                state.rdv?.nom = event.contact.nom
-                state= state.copy(contact = event.contact)
+            is NewRdvEvent.ChangedContact -> {
+                //state=state.copy(rdv=event.contact.nom)
+                newRdvState.rdv?.nom = event.contact.nom
+
+                newRdvState = newRdvState.copy(contact = event.contact)
                 //setSelectContact(state.contact!!)
             }
             is NewRdvEvent.OnNew -> {
-                addRdv(state.rdv!!)
+                addRdv(newRdvState.rdv!!)
                 //addRdv(selectRdv.value)
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
             is NewRdvEvent.OnUpdate -> {
-                updateRdv(state.rdv!!)
+                updateRdv(newRdvState.rdv!!)
                 //updateRdv(selectRdv.value)
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }

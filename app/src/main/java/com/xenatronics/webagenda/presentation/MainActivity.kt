@@ -28,8 +28,9 @@ import com.xenatronics.webagenda.presentation.screens.listcontact.ListContactScr
 import com.xenatronics.webagenda.presentation.screens.listrdv.ListRdvScreen
 import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import com.xenatronics.webagenda.presentation.screens.new_contact.NewContactScreen
+import com.xenatronics.webagenda.presentation.screens.new_contact.NewContactViewModel
 import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvScreen
-import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
+import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvViewModel
 import com.xenatronics.webagenda.presentation.ui.theme.WebAgendaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.LoginScreen.route
+                    startDestination = Screen.ListRdvScreen.route
                 ) {
                     addSplash(navController = navController)
                     addLogin(navController = navController)
@@ -122,7 +123,7 @@ fun NavGraphBuilder.addNewRdv(navController: NavController) {
     ) { backStackEntry ->
         backStackEntry.arguments?.getString("rdv")?.let {
             val rdv = Gson().fromJson(it, Rdv::class.java)
-            val viewModel:ViewModelNewRdv = hiltViewModel()
+            val viewModel: NewRdvViewModel = hiltViewModel()
             viewModel.setSelectRdv(rdv)
             NewRdvScreen(
                 navController = navController,
@@ -141,11 +142,12 @@ fun NavGraphBuilder.addNewContact(navController: NavController) {
         backStackEntry.arguments?.getString("contact")?.let {
             //on convertit la chaine en objet Contact
             val contact = Gson().fromJson(it, Contact::class.java)
+            val viewModel: NewContactViewModel = hiltViewModel()
+            viewModel.setSelectContact(contact = contact)
 
             NewContactScreen(
-                viewModel = hiltViewModel(),
+                viewModel = viewModel,
                 navController = navController,
-                contact = contact
             )
         }
     }

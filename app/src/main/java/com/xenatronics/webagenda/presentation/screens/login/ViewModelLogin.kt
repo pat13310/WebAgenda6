@@ -25,10 +25,11 @@ class ViewModelLogin @Inject constructor(
     private val useCase: UseCaseLogin,
 
     ) : ViewModel() {
-    val nom = mutableStateOf("")
-    val password = mutableStateOf("")
+
+
     private val _stateLogin = mutableStateOf(StatusLogin.None)
     val stateLogin: State<StatusLogin> get() = _stateLogin
+
     private val token = mutableStateOf("")
 
     private val _uiEvent = Channel<UIEvent>()

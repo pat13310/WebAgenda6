@@ -86,9 +86,8 @@ fun RegisterScreen(
             },
             content = {
                 RegisterContent(
-                    //modifier = Modifier.fillMaxSize(),
+
                     viewModel = viewModel,
-                    navController = navController
                 )
             }
         )
@@ -98,9 +97,7 @@ fun RegisterScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun RegisterContent(
-    //modifier: Modifier=Modifier,
     viewModel: ViewModelRegister,
-    navController: NavController
 ) {
     val state = viewModel.state
 

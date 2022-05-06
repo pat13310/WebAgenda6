@@ -103,7 +103,6 @@ fun LoginContent(
     {
         if (status == StatusLogin.Ok) {
             viewModel.onEvent(LoginEvent.onNavigateListRdv)
-            //viewModel.goToRdvList(navController = navController)
         }
     }
 

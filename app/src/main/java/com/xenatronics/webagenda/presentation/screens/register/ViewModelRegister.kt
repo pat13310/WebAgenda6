@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelRegister @Inject constructor(
     private val useCase: UseCaseLogin,
-    @ApplicationContext val context: Context,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UIEvent>()

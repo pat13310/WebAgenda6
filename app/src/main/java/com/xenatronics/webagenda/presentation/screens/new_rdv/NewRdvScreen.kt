@@ -1,5 +1,6 @@
 package com.xenatronics.webagenda.presentation.screens.new_rdv
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.layoutId
@@ -40,10 +39,9 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun NewRdvScreen(
     navController: NavController,
-    viewModel: ViewModelNewRdv,
-
-    ) {
-    val state = viewModel.state
+    viewModel: NewRdvViewModel,
+) {
+    val state = viewModel.newRdvState
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -78,7 +76,8 @@ fun NewRdvScreen(
                                 //viewModel.setSelectRdv(state.rdv!!)
                                 viewModel.onEvent(NewRdvEvent.OnUpdate)
                             }
-                        } else {
+                        }
+                        if (it == Action.NO_ACTION) {
                             viewModel.onEvent(NewRdvEvent.OnBack)
                         }
                     })
@@ -87,22 +86,22 @@ fun NewRdvScreen(
                 NewRdvContent(
                     navController = navController,
                     viewModel = viewModel,
-
-                    )
+                )
             }
         )
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewRdvContent(
     navController: NavController,
-    viewModel: ViewModelNewRdv,
+    viewModel: NewRdvViewModel,
 ) {
-    val state = viewModel.state
+    val state = viewModel.newRdvState
     val rdv = state.rdv
-    //viewModel.setSelectRdv(rdv)
+    val nom = mutableStateOf(rdv?.nom)
 
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
@@ -126,10 +125,10 @@ fun NewRdvContent(
                         .fillMaxWidth(0.92f)
                         .layoutId("textRdv"),
                     options = listContact.value.toList().sortedBy { contact -> contact.nom },
-                    viewModel = viewModel,
-                    text = rdv.nom,
+                    //viewModel = viewModel,
+                    text = nom.value,
                     onContact = { contact ->
-                        //rdv.nom = contact.nom
+                        rdv.nom = contact.nom
                         viewModel.onEvent(NewRdvEvent.ChangedContact(contact))
                         viewModel.setSelectContact(contact = contact)
                     },

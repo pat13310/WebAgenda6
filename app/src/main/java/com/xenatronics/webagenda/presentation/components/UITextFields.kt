@@ -39,6 +39,7 @@ fun UITextStandard(
     icon: ImageVector = Icons.Default.Place,
     keyboardType: KeyboardType = KeyboardType.Text,
     maxLength: Int = 35,
+    maxLines:Int=1,
     padding: Dp = TOP_SPACE,
     focusNext:Boolean=true,
 ) {
@@ -60,6 +61,7 @@ fun UITextStandard(
                 focusManager.clearFocus(true)
         }),
         value = value,
+        maxLines = maxLines,
         leadingIcon = {
             Icon(
                 imageVector = icon,
@@ -89,7 +91,9 @@ fun UITextPassword(
     value: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector = Icons.Default.VpnKey,
-    maxLength: Int = 16
+    maxLength: Int = 16,
+    maxLines: Int=1,
+
 ) {
     var visibility by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -106,6 +110,7 @@ fun UITextPassword(
             keyboardController?.hide()
             focusManager.clearFocus(true)
         }),
+        maxLines=maxLines,
         value = value,
         leadingIcon = {
             Icon(

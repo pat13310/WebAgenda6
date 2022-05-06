@@ -10,7 +10,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
@@ -24,7 +25,6 @@ import com.xenatronics.webagenda.common.events.NewContactEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UITextStandard
 import kotlinx.coroutines.flow.collect
@@ -34,13 +34,12 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun NewContactScreen(
     navController: NavController,
-    viewModel: ViewModelNewContact,
-    contact: Contact
+    viewModel: NewContactViewModel,
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
-
+    val state = viewModel.state
     val scaffoldState = rememberScaffoldState()
+
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -59,28 +58,28 @@ fun NewContactScreen(
     }
     Scaffold(
         topBar = {
-            NewTaskBar(if (contact.id == 0) "Nouveau Contact" else "Modifier un Contact",
+            NewTaskBar(if (state.id == 0) "Nouveau Contact" else "Modifier un Contact",
                 NavigateToListScreen = { action ->
                     when (action) {
                         Action.ADD -> {
                             // new contact
-                            if (contact.id == 0) {
-                                viewModel.setCurrent(contact)
-                                viewModel.OnEvent(NewContactEvent.OnNew)
+                            if (state.id == 0) {
+                                //viewModel.setCurrent(contact)
+                                viewModel.onEvent(NewContactEvent.OnNew)
                             } else { // update contact
-                                viewModel.setCurrent(contact)
-                                viewModel.OnEvent(NewContactEvent.OnUpdate)
+                                //viewModel.setCurrent(contact)
+                                viewModel.onEvent(NewContactEvent.OnUpdate)
                             }
                         }
                         Action.NO_ACTION -> {
-                            viewModel.OnEvent(NewContactEvent.OnBack)
+                            viewModel.onEvent(NewContactEvent.OnBack)
                         }
                         else -> Unit
                     }
                 })
         },
         content = {
-            ContactContent(contact)
+            ContactContent(viewModel, state = state)
         }
     )
 }
@@ -89,28 +88,25 @@ fun NewContactScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun ContactContent(
-    contact: Contact
-) {
+    viewModel: NewContactViewModel,
+    state: NewContactState,
+    ) {
+    //val state = viewModel.state
+
     BoxWithConstraints {
         val constraint = decoupledConstraints(0.dp)
 
         ConstraintLayout(constraint) {
-            var nom by remember { mutableStateOf(contact.nom) }
-            var adresse by remember { mutableStateOf(contact.adresse) }
-            var cp by remember { mutableStateOf(contact.cp) }
-            var ville by remember { mutableStateOf(contact.ville) }
-            var tel by remember { mutableStateOf(contact.tel) }
-            var mail by remember { mutableStateOf(contact.mail) }
-
             UITextStandard(
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
                     .layoutId("textNom"),
                 label = "Rendez-vous",
-                value = nom,
+                value = state.nom,
                 onTextChanged = {
-                    nom = it
-                    contact.nom = it
+                    viewModel.onEvent(NewContactEvent.ChangedNom(it))
+                    //state.nom = it
+                    //contact.nom = it
                 },
                 icon = Icons.Default.Person
             )
@@ -119,10 +115,11 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textAdresse"),
                 label = "Adresse",
-                value = adresse,
+                value = state.adresse,
                 onTextChanged = {
-                    adresse = it
-                    contact.adresse = it
+                    //adresse = it
+                    viewModel.onEvent(NewContactEvent.ChangedAdresse(it))
+                    //contact.adresse = it
                 }
             )
             UITextStandard(
@@ -130,10 +127,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textVille"),
                 label = "Ville",
-                value = ville,
+                value = state.ville,
                 onTextChanged = {
-                    ville = it
-                    contact.ville = it
+                    viewModel.onEvent(NewContactEvent.ChangedVille(it))
                 }
             )
             UITextStandard(
@@ -141,10 +137,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textCP"),
                 label = "Code Postal",
-                value = cp,
+                value = state.cp,
                 onTextChanged = {
-                    cp = it
-                    contact.cp = it
+                    viewModel.onEvent(NewContactEvent.ChangedCp(it))
                 },
                 icon = Icons.Default.Place,
                 keyboardType = KeyboardType.Number
@@ -154,10 +149,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textTel"),
                 label = "Téléphone",
-                value = tel,
+                value = state.tel,
                 onTextChanged = {
-                    tel = it
-                    contact.tel = it
+                    viewModel.onEvent(NewContactEvent.ChangedTel(it))
                 },
                 icon = Icons.Default.Phone,
                 keyboardType = KeyboardType.Phone,
@@ -167,10 +161,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textMail"),
                 label = "Adresse Mail",
-                value = mail,
+                value = state.email,
                 onTextChanged = {
-                    mail = it
-                    contact.mail = it
+                    viewModel.onEvent(NewContactEvent.ChangedMail(it))
                 },
                 icon = Icons.Default.Email,
                 focusNext = false
@@ -182,7 +175,6 @@ fun ContactContent(
 
 private fun decoupledConstraints(margin: Dp, hMargin: Dp = 16.dp): ConstraintSet {
     return ConstraintSet {
-
         val textNom = createRefFor("textNom")
         val textAdresse = createRefFor("textAdresse")
         val textVille = createRefFor("textVille")

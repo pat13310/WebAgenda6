@@ -28,8 +28,7 @@ import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.calendarSetTime
 import com.xenatronics.webagenda.common.util.getTimeFormatter
-import com.xenatronics.webagenda.presentation.screens.listrdv.ViewModelRdv
-import com.xenatronics.webagenda.presentation.screens.new_rdv.ViewModelNewRdv
+import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -40,7 +39,7 @@ import java.util.*
 fun UiTimePicker(
     rdv: Rdv,
     text:String,
-    viewModel: ViewModelNewRdv,
+    viewModel: NewRdvViewModel,
     modifier: Modifier,
     borderColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.primary,
@@ -57,7 +56,8 @@ fun UiTimePicker(
     val dlg = showTimeDialog(timeTmp)
     calendarSetTime(time = timeTmp.value, calendar = calendar)
     rdv.date=calendar.timeInMillis
-    viewModel.selectRdv.value=rdv.copy()
+    //viewModel.selectRdv.value=rdv.copy()
+    viewModel.setSelectRdv(rdv)
     Box(
         modifier = modifier
             .background(Color.White)
