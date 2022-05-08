@@ -24,6 +24,6 @@ sealed class NewRdvEvent {
     object OnUpdate : NewRdvEvent()
     object OnBack : NewRdvEvent()
     data class ChangedContact(val contact: Contact):NewRdvEvent()
-    data class ChangedDate(val date:String):NewRdvEvent()
-    data class ChangedTime(val time:String):NewRdvEvent()
+    data class ChangedDate(val date:Long):NewRdvEvent()
+    data class ChangedTime(val time:Long):NewRdvEvent()
 }

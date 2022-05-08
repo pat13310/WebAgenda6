@@ -23,11 +23,13 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.calendarSetTime
 import com.xenatronics.webagenda.common.util.getTimeFormatter
+import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvState
 import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -37,7 +39,6 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UiTimePicker(
-    rdv: Rdv,
     text:String,
     viewModel: NewRdvViewModel,
     modifier: Modifier,
@@ -48,6 +49,8 @@ fun UiTimePicker(
     Locale.setDefault(Locale.FRANCE)
     val calendar by viewModel.calendar
     val timeTmp = rememberSaveable{ mutableStateOf(getTimeFormatter(calendar.timeInMillis)) }
+    val rdv = viewModel.selectedRdv
+
     LaunchedEffect(true){
         if (rdv.id>0){
             timeTmp.value=text
@@ -55,9 +58,7 @@ fun UiTimePicker(
     }
     val dlg = showTimeDialog(timeTmp)
     calendarSetTime(time = timeTmp.value, calendar = calendar)
-    rdv.date=calendar.timeInMillis
-    //viewModel.selectRdv.value=rdv.copy()
-    viewModel.setSelectRdv(rdv)
+    viewModel.onEvent(NewRdvEvent.ChangedTime(calendar.timeInMillis))
     Box(
         modifier = modifier
             .background(Color.White)

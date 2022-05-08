@@ -27,7 +27,6 @@ class NewContactViewModel @Inject constructor(
 
     var state by mutableStateOf(NewContactState())
 
-
     fun onEvent(event: NewContactEvent) {
         when (event) {
             is NewContactEvent.OnNew -> {

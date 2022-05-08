@@ -23,11 +23,12 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.xenatronics.webagenda.domain.model.Rdv
+import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.calendarSetDate
 import com.xenatronics.webagenda.common.util.getDateFormatter
+import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -46,20 +47,19 @@ fun UiDatePicker(
     iconColor: Color = MaterialTheme.colors.primary,
 ) {
     Locale.setDefault(Locale.FRANCE)
-    val calendar by viewModel.calendar
-    val dateState = rememberSaveable { mutableStateOf(getDateFormatter(calendar.timeInMillis)) }
+    val calendar = viewModel.calendar
+    val dateState = rememberSaveable { mutableStateOf(getDateFormatter(calendar.value.timeInMillis)) }
+
     LaunchedEffect(true) {
-        if (rdv.id>0) {
+        if (rdv.nom.isNotBlank()) {
             dateState.value = text
+            rdv.date= calendar.value.timeInMillis
         }
     }
     val dlg = showDialogDate(dateState)
-    calendarSetDate(date = dateState.value, calendar = calendar)
-    rdv.date = calendar.timeInMillis
-    viewModel.setSelectRdv(rdv)
-    //viewModel.selectRdv.value = rdv.copy()
+    calendarSetDate(date = dateState.value, calendar = calendar.value)
+    viewModel.onEvent(NewRdvEvent.ChangedDate(calendar.value.timeInMillis))
 
-   // val scope = rememberCoroutineScope()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -77,17 +77,17 @@ fun UiDatePicker(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(start = 28.dp,end=0.dp, top=3.dp),
+                .padding(start = 28.dp, end = 0.dp, top = 3.dp),
             verticalAlignment = Alignment.CenterVertically,
 
-        ) {
+            ) {
             Text(
-                modifier= Modifier.weight(11f),
+                modifier = Modifier.weight(11f),
                 text = dateState.value,
                 color = textColor,
             )
             IconButton(
-                modifier= Modifier.weight(1f),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     dlg.show()
                 }) {

@@ -25,3 +25,8 @@
 
 **Correction 9: Aspect visuel login, register, newRdv retravaillé**
 - composant UIDatePicker, UIDatePicker et UIComboContact avec intégration du LayoutConstraint
+
+**Correction 10: architecture claire**
+- composant UIDatePicker, UIDatePicker et UIComboContact correction et simplification du code
+- NewRdvViewModel intégration unifiée de la gestion des évenements
+- NewRdvScreen intégration des actions 

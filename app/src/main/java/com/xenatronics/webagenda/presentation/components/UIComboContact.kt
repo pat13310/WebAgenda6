@@ -12,31 +12,35 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.xenatronics.webagenda.R
-import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Constants.HEIGHT_COMPONENT
 import com.xenatronics.webagenda.common.util.Constants.RADIUS_MEDIUM
+import com.xenatronics.webagenda.domain.model.Contact
+import com.xenatronics.webagenda.presentation.screens.new_rdv.NewRdvViewModel
 
 
 @Composable
 fun UIComboContact(
     modifier: Modifier,
-
     options: List<Contact>,
     onNavigate: (String) -> Unit,
-    onContact: (Contact) -> Unit,
-    text: String?,
-) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    //val textOption = remember { mutableStateOf("") }
+    viewModel: NewRdvViewModel,
+    text:String,
 
-//    if (text.isNotEmpty())
-//        textOption.value = text
-//
+    ) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val textOption = remember { mutableStateOf("") }
+
+    LaunchedEffect(key1 = Unit) {
+        if (text.isNotBlank()) {
+            textOption.value = text
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -51,7 +55,6 @@ fun UIComboContact(
                     shape = RoundedCornerShape(RADIUS_MEDIUM),
                 )
                 .padding(top = 16.dp, start = 10.dp, end = 18.dp, bottom = 16.dp),
-
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
@@ -66,18 +69,14 @@ fun UIComboContact(
                     contentDescription = ""
                 )
             }
-            if (text != null) {
-                Text(
-                    modifier = Modifier
-                        .weight(6f)
-                        .background(Color.White)
-                        .pointerInput(this) {
+            Text(
+                modifier = Modifier
+                    .weight(6f)
+                    .background(Color.White),
+                text = textOption.value,
+                color = MaterialTheme.colors.primary
+            )
 
-                        },
-                    text = text,
-                    color = MaterialTheme.colors.primary
-                )
-            }
             IconButton(
                 modifier = Modifier.weight(1f),
                 onClick = {
@@ -100,9 +99,10 @@ fun UIComboContact(
                 options.forEach { contact ->
                     DropdownMenuItem(
                         onClick = {
-                            //viewModel.selectContact.value = contact
-                            onContact(contact)
-                            //text = contact.nom
+                            textOption.value = contact.nom
+//                            rdv.nom= contact.nom
+//                            rdv.id_contact=contact.id
+                           viewModel.onEvent(NewRdvEvent.ChangedContact(contact))
                             expanded = false
                         }
                     ) {

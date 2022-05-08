@@ -1,14 +1,17 @@
 package com.xenatronics.webagenda.presentation.screens.new_rdv
 
-import com.xenatronics.webagenda.domain.model.Contact
-import com.xenatronics.webagenda.domain.model.Rdv
-
 data class NewRdvState(
-    var rdv:Rdv?=null,
-    var contact: Contact? = null,
+    val id: Int = 0,
+    val name: String = "",
     val date: Long = 0,
-    var dateString: String = "",
-    var timeString: String = ""
+    val id_contact: Int = -1,
+    val adresse: String = "",
+    val cp: String = "",
+    val ville: String = "",
+    val tel: String = "",
+    val mail: String = "",
+    val dateString: String = "",
+    val timeString: String = ""
 )
 
 

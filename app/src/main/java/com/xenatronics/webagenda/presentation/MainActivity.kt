@@ -128,6 +128,7 @@ fun NavGraphBuilder.addNewRdv(navController: NavController) {
             NewRdvScreen(
                 navController = navController,
                 viewModel = viewModel,
+                rdv = rdv,
             )
         }
     }

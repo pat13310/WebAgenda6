@@ -33,6 +33,7 @@ object ModuleApp {
         deleteRdv = DeleteRdv(repository),
         cleanRdv = CleanRdv(repository),
         updateRdv = UpdateRdv(repository),
+        validateRdv = ValideRdv()
     )
 
     @Provides

@@ -10,12 +10,11 @@ import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
-import com.xenatronics.webagenda.common.util.getDateFormatter
-import com.xenatronics.webagenda.common.util.getTimeFormatter
 import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import com.xenatronics.webagenda.domain.usecase.rdv.UseCaseRdv
+import com.xenatronics.webagenda.domain.usecase.rdv.ValideRdv
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,16 +30,12 @@ class NewRdvViewModel @Inject constructor(
 
     ) : ViewModel() {
     val nom: MutableState<String> = mutableStateOf("")
-    private var timestamp = mutableStateOf(0L)
     var calendar = mutableStateOf(Calendar.getInstance())
-    private var time = mutableStateOf("")
-    var date = mutableStateOf("")
-
     // selected items
-    //var selectRdv = mutableStateOf(Rdv())
-    //val selectContact = mutableStateOf(Contact())
+    var selectedRdv by mutableStateOf(Rdv())
+    //var selectedContact by mutableStateOf(Contact())
 
-    var newRdvState by mutableStateOf(NewRdvState())
+    //var newRdvState = mutableStateOf(NewRdvState())
 
     val allContactFlow = MutableStateFlow<List<Contact>>(emptyList())
     private val _uiEvent = Channel<UIEvent>()
@@ -48,29 +43,13 @@ class NewRdvViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        timeSetup()
-    }
-
-    private fun timeSetup() {
         Locale.setDefault(Locale.FRANCE)
-        // init time
-        timestamp.value = calendar.value.timeInMillis
-        newRdvState.dateString = getDateFormatter(timestamp.value)
-        date.value = getDateFormatter(timestamp.value)
-        //init date
-        newRdvState.timeString = getTimeFormatter(timestamp.value)
-        time.value = getTimeFormatter(timestamp.value)
     }
 
     fun setSelectRdv(rdv: Rdv) {
-        //selectRdv.value = rdv
-        newRdvState = newRdvState.copy(rdv = rdv)
+        selectedRdv = rdv
     }
 
-    fun setSelectContact(contact: Contact) {
-        //selectContact.value = contact
-        newRdvState = newRdvState.copy(contact = contact)
-    }
 
     private fun sendUIEvent(event: UIEvent) {
         viewModelScope.launch {
@@ -81,26 +60,28 @@ class NewRdvViewModel @Inject constructor(
     fun onEvent(event: NewRdvEvent) {
         when (event) {
             is NewRdvEvent.ChangedDate -> {
-                newRdvState = newRdvState.copy(dateString = event.date)
+                selectedRdv.date = calendar.value.timeInMillis
             }
             is NewRdvEvent.ChangedTime -> {
-                newRdvState = newRdvState.copy(timeString = event.time)
+                selectedRdv.date = calendar.value.timeInMillis
             }
             is NewRdvEvent.ChangedContact -> {
-                //state=state.copy(rdv=event.contact.nom)
-                newRdvState.rdv?.nom = event.contact.nom
-
-                newRdvState = newRdvState.copy(contact = event.contact)
-                //setSelectContact(state.contact!!)
+                selectedRdv.id_contact = event.contact.id
+                selectedRdv.nom = event.contact.nom
+                //selectedContact = event.contact
             }
             is NewRdvEvent.OnNew -> {
-                addRdv(newRdvState.rdv!!)
-                //addRdv(selectRdv.value)
-                sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
+                val result = useCase.validateRdv.execute(selectedRdv)
+                if (result==ValideRdv.ResultRdv.ValideRdv) {
+                    addRdv(selectedRdv)
+                    sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
+                }
+                else{
+                    sendUIEvent(UIEvent.ShowSnackBar("Ok",result.getMessage()))
+                }
             }
             is NewRdvEvent.OnUpdate -> {
-                updateRdv(newRdvState.rdv!!)
-                //updateRdv(selectRdv.value)
+                updateRdv(selectedRdv)
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
             is NewRdvEvent.OnBack -> {
@@ -146,6 +127,18 @@ class NewRdvViewModel @Inject constructor(
                 allContactFlow.value = it
                 //isSateChanged.value=true
             }
+        }
+    }
+
+    private fun ValideRdv.ResultRdv.getMessage():String{
+        return when(this){
+            is ValideRdv.ResultRdv.EmptyName->{
+                return "Rendez-vous vide"
+            }
+            is ValideRdv.ResultRdv.BadLength->{
+                return "Le rendez-vous doit contenir minimum 3 caractères"
+            }
+            else -> ""
         }
     }
 }

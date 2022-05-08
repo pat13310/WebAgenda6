@@ -6,5 +6,6 @@ data class UseCaseRdv(
     val getAllRdv: GetAllRdv,
     val getRdv: GetRdv,
     val cleanRdv: CleanRdv,
-    val deleteRdv: DeleteRdv
+    val deleteRdv: DeleteRdv,
+    val validateRdv: ValideRdv
 )

@@ -1,6 +1,7 @@
 package com.xenatronics.webagenda.common.util
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +30,7 @@ fun calendarSetTime(time: String, calendar:Calendar){
     calendar.set(Calendar.MINUTE,times[1].toInt())
 }
 
-fun calendarSetDate(date:String,calendar:Calendar){
+fun calendarSetDate(date:String, calendar: Calendar){
     val dates=date.split(" ")
     calendar.set(dates[2].toInt(),detectMonth(dates[1]),dates[0].toInt())
     Log.d("Rdv : calendarSetDate", calendar.timeInMillis.toString())

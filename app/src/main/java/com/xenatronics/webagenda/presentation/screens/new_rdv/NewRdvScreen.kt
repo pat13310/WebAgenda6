@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.layoutId
@@ -29,6 +32,7 @@ import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
 import com.xenatronics.webagenda.common.util.getDateFormatter
 import com.xenatronics.webagenda.common.util.getTimeFormatter
+import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UIComboContact
 import com.xenatronics.webagenda.presentation.components.UiDatePicker
@@ -40,8 +44,10 @@ import kotlinx.coroutines.flow.collect
 fun NewRdvScreen(
     navController: NavController,
     viewModel: NewRdvViewModel,
+    rdv: Rdv
 ) {
-    val state = viewModel.newRdvState
+    //val state by viewModel.newRdvState
+
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -66,11 +72,11 @@ fun NewRdvScreen(
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         Scaffold(
             topBar = {
-                NewTaskBar(if (state.rdv?.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
+                NewTaskBar(if (rdv.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
                     NavigateToListScreen = {
                         if (it == Action.ADD) {
-                            if (state.rdv?.id == 0) {
-                                //viewModel.setSelectRdv(state.rdv)
+                            if (rdv.id == 0) {
+                                //viewModel.setSelectRdv(state)
                                 viewModel.onEvent(NewRdvEvent.OnNew)
                             } else {
                                 //viewModel.setSelectRdv(state.rdv!!)
@@ -86,6 +92,7 @@ fun NewRdvScreen(
                 NewRdvContent(
                     navController = navController,
                     viewModel = viewModel,
+                    rdv = rdv
                 )
             }
         )
@@ -98,11 +105,8 @@ fun NewRdvScreen(
 fun NewRdvContent(
     navController: NavController,
     viewModel: NewRdvViewModel,
+    rdv: Rdv,
 ) {
-    val state = viewModel.newRdvState
-    val rdv = state.rdv
-    val nom = mutableStateOf(rdv?.nom)
-
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)
         ConstraintLayout(constraint) {
@@ -110,7 +114,10 @@ fun NewRdvContent(
                 viewModel.loadContact()
             }
             val listContact = viewModel.allContactFlow.collectAsState()
-            val timestamp = rdv?.date ?: 0
+            var timestamp = viewModel.calendar.value.timeInMillis
+            if (rdv.nom.isNotBlank()) {
+                timestamp = rdv.date
+            }
 
             Image(
                 painterResource(id = R.drawable.rdv2), contentDescription = "",
@@ -119,38 +126,31 @@ fun NewRdvContent(
                     .scale(1.5f)
                     .layoutId("image")
             )
-            if (rdv != null) {
-                UIComboContact(
-                    modifier = Modifier
-                        .fillMaxWidth(0.92f)
-                        .layoutId("textRdv"),
-                    options = listContact.value.toList().sortedBy { contact -> contact.nom },
-                    //viewModel = viewModel,
-                    text = nom.value,
-                    onContact = { contact ->
-                        rdv.nom = contact.nom
-                        viewModel.onEvent(NewRdvEvent.ChangedContact(contact))
-                        viewModel.setSelectContact(contact = contact)
-                    },
-                    onNavigate = { route ->
-                        navController.navigate(route = route)
-                    }
-                )
-            }
+            UIComboContact(
+                modifier = Modifier
+                    .fillMaxWidth(0.92f)
+                    .layoutId("textRdv"),
+                options = listContact.value.toList().sortedBy { contact -> contact.nom },
+                onNavigate = { route ->
+                    navController.navigate(route = route)
+                },
+                viewModel = viewModel,
+                text = rdv.nom
+            )
+
             UiDatePicker(
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
                     .layoutId("textDate"),
                 viewModel = viewModel,
-                rdv = rdv!!,
-                text = getDateFormatter(timestamp)
+                text = getDateFormatter(timestamp),
+                rdv = rdv,
             )
             UiTimePicker(
                 modifier = Modifier
                     .fillMaxWidth(0.92f)
                     .layoutId("textTime"),
                 viewModel = viewModel,
-                rdv = rdv,
                 text = getTimeFormatter(timestamp)
             )
         }
