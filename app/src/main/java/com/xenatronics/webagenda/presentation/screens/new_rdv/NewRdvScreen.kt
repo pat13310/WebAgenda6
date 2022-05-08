@@ -102,7 +102,7 @@ fun NewRdvContent(
 ) {
     val state = viewModel.state
     val rdv = state.rdv
-    //viewModel.setSelectRdv(rdv)
+
 
     BoxWithConstraints {
         val constraint = decoupledConstraints(16.dp)

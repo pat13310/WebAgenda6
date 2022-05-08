@@ -22,7 +22,7 @@ import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.presentation.screens.LoginScreen
-import com.xenatronics.webagenda.presentation.screens.RegisterScreen
+import com.xenatronics.webagenda.presentation.screens.register.RegisterScreen
 import com.xenatronics.webagenda.presentation.screens.SplashScreen
 import com.xenatronics.webagenda.presentation.screens.listcontact.ListContactScreen
 import com.xenatronics.webagenda.presentation.screens.listrdv.ListRdvScreen

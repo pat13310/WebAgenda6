@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.screens
+package com.xenatronics.webagenda.presentation.screens.register
 
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,10 +36,8 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UITextPassword
 import com.xenatronics.webagenda.presentation.components.UITextStandard
-import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.screens.register.ViewModelRegister
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi
@@ -78,7 +77,8 @@ fun RegisterScreen(
                     "Inscription",
                     NavigateToListScreen = { action ->
                         if (action == Action.ADD) {
-                            navController.navigate(Screen.NewRdvScreen.route)
+                            viewModel.onEvent(RegisterEvent.OnSubmit)
+                            //navController.navigate(Screen.LoginScreen.route)
                         }
                     },
                     noBack = true
@@ -120,21 +120,22 @@ fun RegisterContent(
                 modifier = Modifier
                     .layoutId("textNom")
                     .fillMaxWidth(0.92f),
-                label = "Adresse mail",
+                label = "Nom du login",
                 icon = Icons.Default.Person,
-                value = state.email,
+                value = state.nom,
                 onTextChanged = {
-                    viewModel.onEvent(RegisterEvent.EmailChanged(it))
+                    viewModel.onEvent(RegisterEvent.NameChanged(it))
                 })
             UITextStandard(
                 modifier = Modifier
                     .layoutId("textMail")
                     .fillMaxWidth(0.92f),
-                label = "Répéter adresse mail",
+                label = "Adresse mail",
                 icon = Icons.Default.Person,
                 value = state.email,
+                keyboardType = KeyboardType.Email,
                 onTextChanged = {
-                    viewModel.onEvent((RegisterEvent.RepeatEmailChanged(it)))
+                    viewModel.onEvent((RegisterEvent.EmailChanged(it)))
                 })
             UITextPassword(
                 modifier = Modifier
@@ -149,7 +150,6 @@ fun RegisterContent(
                 modifier = Modifier.layoutId("textLink"),
                 onLink = {
                     viewModel.onEvent(RegisterEvent.OnNavigateLogin)
-                    //navController.navigate(Screen.LoginScreen.route)
                 })
         }
     }

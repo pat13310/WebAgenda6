@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
     const val DELAY_SPLASH = 0
-    private const val URL_BASE = "192.168.1.68"
+    private const val URL_BASE = "192.168.1.58"
 
     private const val URL_RDV = "http://$URL_BASE/api/v22/agenda/rdv"
     const val GET_RDV = "$URL_RDV/get"
@@ -30,12 +30,12 @@ object Constants {
 
 
     const val EXPAND_ANIMATION_DURATION = 240
-    const val FADE_OUT_ANIMATION_DURATION = 100
-    const val FADE_IN_ANIMATION_DURATION = 200
+//    const val FADE_OUT_ANIMATION_DURATION = 100
+//    const val FADE_IN_ANIMATION_DURATION = 200
     val HEIGHT_COMPONENT = 57.dp
     const val RADIUS_SMALL = 40
     const val RADIUS_MEDIUM = 50
     val TOP_SPACE = 10.dp
-    const val SHRINK_DELAY = 300
-    //const val SWIPE_REFRESH_DELAY=1200L
+    //const val SHRINK_DELAY = 300
+
 }

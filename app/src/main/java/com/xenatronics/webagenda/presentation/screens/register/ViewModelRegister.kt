@@ -41,6 +41,9 @@ class ViewModelRegister @Inject constructor(
             is RegisterEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
             }
+            is RegisterEvent.NameChanged -> {
+                state = state.copy(nom = event.nom)
+            }
             is RegisterEvent.OnSubmit -> {
                 register(context = context)
             }
@@ -51,7 +54,13 @@ class ViewModelRegister @Inject constructor(
     private fun register(context: Context) {
         viewModelScope.launch {
             kotlin.runCatching {
-                useCase.register(Credentials(state.email, state.repeatEmail, state.password))
+                useCase.register(
+                    Credentials(
+                        name = state.nom,
+                        mail = state.email,
+                        password = state.password
+                    )
+                )
             }.onSuccess {
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }.onFailure {
