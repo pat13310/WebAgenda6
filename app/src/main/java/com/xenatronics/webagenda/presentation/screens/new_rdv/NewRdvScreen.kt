@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,7 +47,7 @@ fun NewRdvScreen(
     viewModel: NewRdvViewModel,
     rdv: Rdv
 ) {
-    //val state by viewModel.newRdvState
+    val scaffoldState= rememberScaffoldState()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
@@ -55,7 +56,7 @@ fun NewRdvScreen(
                     navController.navigate(event.route)
                 }
                 is UIEvent.ShowSnackBar -> {
-
+                    scaffoldState.snackbarHostState.showSnackbar(actionLabel = event.action, message = event.message)
                 }
                 is UIEvent.PopBackStack -> {
 
@@ -71,6 +72,7 @@ fun NewRdvScreen(
     ) {
         LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         Scaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 NewTaskBar(if (rdv.id == 0) "Nouveau rendez-vous" else "Modifier rendez-vous",
                     NavigateToListScreen = {

@@ -30,3 +30,7 @@
 - composant UIDatePicker, UIDatePicker et UIComboContact correction et simplification du code
 - NewRdvViewModel intégration unifiée de la gestion des évenements
 - NewRdvScreen intégration des actions 
+
+**Correction 11: architecture claire (suite)**
+- NewRdv: uses case ajout validation sur Rdv
+- NewRdv : intégration messsage d'avertissement sur Rdv
