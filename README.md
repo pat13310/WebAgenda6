@@ -1,7 +1,7 @@
 # WebAgenda
 
 **Correction 1 : Avec bug mineurs mais fonctionelle**
- - swip ne marche pas bien par moment
+ - sweep ne marche pas bien par moment
 
 **Correction 2: bug UIComboContact corrigé**
 
@@ -19,7 +19,7 @@
 **Correction 7: fonction de date évolution pour prise en charge d'une date ou heure en entrée**
 - modification des composants UIDatePicker et UITimePicker
 - implémentation (suite) de NewRdvScreen et ListRdvScreen
-- composant TopBar amélioré et nettoyge du code
+- composant TopBar amélioré et nettoyage du code
 
 **Correction 8: Intégration de layoutConstraint dans les screen login, register, new contact**
 
@@ -35,8 +35,8 @@
 - NewRdv: uses case ajout validation sur Rdv
 - NewRdv : intégration messsage d'avertissement sur Rdv
 
-**Corection 12: architecture claire (suite)**
--RegisterScreen: Gestion des champs du formulaire avec logique de vérification
--ResultUseCase: Uniformisation de la gestion des erreurs sur le champs et en général
+**Correction 12: architecture claire (suite)**
+- RegisterScreen: Gestion des champs du formulaire avec logique de vérification
+- ResultUseCase: Uniformisation de la gestion des erreurs sur le champs et en général
 
 **Correction 13: architecture claire (suite)**
