@@ -38,6 +38,4 @@ object Constants {
     val TOP_SPACE = 10.dp
     const val SHRINK_DELAY = 300
     //const val SWIPE_REFRESH_DELAY=1200L
-
-    val PATTERN_MAIL ="^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$"
 }
