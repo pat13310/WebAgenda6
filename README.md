@@ -40,3 +40,4 @@
 - ResultUseCase: Uniformisation de la gestion des erreurs sur le champs et en général
 
 **Correction 13: architecture claire (suite)**
+- Nettoyage de code

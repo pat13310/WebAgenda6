@@ -1,12 +1,10 @@
 package com.xenatronics.webagenda.presentation.screens.register
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.common.events.RegisterEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
@@ -14,7 +12,6 @@ import com.xenatronics.webagenda.domain.model.Credentials
 import com.xenatronics.webagenda.domain.usecase.ResultUseCase
 import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -51,10 +48,10 @@ class ViewModelRegister @Inject constructor(
                 if (resultName != ResultUseCase.OK) {
                     sendUIEvent(UIEvent.ShowErrorMessage(resultName, focus = "name"))
                 } else if (resultMail != ResultUseCase.OK) {
-                    sendUIEvent(UIEvent.ShowErrorMessage(resultMail, focus="mail"))
+                    sendUIEvent(UIEvent.ShowErrorMessage(resultMail, focus = "mail"))
                 } else if (resultPassword != ResultUseCase.OK) {
-                    sendUIEvent(UIEvent.ShowErrorMessage(resultPassword, focus="password"))
-                }else{
+                    sendUIEvent(UIEvent.ShowErrorMessage(resultPassword, focus = "password"))
+                } else {
                     register()
                 }
             }
