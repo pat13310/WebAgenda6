@@ -11,6 +11,7 @@ import com.xenatronics.webagenda.common.events.RegisterEvent
 import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.domain.model.Credentials
+import com.xenatronics.webagenda.domain.usecase.ResultUseCase
 import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,18 +23,19 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelRegister @Inject constructor(
     private val useCase: UseCaseLogin,
-    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
     var state by mutableStateOf(RegisterState())
 
     fun onEvent(event: RegisterEvent) {
         when (event) {
             is RegisterEvent.OnNavigateLogin -> {
                 sendUIEvent(UIEvent.Navigate(Screen.LoginScreen.route))
+            }
+            is RegisterEvent.NameChanged -> {
+                state = state.copy(nom = event.name)
             }
             is RegisterEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
@@ -42,20 +44,38 @@ class ViewModelRegister @Inject constructor(
                 state = state.copy(password = event.password)
             }
             is RegisterEvent.OnSubmit -> {
-                register(context = context)
+                val resultName: ResultUseCase = useCase.validateName.execute(state.nom)
+                val resultMail: ResultUseCase = useCase.validateMail.execute(state.email)
+                val resultPassword: ResultUseCase = useCase.validatePassword.execute(state.password)
+
+                if (resultName != ResultUseCase.OK) {
+                    sendUIEvent(UIEvent.ShowErrorMessage(resultName, focus = "name"))
+                } else if (resultMail != ResultUseCase.OK) {
+                    sendUIEvent(UIEvent.ShowErrorMessage(resultMail, focus="mail"))
+                } else if (resultPassword != ResultUseCase.OK) {
+                    sendUIEvent(UIEvent.ShowErrorMessage(resultPassword, focus="password"))
+                }else{
+                    register()
+                }
             }
             else -> Unit
         }
     }
 
-    private fun register(context: Context) {
+    private fun register() {
         viewModelScope.launch {
             kotlin.runCatching {
-                useCase.register(Credentials(state.email, state.repeatEmail, state.password))
+                useCase.register(
+                    Credentials(
+                        mail = state.email,
+                        name = state.nom,
+                        password = state.password
+                    )
+                )
             }.onSuccess {
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }.onFailure {
-                sendUIEvent(UIEvent.ShowSnackBar("", context.getString(R.string.FailedInternet)))
+                sendUIEvent(UIEvent.ShowErrorMessage(ResultUseCase.InternetFailure))
             }
         }
     }

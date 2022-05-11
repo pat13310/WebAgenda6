@@ -16,10 +16,10 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,10 +29,7 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.common.events.NewRdvEvent
 import com.xenatronics.webagenda.common.events.UIEvent
-import com.xenatronics.webagenda.common.util.Action
-import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.common.util.getDateFormatter
-import com.xenatronics.webagenda.common.util.getTimeFormatter
+import com.xenatronics.webagenda.common.util.*
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 import com.xenatronics.webagenda.presentation.components.UIComboContact
@@ -47,8 +44,8 @@ fun NewRdvScreen(
     viewModel: NewRdvViewModel,
     rdv: Rdv
 ) {
-    val scaffoldState= rememberScaffoldState()
-
+    val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -56,7 +53,16 @@ fun NewRdvScreen(
                     navController.navigate(event.route)
                 }
                 is UIEvent.ShowSnackBar -> {
-                    scaffoldState.snackbarHostState.showSnackbar(actionLabel = event.action, message = event.message)
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        actionLabel = event.action,
+                        message = event.message
+                    )
+                }
+                is UIEvent.ShowErrorMessage -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        actionLabel = "",
+                        message = getMessage(context, event.resultUseCase)
+                    )
                 }
                 is UIEvent.PopBackStack -> {
 
@@ -100,6 +106,7 @@ fun NewRdvScreen(
         )
     }
 }
+
 
 @SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)

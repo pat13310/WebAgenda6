@@ -11,11 +11,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -32,19 +33,29 @@ import com.xenatronics.webagenda.common.util.Constants.TOP_SPACE
 @ExperimentalComposeUiApi
 @Composable
 fun UITextStandard(
-    modifier:Modifier,
+    modifier: Modifier,
     label: String = "",
     value: String,
     onTextChanged: (String) -> Unit,
     icon: ImageVector = Icons.Default.Place,
     keyboardType: KeyboardType = KeyboardType.Text,
     maxLength: Int = 35,
-    maxLines:Int=1,
+    maxLines: Int = 1,
     padding: Dp = TOP_SPACE,
-    focusNext:Boolean=true,
+    focusNext: Boolean = true,
+    focus: Boolean = false,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    var visibility by remember { mutableStateOf(keyboardType != KeyboardType.Password) }
+
+    LaunchedEffect(focus) {
+        if (focus) {
+            focusRequester.requestFocus()
+        }
+    }
+
     OutlinedTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = MaterialTheme.colors.primary,
@@ -52,7 +63,10 @@ fun UITextStandard(
             trailingIconColor = MaterialTheme.colors.primary,
             unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = 0.50f)
         ),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done,
+            keyboardType = keyboardType
+        ),
         keyboardActions = KeyboardActions(onDone = {
             keyboardController?.hide()
             if (focusNext)
@@ -73,69 +87,23 @@ fun UITextStandard(
                 onTextChanged(it)
             }
         },
-        placeholder = { Text(text = label) },
-        shape =  RoundedCornerShape(RADIUS_SMALL),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = padding)
-            .height(Constants.HEIGHT_COMPONENT),
-    )
-}
-
-
-@ExperimentalComposeUiApi
-@Composable
-fun UITextPassword(
-    modifier:Modifier,
-    label: String = "Mot de passe",
-    value: String,
-    onTextChanged: (String) -> Unit,
-    icon: ImageVector = Icons.Default.VpnKey,
-    maxLength: Int = 16,
-    maxLines: Int=1,
-
-) {
-    var visibility by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    OutlinedTextField(
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            textColor = MaterialTheme.colors.primary,
-            leadingIconColor = MaterialTheme.colors.primary,
-            trailingIconColor = MaterialTheme.colors.primary,
-            unfocusedBorderColor = MaterialTheme.colors.primary.copy(alpha = 0.50f)
-        ),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
-        keyboardActions = KeyboardActions(onDone = {
-            keyboardController?.hide()
-            focusManager.clearFocus(true)
-        }),
-        maxLines=maxLines,
-        value = value,
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = "Icon"
-            )
-        },
         trailingIcon = {
-            IconButton(onClick = { visibility = !visibility }) {
-                Icon(
-                    imageVector = if (visibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                    contentDescription = "Password"
-                )
+            if (keyboardType == KeyboardType.Password) {
+                IconButton(onClick = { visibility = !visibility }) {
+                    Icon(
+                        imageVector = if (visibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = "Password"
+                    )
+                }
             }
-        },
-        onValueChange = {
-            if (it.length < maxLength)
-                onTextChanged(it)
         },
         placeholder = { Text(text = label) },
         shape = RoundedCornerShape(RADIUS_SMALL),
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = TOP_SPACE)
-            .height(Constants.HEIGHT_COMPONENT),
+            .padding(top = padding)
+            .height(Constants.HEIGHT_COMPONENT)
+            .focusRequester(focusRequester),
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation()
     )
 }

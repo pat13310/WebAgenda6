@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.screens
+package com.xenatronics.webagenda.presentation.screens.register
 
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
@@ -11,18 +11,24 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,13 +38,11 @@ import androidx.navigation.NavController
 import com.xenatronics.webagenda.R
 import com.xenatronics.webagenda.common.events.RegisterEvent
 import com.xenatronics.webagenda.common.events.UIEvent
-import com.xenatronics.webagenda.presentation.components.NewTaskBar
-import com.xenatronics.webagenda.presentation.components.UITextPassword
-import com.xenatronics.webagenda.presentation.components.UITextStandard
-import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.Action
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
-import com.xenatronics.webagenda.presentation.screens.register.ViewModelRegister
+import com.xenatronics.webagenda.common.util.getMessage
+import com.xenatronics.webagenda.presentation.components.NewTaskBar
+import com.xenatronics.webagenda.presentation.components.UITextStandard
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi
@@ -48,11 +52,23 @@ fun RegisterScreen(
     viewModel: ViewModelRegister
 ) {
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focus = remember { mutableStateOf("") }
+
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
+                is UIEvent.ShowErrorMessage -> {
+                    keyboardController?.hide()
+                    focus.value = event.focus
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        actionLabel = "",
+                        message = getMessage(context, event.resultUseCase)
+                    )
+                }
                 is UIEvent.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
@@ -78,7 +94,7 @@ fun RegisterScreen(
                     "Inscription",
                     NavigateToListScreen = { action ->
                         if (action == Action.ADD) {
-                            navController.navigate(Screen.NewRdvScreen.route)
+                            viewModel.onEvent(RegisterEvent.OnSubmit)
                         }
                     },
                     noBack = true
@@ -86,8 +102,8 @@ fun RegisterScreen(
             },
             content = {
                 RegisterContent(
-
                     viewModel = viewModel,
+                    focus = focus.value
                 )
             }
         )
@@ -98,6 +114,7 @@ fun RegisterScreen(
 @Composable
 fun RegisterContent(
     viewModel: ViewModelRegister,
+    focus: String
 ) {
     val state = viewModel.state
 
@@ -114,39 +131,45 @@ fun RegisterContent(
                     .layoutId("image")
             )
             UITextStandard(
+                focus = (focus == "name"),
                 modifier = Modifier
                     .layoutId("textNom")
+                    .fillMaxWidth(0.92f),
+                label = "Nom du login",
+                icon = Icons.Default.Person,
+                value = state.nom,
+                onTextChanged = {
+                    viewModel.onEvent(RegisterEvent.NameChanged(it))
+                })
+            UITextStandard(
+                focus = (focus == "mail"),
+                modifier = Modifier
+                    .layoutId("textMail")
                     .fillMaxWidth(0.92f),
                 label = "Adresse mail",
                 icon = Icons.Default.Person,
                 value = state.email,
                 onTextChanged = {
-                    viewModel.onEvent(RegisterEvent.EmailChanged(it))
+                    viewModel.onEvent((RegisterEvent.EmailChanged(it)))
                 })
             UITextStandard(
-                modifier = Modifier
-                    .layoutId("textMail")
-                    .fillMaxWidth(0.92f),
-                label = "Répéter adresse mail",
-                icon = Icons.Default.Person,
-                value = state.email,
-                onTextChanged = {
-                    viewModel.onEvent((RegisterEvent.RepeatEmailChanged(it)))
-                })
-            UITextPassword(
+                keyboardType = KeyboardType.Password,
+                focus = (focus == "password"),
+                label = "Mot de passe",
                 modifier = Modifier
                     .layoutId("textPassword")
                     .fillMaxWidth(0.92f),
                 value = state.password,
                 onTextChanged = {
                     viewModel.onEvent(RegisterEvent.PasswordChanged(it))
-                }
+                },
+                focusNext = false,
+                icon = Icons.Default.VpnKey
             )
             AnnotatedRegisterClickableText(
                 modifier = Modifier.layoutId("textLink"),
                 onLink = {
                     viewModel.onEvent(RegisterEvent.OnNavigateLogin)
-                    //navController.navigate(Screen.LoginScreen.route)
                 })
         }
     }

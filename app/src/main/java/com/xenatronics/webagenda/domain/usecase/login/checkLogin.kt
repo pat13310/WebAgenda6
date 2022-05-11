@@ -8,7 +8,6 @@ fun checkLogin(user: Credentials): MessageLogin {
     if (result!=MessageLogin.OK)
         return result
 
-    //result = checkMail(user)
     return result
 }
 

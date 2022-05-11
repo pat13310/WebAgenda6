@@ -17,4 +17,8 @@
     <string name="CreateAccount">Création du compte ...</string>
     <string name="rdv">Vos rendez-vous</string>
     <string name="FailedInternet">Erreur Internet</string>
+    <string name="noDigits">Rajouter des chiffres</string>
+    <string name="empty">"Champs vide"</string>
+    <string name="tooShort">"Pas assez de caractères"</string>
+    <string name="patternInvalid">"Format incorrect"</string>
 </resources>

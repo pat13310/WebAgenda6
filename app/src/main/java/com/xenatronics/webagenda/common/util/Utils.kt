@@ -1,7 +1,10 @@
 package com.xenatronics.webagenda.common.util
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import com.xenatronics.webagenda.R
+import com.xenatronics.webagenda.domain.usecase.ResultUseCase
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,4 +56,22 @@ fun getTimeFormatter(time: Long):String{
 
 fun getDateFormatter(date: Long):String{
     return dateFormatter(date,"dd LLLL yyyy")
+}
+
+fun getMessage(context: Context, resultUseCase: ResultUseCase): String {
+    return when (resultUseCase) {
+        is ResultUseCase.Empty->{
+            return context.getString(R.string.empty)
+        }
+        is ResultUseCase.TooShort->{
+            return context.getString(R.string.tooShort)
+        }
+        is ResultUseCase.PatternInvalid->{
+            return context.getString(R.string.patternInvalid)
+        }
+        is ResultUseCase.NoDigits -> {
+            return context.getString( R.string.noDigits)
+        }
+        else -> ""
+    }
 }

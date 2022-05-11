@@ -11,6 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -36,7 +38,7 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.util.LockScreenOrientation
 import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
-import com.xenatronics.webagenda.presentation.components.UITextPassword
+
 import com.xenatronics.webagenda.presentation.components.UITextStandard
 import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import kotlinx.coroutines.flow.collect
@@ -127,7 +129,9 @@ fun LoginContent(
                     viewModel.onEvent(LoginEvent.EmailChanged(it))
                 }
             )
-            UITextPassword(
+            UITextStandard(
+                keyboardType = KeyboardType.Password,
+                label = "Mot de passe",
                 modifier =
                 Modifier
                     .fillMaxWidth(0.92f)
@@ -135,7 +139,8 @@ fun LoginContent(
                 value = state.password,//password,
                 onTextChanged = {
                     viewModel.onEvent(LoginEvent.PasswordChanged(it))
-                }
+                },
+                icon = Icons.Filled.VpnKey
             )
             AnnotatedClickableText(
                 modifier = Modifier.layoutId("textLink"),

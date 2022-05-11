@@ -7,5 +7,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Credentials (val name:String="",
                         val password:String="",
-                        val repeatMail:String="",
                         val mail:String="")

@@ -12,9 +12,10 @@ import com.xenatronics.webagenda.common.events.UIEvent
 import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.Rdv
+import com.xenatronics.webagenda.domain.usecase.ResultUseCase
 import com.xenatronics.webagenda.domain.usecase.contact.UseCaseContact
 import com.xenatronics.webagenda.domain.usecase.rdv.UseCaseRdv
-import com.xenatronics.webagenda.domain.usecase.rdv.ValideRdv
+import com.xenatronics.webagenda.domain.usecase.rdv.ValidateRdv
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,16 +69,17 @@ class NewRdvViewModel @Inject constructor(
             is NewRdvEvent.ChangedContact -> {
                 selectedRdv.id_contact = event.contact.id
                 selectedRdv.nom = event.contact.nom
-                //selectedContact = event.contact
+
             }
             is NewRdvEvent.OnNew -> {
                 val result = useCase.validateRdv.execute(selectedRdv)
-                if (result==ValideRdv.ResultRdv.ValideRdv) {
+                if (result== ResultUseCase.OK) {
                     addRdv(selectedRdv)
                     sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
                 }
                 else{
-                    sendUIEvent(UIEvent.ShowSnackBar("Ok",result.getMessage()))
+                    sendUIEvent(UIEvent.ShowErrorMessage(result))
+                    //sendUIEvent(UIEvent.ShowSnackBar("Ok",result.getMessage()))
                 }
             }
             is NewRdvEvent.OnUpdate -> {
@@ -130,12 +132,12 @@ class NewRdvViewModel @Inject constructor(
         }
     }
 
-    private fun ValideRdv.ResultRdv.getMessage():String{
+    private fun ResultUseCase.getMessage():String{
         return when(this){
-            is ValideRdv.ResultRdv.EmptyName->{
+            is ResultUseCase.Empty->{
                 return "Rendez-vous vide"
             }
-            is ValideRdv.ResultRdv.BadLength->{
+            is ResultUseCase.TooShort->{
                 return "Le rendez-vous doit contenir minimum 3 caractères"
             }
             else -> ""

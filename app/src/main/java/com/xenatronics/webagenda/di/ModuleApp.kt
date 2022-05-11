@@ -4,10 +4,7 @@ import com.xenatronics.webagenda.data.repository.RepositoryContact
 import com.xenatronics.webagenda.data.repository.RepositoryLogin
 import com.xenatronics.webagenda.data.repository.RepositoryRdv
 import com.xenatronics.webagenda.domain.usecase.contact.*
-import com.xenatronics.webagenda.domain.usecase.login.Login
-import com.xenatronics.webagenda.domain.usecase.login.Logout
-import com.xenatronics.webagenda.domain.usecase.login.Register
-import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
+import com.xenatronics.webagenda.domain.usecase.login.*
 import com.xenatronics.webagenda.domain.usecase.rdv.*
 import dagger.Module
 import dagger.Provides
@@ -22,7 +19,10 @@ object ModuleApp {
     fun provideUseCaseLogin(repository: RepositoryLogin) = UseCaseLogin(
         login = Login(repository),
         logout = Logout(repository),
-        register = Register(repository)
+        register = Register(repository),
+        validateMail = ValidateMail(),
+        validateName = ValidateName(),
+        validatePassword = ValidatePassword()
     )
 
     @Provides
@@ -33,7 +33,8 @@ object ModuleApp {
         deleteRdv = DeleteRdv(repository),
         cleanRdv = CleanRdv(repository),
         updateRdv = UpdateRdv(repository),
-        validateRdv = ValideRdv()
+        validateRdv = ValidateRdv(),
+
     )
 
     @Provides
