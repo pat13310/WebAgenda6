@@ -32,12 +32,17 @@
 - NewRdvScreen intégration des actions 
 
 **Correction 11: architecture claire (suite)**
+
 - NewRdv: uses case ajout validation sur Rdv
 - NewRdv : intégration messsage d'avertissement sur Rdv
 
 **Correction 12: architecture claire (suite)**
+
 - RegisterScreen: Gestion des champs du formulaire avec logique de vérification
 - ResultUseCase: Uniformisation de la gestion des erreurs sur le champs et en général
 
 **Correction 13: architecture claire (suite)**
+
 - Nettoyage de code
+
+**Creation Site web**
