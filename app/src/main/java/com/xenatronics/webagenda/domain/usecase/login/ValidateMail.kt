@@ -3,7 +3,7 @@ package com.xenatronics.webagenda.domain.usecase.login
 import android.util.Patterns
 import com.xenatronics.webagenda.domain.usecase.ResultUseCase
 
-class ValidateMail() {
+class ValidateMail {
 
     fun execute(mail: String): ResultUseCase {
         if (mail.isBlank())

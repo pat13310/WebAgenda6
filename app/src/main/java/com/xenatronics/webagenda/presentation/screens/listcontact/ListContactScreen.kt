@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun ListContactScreen(
     navController: NavController,
-    viewModel: ViewModelContact,
+    viewModel: ListContactViewModel,
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val scaffoldState = rememberScaffoldState()
@@ -36,7 +36,7 @@ fun ListContactScreen(
                     val result =
                         scaffoldState.snackbarHostState.showSnackbar(event.message, event.action)
                     if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.OnEvent(ListContactEvent.OnUndo)
+                        viewModel.onEvent(ListContactEvent.OnUndo)
                     }
                 }
                 is UIEvent.Navigate -> {
@@ -67,10 +67,10 @@ fun ListContactScreen(
             ListTaskBar("Vos contacts", NavigateToListScreen = { action ->
                 if (viewModel.selectedContact.value.id > 0) {
                     if (action == Action.DELETE) {
-                        viewModel.OnEvent(ListContactEvent.OnQueryDelete)
+                        viewModel.onEvent(ListContactEvent.OnQueryDelete)
                     }
                     if (action == Action.ADD) {
-                        viewModel.OnEvent((ListContactEvent.OnValidate))
+                        viewModel.onEvent((ListContactEvent.OnValidate))
                     }
                 }
             })

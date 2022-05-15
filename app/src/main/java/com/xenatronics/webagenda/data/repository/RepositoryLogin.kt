@@ -2,8 +2,8 @@ package com.xenatronics.webagenda.data.repository
 
 import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.data.network.KtorClient
-import com.xenatronics.webagenda.domain.model.ResponseSimple
 import com.xenatronics.webagenda.domain.model.Credentials
+import com.xenatronics.webagenda.domain.model.ResponseSimple
 import com.xenatronics.webagenda.domain.repository.RepositoryBaseLogin
 import io.ktor.client.features.*
 import io.ktor.client.request.*

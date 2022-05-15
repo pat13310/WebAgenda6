@@ -1,10 +1,10 @@
-package com.xenatronics.webagenda.domain.usecase
+package com.xenatronics.webagenda.domain.usecase.login
 
-import com.xenatronics.webagenda.domain.model.Credentials
 import com.xenatronics.webagenda.common.util.MessageLogin
+import com.xenatronics.webagenda.domain.model.Credentials
 
 fun checkLogin(user: Credentials): MessageLogin {
-    var result = checkLoginFieldsEmpty(user)
+    val result = checkLoginFieldsEmpty(user)
     if (result!=MessageLogin.OK)
         return result
 

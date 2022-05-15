@@ -1,11 +1,11 @@
 package com.xenatronics.webagenda.data.repository
 
+
+import com.xenatronics.webagenda.common.util.Constants
+import com.xenatronics.webagenda.data.network.KtorClient
 import com.xenatronics.webagenda.domain.model.Contact
 import com.xenatronics.webagenda.domain.model.PostID
 import com.xenatronics.webagenda.domain.model.ResponseSimple
-
-import com.xenatronics.webagenda.data.network.KtorClient
-import com.xenatronics.webagenda.common.util.Constants
 import com.xenatronics.webagenda.domain.repository.RepositoryBaseContact
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class RepositoryContact @Inject constructor() :RepositoryBaseContact {
+class RepositoryContact @Inject constructor() : RepositoryBaseContact {
 
     override suspend fun GetAll(): List<Contact> {
         return try {
@@ -74,7 +74,7 @@ class RepositoryContact @Inject constructor() :RepositoryBaseContact {
 
     override suspend fun Add(contact: Contact): ResponseSimple {
         return try {
-            KtorClient.httpClient.post() {
+            KtorClient.httpClient.post {
                 url(Constants.ADD_CONTACT)
                 contentType(ContentType.Application.Json)
                 body = contact
@@ -134,7 +134,7 @@ class RepositoryContact @Inject constructor() :RepositoryBaseContact {
 
     override suspend fun Delete(id: Int): ResponseSimple {
         return try {
-            KtorClient.httpClient.delete() {
+            KtorClient.httpClient.delete {
                 url(Constants.DELETE_CONTACT)
                 contentType(ContentType.Application.Json)
                 body = PostID(id)

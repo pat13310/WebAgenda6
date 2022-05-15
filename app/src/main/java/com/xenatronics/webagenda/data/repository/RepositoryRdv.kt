@@ -6,8 +6,8 @@ import com.xenatronics.webagenda.common.util.Constants.DEL_RDV
 import com.xenatronics.webagenda.common.util.Constants.GET_ALL_RDV
 import com.xenatronics.webagenda.common.util.Constants.GET_RDV
 import com.xenatronics.webagenda.common.util.Constants.UPDATE_RDV
-import com.xenatronics.webagenda.domain.model.PostID
 import com.xenatronics.webagenda.data.network.KtorClient
+import com.xenatronics.webagenda.domain.model.PostID
 import com.xenatronics.webagenda.domain.model.Rdv
 import com.xenatronics.webagenda.domain.model.ResponseSimple
 import com.xenatronics.webagenda.domain.repository.RepositoryBaseRdv

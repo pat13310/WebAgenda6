@@ -1,7 +1,7 @@
 package com.xenatronics.webagenda.common.events
 
-import android.app.Person
 import com.xenatronics.webagenda.domain.model.Contact
+
 
 sealed class ListRdvEvent {
     object OnAdd : ListRdvEvent()

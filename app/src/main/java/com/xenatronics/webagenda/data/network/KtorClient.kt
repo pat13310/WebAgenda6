@@ -18,7 +18,7 @@ object KtorClient {
         ignoreUnknownKeys = true
     }
 
-    val httpClient = HttpClient() {
+    val httpClient = HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer(json)
         }

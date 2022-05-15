@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelContact @Inject constructor(
+class ListContactViewModel @Inject constructor(
     private val useCaseContact: UseCaseContact
 ) : ViewModel() {
 
@@ -33,7 +33,6 @@ class ViewModelContact @Inject constructor(
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
 
     fun loadContact() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -55,12 +54,16 @@ class ViewModelContact @Inject constructor(
     }
 
 
-    fun OnEvent(event: ListContactEvent) {
+    fun onEvent(event: ListContactEvent) {
         when (event) {
             is ListContactEvent.OnValidate -> {
-                if (selectedContact.value.id>0) {
-                    val rdvSelected = Rdv(nom = selectedContact.value.nom, date =0L, id_contact = selectedContact.value.id)
-                    val rdv= Gson().toJson(rdvSelected)
+                if (selectedContact.value.id > 0) {
+                    val rdvSelected = Rdv(
+                        nom = selectedContact.value.nom,
+                        date = 0L,
+                        id_contact = selectedContact.value.id
+                    )
+                    val rdv = Gson().toJson(rdvSelected)
                     sendUIEvent(UIEvent.Navigate(Screen.NewRdvScreen.route + "/$rdv"))
                 }
             }

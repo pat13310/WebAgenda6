@@ -1,4 +1,4 @@
-package com.xenatronics.webagenda.presentation.screens
+package com.xenatronics.webagenda.presentation.screens.login
 
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
@@ -40,7 +40,6 @@ import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.presentation.components.NewTaskBar
 
 import com.xenatronics.webagenda.presentation.components.UITextStandard
-import com.xenatronics.webagenda.presentation.screens.login.ViewModelLogin
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalComposeUiApi

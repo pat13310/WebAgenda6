@@ -1,8 +1,6 @@
 package com.xenatronics.webagenda.presentation.screens.new_contact
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xenatronics.webagenda.common.events.NewContactEvent
@@ -24,8 +22,14 @@ class NewContactViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+    private val selectedContact = mutableStateOf(Contact())
+    val nom = mutableStateOf("")
+    val adresse = mutableStateOf("")
+    val cp = mutableStateOf("")
+    val ville = mutableStateOf("")
+    val mail = mutableStateOf("")
+    val tel = mutableStateOf("")
 
-    var state by mutableStateOf(NewContactState())
 
     fun onEvent(event: NewContactEvent) {
         when (event) {
@@ -41,24 +45,23 @@ class NewContactViewModel @Inject constructor(
                 sendUIEvent(UIEvent.Navigate(Screen.ListContactScreen.route))
             }
             is NewContactEvent.ChangedNom -> {
-                state = state.copy(nom = event.nom)
+                selectedContact.value = selectedContact.value.copy(nom = event.nom)
             }
             is NewContactEvent.ChangedAdresse -> {
-                state = state.copy(adresse = event.adresse)
+                selectedContact.value = selectedContact.value.copy(adresse = event.adresse)
             }
             is NewContactEvent.ChangedCp -> {
-                state = state.copy(cp = event.cp)
+                selectedContact.value = selectedContact.value.copy(cp = event.cp)
             }
             is NewContactEvent.ChangedVille -> {
-                state = state.copy(ville = event.ville)
+                selectedContact.value = selectedContact.value.copy(ville = event.ville)
             }
             is NewContactEvent.ChangedTel -> {
-                state = state.copy(tel = event.tel)
+                selectedContact.value = selectedContact.value.copy(tel = event.tel)
             }
             is NewContactEvent.ChangedMail -> {
-                state = state.copy(email = event.mail)
+                selectedContact.value = selectedContact.value.copy(mail = event.mail)
             }
-
         }
     }
 
@@ -82,41 +85,17 @@ class NewContactViewModel @Inject constructor(
 
     private fun addContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            val contact = Contact(
-                id = state.id,
-                nom = state.nom,
-                cp = state.cp,
-                ville = state.ville,
-                mail = state.email,
-                tel = state.tel
-            )
-            usesCase.addContact(contact = contact)
+            usesCase.addContact(contact = selectedContact.value)
         }
     }
 
     private fun updateContact() {
         viewModelScope.launch(Dispatchers.IO) {
-            val contact = Contact(
-                id = state.id,
-                nom = state.nom,
-                cp = state.cp,
-                ville = state.ville,
-                mail = state.email,
-                tel = state.tel
-            )
-            usesCase.updateContact(contact = contact)
+            usesCase.updateContact(contact = selectedContact.value)
         }
     }
 
     fun setSelectContact(contact: Contact) {
-        state = state.copy(
-            id = contact.id,
-            nom = contact.nom,
-            adresse = contact.adresse,
-            cp = contact.cp,
-            ville = contact.ville,
-            tel = contact.tel,
-            email = contact.mail
-        )
+        selectedContact.value = contact
     }
 }

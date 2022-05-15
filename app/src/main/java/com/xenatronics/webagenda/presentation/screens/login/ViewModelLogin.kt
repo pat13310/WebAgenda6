@@ -12,8 +12,8 @@ import com.xenatronics.webagenda.common.navigation.Screen
 import com.xenatronics.webagenda.common.util.MessageLogin
 import com.xenatronics.webagenda.common.util.StatusLogin
 import com.xenatronics.webagenda.domain.model.Credentials
-import com.xenatronics.webagenda.domain.usecase.checkLogin
 import com.xenatronics.webagenda.domain.usecase.login.UseCaseLogin
+import com.xenatronics.webagenda.domain.usecase.login.checkLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -71,7 +71,7 @@ class ViewModelLogin @Inject constructor(
                     sendUIEvent(UIEvent.ShowSnackBar("OK", errorMessage))
                 }
             }
-            is LoginEvent.OnSucces -> {
+            is LoginEvent.OnSuccess -> {
                 // success on va sur la liste des rdv
                 sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
             }
@@ -96,7 +96,7 @@ class ViewModelLogin @Inject constructor(
                     onEvent(LoginEvent.OnFailed(it.Status))
                 }
                 if (it.Status.contains("-")) {
-                    onEvent(LoginEvent.OnSucces)
+                    onEvent(LoginEvent.OnSuccess)
                     token.value = it.Status
                 }
             }.onFailure {

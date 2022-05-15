@@ -26,27 +26,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListContactContent(
     navController: NavController,
-    viewModel: ViewModelContact,
+    viewModel: ListContactViewModel,
 ) {
-
     val contacts = viewModel.allContactFlow.collectAsState()
     var selectedItem by viewModel.selectedContact
-    //val isDeleted= remember {mutableStateOf(false)   }
 
     viewModel.loadContact()
-
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(contacts.value.toMutableList()) { item ->
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        //contacts.value.toMutableList().remove(selectedItem)
-                        viewModel.OnEvent(ListContactEvent.OnQueryDelete)
-                        //selectedItem = item
+                        viewModel.onEvent(ListContactEvent.OnQueryDelete)
                         viewModel.selectedContact.value=item
-                        //viewModel.isDelete=true
-                        //isDeleted.value=true
                     }
                     true
                 }
@@ -87,7 +80,6 @@ fun ListContactContent(
                         onCardArrowClick = { selectedItem = item },
                         onSelectItem = {
                             selectedItem = item
-                           // onSelectItem(item)
                         },
                         onNavigate = { route ->
                             navController.navigate(route)
