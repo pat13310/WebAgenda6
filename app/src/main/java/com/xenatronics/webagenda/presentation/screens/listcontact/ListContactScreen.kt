@@ -73,6 +73,10 @@ fun ListContactScreen(
                         viewModel.onEvent((ListContactEvent.OnValidate))
                     }
                 }
+                if (action == Action.NO_ACTION) {
+                    viewModel.onEvent(ListContactEvent.OnBack)
+                }
+
             })
         },
         content = {
@@ -80,10 +84,8 @@ fun ListContactScreen(
                 viewModel = viewModel,
                 navController = navController,
 
-            )
+                )
         }
     )
 }
-
-
 

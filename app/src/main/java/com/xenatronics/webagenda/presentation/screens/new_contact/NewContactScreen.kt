@@ -13,7 +13,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
@@ -81,7 +80,7 @@ fun NewContactScreen(
                 })
         },
         content = {
-            ContactContent(viewModel, contact)
+            ContactContent(viewModel)
         }
     )
 }
@@ -91,23 +90,9 @@ fun NewContactScreen(
 @Composable
 fun ContactContent(
     viewModel: NewContactViewModel,
-    contact: Contact,
-) {
-    var nom by viewModel.nom
-    var adresse by viewModel.adresse
-    var cp by viewModel.cp
-    var ville by viewModel.ville
-    var mail by viewModel.mail
-    var tel by viewModel.tel
 
-    if (contact.id > 0) {
-        nom = contact.nom
-        adresse = contact.adresse
-        cp = contact.cp
-        ville = contact.ville
-        tel = contact.tel
-        mail = contact.mail
-    }
+    ) {
+    val selected by viewModel.selectedContact
 
     BoxWithConstraints {
         val constraint = decoupledConstraints(0.dp)
@@ -118,9 +103,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textNom"),
                 label = "Rendez-vous",
-                value = nom,
+                value = selected.nom,
                 onTextChanged = {
-                    nom = it
+                    //selected.nom = it
                     viewModel.onEvent(NewContactEvent.ChangedNom(it))
                 },
                 icon = Icons.Default.Person
@@ -130,9 +115,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textAdresse"),
                 label = "Adresse",
-                value = adresse,
+                value = selected.adresse,
                 onTextChanged = {
-                    adresse = it
+                    //adresse = it
                     viewModel.onEvent(NewContactEvent.ChangedAdresse(it))
                 }
             )
@@ -141,9 +126,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textVille"),
                 label = "Ville",
-                value = ville,
+                value = selected.ville,
                 onTextChanged = {
-                    ville = it
+                    //selected.ville = it
                     viewModel.onEvent(NewContactEvent.ChangedVille(it))
                 }
             )
@@ -152,9 +137,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textCP"),
                 label = "Code Postal",
-                value = cp,
+                value = selected.cp,
                 onTextChanged = {
-                    cp = it
+                    //cp = it
                     viewModel.onEvent(NewContactEvent.ChangedCp(it))
                 },
                 icon = Icons.Default.Place,
@@ -165,9 +150,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textTel"),
                 label = "Téléphone",
-                value = tel,
+                value = selected.tel,
                 onTextChanged = {
-                    tel = it
+                    //tel = it
                     viewModel.onEvent(NewContactEvent.ChangedTel(it))
                 },
                 icon = Icons.Default.Phone,
@@ -178,9 +163,9 @@ fun ContactContent(
                     .fillMaxWidth(0.92f)
                     .layoutId("textMail"),
                 label = "Adresse Mail",
-                value = mail,
+                value = selected.mail,
                 onTextChanged = {
-                    mail = it
+                    //mail = it
                     viewModel.onEvent(NewContactEvent.ChangedMail(it))
                 },
                 icon = Icons.Default.Email,
@@ -232,4 +217,3 @@ private fun decoupledConstraints(margin: Dp, hMargin: Dp = 16.dp): ConstraintSet
         }
     }
 }
-

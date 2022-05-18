@@ -19,16 +19,9 @@ import javax.inject.Inject
 class NewContactViewModel @Inject constructor(
     private val usesCase: UseCaseContact
 ) : ViewModel() {
-
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-    private val selectedContact = mutableStateOf(Contact())
-    val nom = mutableStateOf("")
-    val adresse = mutableStateOf("")
-    val cp = mutableStateOf("")
-    val ville = mutableStateOf("")
-    val mail = mutableStateOf("")
-    val tel = mutableStateOf("")
+    val selectedContact = mutableStateOf(Contact())
 
 
     fun onEvent(event: NewContactEvent) {

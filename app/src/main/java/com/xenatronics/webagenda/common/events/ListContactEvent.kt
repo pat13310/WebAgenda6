@@ -9,7 +9,8 @@ sealed class ListContactEvent{
         object OnGetAll:ListContactEvent()
         object OnClean:ListContactEvent()
         object OnUndo:ListContactEvent()
-        object OnValidate:ListContactEvent()
+        object OnValidate : ListContactEvent()
+        object OnBack : ListContactEvent()
 }
 
 sealed class NewContactEvent {

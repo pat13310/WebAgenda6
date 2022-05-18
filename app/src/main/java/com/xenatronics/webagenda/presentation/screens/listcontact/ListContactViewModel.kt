@@ -85,6 +85,9 @@ class ListContactViewModel @Inject constructor(
             is ListContactEvent.OnUndo -> {
                 addContact()
             }
+            is ListContactEvent.OnBack -> {
+                sendUIEvent(UIEvent.Navigate(Screen.ListRdvScreen.route))
+            }
             else -> Unit
         }
     }
